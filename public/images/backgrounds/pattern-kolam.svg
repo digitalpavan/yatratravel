@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+  <!-- Decorative kolam-inspired tile. Use as a repeating CSS background at low opacity. -->
+  <g fill="none" stroke="#C9A45C" stroke-width="1" stroke-linecap="round" opacity="0.5">
+    <path d="M32 8c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16S23.2 8 32 8z" transform="rotate(45 32 24)"/>
+    <path d="M0 56c8.8 0 16-3.6 16-8M64 56c-8.8 0-16-3.6-16-8"/>
+  </g>
+  <g fill="#C9A45C" opacity="0.55">
+    <circle cx="32" cy="24" r="1.6"/><circle cx="0" cy="0" r="1.2"/><circle cx="64" cy="0" r="1.2"/>
+    <circle cx="0" cy="64" r="1.2"/><circle cx="64" cy="64" r="1.2"/><circle cx="32" cy="56" r="1.2"/>
+  </g>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "_about": "Business details shown across the site. Any null value is hidden or shown as 'to be confirmed'. Set verified=true only after the owner has checked every value.",
+  "name": "Yatra Travels",
+  "tagline": "Tirupati pilgrim tours",
+  "verified": false,
+  "phone": null,
+  "phoneDisplay": null,
+  "whatsapp": null,
+  "email": null,
+  "address": null,
+  "mapsUrl": null,
+  "mapsEmbedUrl": null,
+  "hours": null,
+  "story": null,
+  "googleReviewsUrl": null,
+  "serviceArea": ["Tirupati", "Tirumala", "Tiruchanur", "Srikalahasti", "Kanipakam", "Vellore", "Renigunta", "Chennai and South India (outstation)"]
+}

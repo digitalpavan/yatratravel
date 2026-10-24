@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tirupati &amp; Tirumala Pilgrimage Tours · Yatra Travels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap">
+  <link rel="stylesheet" href="../tokens/tokens.css">
+  <link rel="stylesheet" href="../components.css">
+  <style>
+    .services-grid { display: grid; gap: var(--space-3); }
+    @media (min-width: 640px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .services-grid { grid-template-columns: repeat(3, 1fr); } }
+    .service-link { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-5); text-decoration: none; transition: border-color var(--duration-base), box-shadow var(--duration-base); }
+    .service-link:hover { border-color: var(--color-gold-500); box-shadow: var(--shadow-md); }
+    .service-link .feature__icon { width: 44px; height: 44px; flex: none; }
+    .service-link strong { display: block; color: var(--text-heading); font-weight: var(--weight-semibold); }
+    .service-link span { font-size: var(--text-sm); color: var(--text-muted); }
+    .service-link > svg { width: 18px; height: 18px; margin-left: auto; color: var(--color-gold-700); flex: none; }
+
+    .mosaic { display: grid; gap: var(--space-4); }
+    .mosaic a { position: relative; display: block; text-decoration: none; color: var(--color-white); border-radius: var(--radius-lg); overflow: hidden; }
+    .mosaic .media { border-radius: 0; height: 100%; }
+    .mosaic .media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(16, 28, 44, 0.85)); }
+    .mosaic__text { position: absolute; left: var(--space-5); right: var(--space-5); bottom: var(--space-5); z-index: 1; }
+    .mosaic__text h3 { color: var(--color-white); }
+    .mosaic__text p { font-size: var(--text-sm); color: rgba(255, 255, 255, 0.85); }
+    @media (min-width: 768px) {
+      .mosaic { grid-template-columns: repeat(2, 1fr); }
+      .mosaic a:first-child { grid-row: span 2; }
+    }
+    @media (min-width: 1024px) {
+      .mosaic { grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: 280px 280px; }
+      .mosaic a:first-child { grid-row: span 2; }
+      .mosaic a:nth-child(4) { grid-column: span 2; }
+    }
+
+    .how { counter-reset: how; }
+    .how .card { position: relative; padding-top: var(--space-7); }
+    .how .card::before { counter-increment: how; content: "0" counter(how); position: absolute; top: var(--space-5); left: var(--space-6); font-family: var(--font-display); font-weight: var(--weight-extrabold); font-size: var(--text-sm); color: var(--text-accent); letter-spacing: 0.1em; }
+
+    .cta-band { display: grid; gap: var(--space-6); align-items: center; padding: var(--space-7) var(--space-5); border-radius: var(--radius-xl); background: radial-gradient(80% 120% at 100% 0%, rgba(201, 164, 92, 0.35), transparent 60%), var(--color-navy-900); color: var(--color-white); }
+    .cta-band h2 { color: var(--color-white); }
+    .cta-band p { color: var(--text-muted-on-inverse); margin-top: var(--space-3); max-width: 560px; }
+    @media (min-width: 1024px) { .cta-band { grid-template-columns: 1fr auto; padding: var(--space-8); } }
+    .trust { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: rgba(255, 255, 255, 0.86); }
+    .trust li { display: inline-flex; align-items: center; gap: 6px; }
+    .trust svg { width: 18px; height: 18px; color: var(--color-gold-500); }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="wf-note" role="note">Wireframe: photos, prices (₹X,XXX), phone numbers and reviews are placeholders. <a href="../index.html">Design system</a></div>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+        <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="home.html" aria-current="page">Home</a></li>
+          <li><a class="nav__link" href="packages.html">Packages</a></li>
+          <li><a class="nav__link" href="packages.html?category=cab">Cabs &amp; Transfers</a></li>
+          <li><a class="nav__link" href="booking.html?type=custom">Plan a Custom Trip</a></li>
+          <li><a class="nav__link" href="#">About</a></li>
+          <li><a class="nav__link" href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--ghost btn--sm header-phone" href="tel:+910000000000" style="color:#fff"><svg aria-hidden="true"><use href="#i-phone"/></svg>+91 00000 00000</a>
+        <a class="btn btn--primary btn--sm" href="booking.html">Book Now</a>
+        <button class="icon-btn nav-toggle" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Open menu"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="drawer__head">
+      <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+      <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+    </a>
+      <button class="icon-btn" type="button" data-close aria-label="Close menu"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <nav class="drawer__nav" aria-label="Mobile">
+      <ul>
+        <li><a class="drawer__link" href="home.html" aria-current="page">Home<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="packages.html">Packages<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="packages.html?category=cab">Cabs &amp; Transfers<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="booking.html?type=custom">Plan a Custom Trip<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="#">About<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="#">Contact<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+      </ul>
+    </nav>
+    <div class="drawer__foot">
+      <a class="btn btn--primary btn--block" href="booking.html">Book Now</a>
+      <a class="btn btn--whatsapp btn--block" href="https://wa.me/910000000000"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp us</a>
+      <a class="btn btn--outline-inverse btn--block" href="tel:+910000000000"><svg aria-hidden="true"><use href="#i-phone"/></svg>Call +91 00000 00000</a>
+      <p>Open daily, 5:00 AM – 10:00 PM</p>
+    </div>
+  </div>
+  <div class="drawer-backdrop" aria-hidden="true"></div>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="media media--dawn hero__media" role="img" aria-label="Tirumala temple gopuram at sunrise"><span class="media__label">Photo: Tirumala at sunrise, full-bleed, 2400px</span></div>
+      <div class="container">
+        <div class="hero__content">
+          <span class="eyebrow">Tirupati · Tirumala · South India</span>
+          <h1 id="hero-title">Your pilgrimage, carefully arranged.</h1>
+          <p>Temple tours, Tirumala transport and comfortable cabs, with local drivers who know every ghat road and darshan timing.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary btn--lg" href="packages.html">Explore packages <svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            <a class="btn btn--outline-inverse btn--lg" href="https://wa.me/910000000000"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp us</a>
+          </div>
+          <ul class="trust">
+            <li><svg aria-hidden="true"><use href="#i-shield"/></svg>Verified local drivers</li>
+            <li><svg aria-hidden="true"><use href="#i-car"/></svg>Clean AC vehicles</li>
+            <li><svg aria-hidden="true"><use href="#i-rupee"/></svg>No hidden charges</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK BOOK -->
+    <div class="container">
+      <form class="quick-book" action="booking.html" aria-label="Quick booking">
+        <div class="field">
+          <label class="label" for="qb-service">What do you need?</label>
+          <select class="select" id="qb-service" name="service">
+            <option>Tirupati local temple tour</option>
+            <option>Tirupati to Tirumala transport</option>
+            <option>Pilgrimage package</option>
+            <option>Kanipakam &amp; Srikalahasti tour</option>
+            <option>Vellore Golden Temple tour</option>
+            <option>Airport / railway transfer</option>
+            <option>Local cab</option>
+            <option>Outstation trip</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="qb-pickup">Pickup point</label>
+          <input class="input" id="qb-pickup" name="pickup" placeholder="e.g. Tirupati Railway Station">
+        </div>
+        <div class="field">
+          <label class="label" for="qb-date">Travel date</label>
+          <input class="input" id="qb-date" name="date" type="date">
+        </div>
+        <div class="field">
+          <label class="label" for="qb-pax">Travellers</label>
+          <select class="select" id="qb-pax" name="pax"><option>1–4</option><option>5–7</option><option>8–12</option><option>13+</option></select>
+        </div>
+        <button class="btn btn--secondary btn--lg" type="submit">Check availability</button>
+      </form>
+    </div>
+
+    <!-- POPULAR PACKAGES -->
+    <section class="section" aria-labelledby="popular-title">
+      <div class="container">
+        <div class="section-head section-head--row">
+          <div class="stack">
+            <span class="eyebrow">Popular packages</span>
+            <h2 id="popular-title">Most-booked temple journeys</h2>
+          </div>
+          <a class="btn btn--outline" href="packages.html">View all packages <svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        </div>
+        <div class="grid grid--3">
+          <article class="card package-card">
+            <div class="media" role="img" aria-label="Sri Padmavathi Ammavari Temple"><span class="media__label">Photo: Padmavathi Temple</span>
+              <div class="package-card__badges"><span class="badge badge--gold">Bestseller</span></div>
+            </div>
+            <div class="package-card__body">
+              <h3 class="package-card__title"><a href="package.html">Tirupati Local Temple Tour</a></h3>
+              <ul class="meta">
+                <li><svg aria-hidden="true"><use href="#i-clock"/></svg>Full day</li>
+                <li><svg aria-hidden="true"><use href="#i-temple"/></svg>5 temples</li>
+                <li><svg aria-hidden="true"><use href="#i-car"/></svg>Sedan to Tempo Traveller</li>
+              </ul>
+              <div class="package-card__foot">
+                <div class="price"><span class="price__from">From</span><span class="price__amount">₹X,XXX</span><span class="price__unit">per vehicle</span></div>
+                <a class="btn btn--primary btn--sm package-card__actions" href="booking.html">Book</a>
+              </div>
+            </div>
+          </article>
+          <article class="card package-card">
+            <div class="media media--warm" role="img" aria-label="Tirumala ghat road"><span class="media__label">Photo: Tirumala ghat road</span></div>
+            <div class="package-card__body">
+              <h3 class="package-card__title"><a href="package.html">Tirupati to Tirumala Transport</a></h3>
+              <ul class="meta">
+                <li><svg aria-hidden="true"><use href="#i-clock"/></svg>~1 hr each way</li>
+                <li><svg aria-hidden="true"><use href="#i-route"/></svg>One-way or return</li>
+              </ul>
+              <div class="package-card__foot">
+                <div class="price"><span class="price__from">From</span><span class="price__amount">₹X,XXX</span><span class="price__unit">one way</span></div>
+                <a class="btn btn--primary btn--sm package-card__actions" href="booking.html">Book</a>
+              </div>
+            </div>
+          </article>
+          <article class="card package-card">
+            <div class="media media--dawn" role="img" aria-label="Kanipakam Vinayaka temple"><span class="media__label">Photo: Kanipakam temple</span>
+              <div class="package-card__badges"><span class="badge badge--navy">Day trip</span></div>
+            </div>
+            <div class="package-card__body">
+              <h3 class="package-card__title"><a href="package.html">Kanipakam &amp; Srikalahasti Tour</a></h3>
+              <ul class="meta">
+                <li><svg aria-hidden="true"><use href="#i-clock"/></svg>Full day</li>
+                <li><svg aria-hidden="true"><use href="#i-route"/></svg>~180 km round trip</li>
+              </ul>
+              <div class="package-card__foot">
+                <div class="price"><span class="price__from">From</span><span class="price__amount">₹X,XXX</span><span class="price__unit">per vehicle</span></div>
+                <a class="btn btn--primary btn--sm package-card__actions" href="booking.html">Book</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="section section--surface" aria-labelledby="services-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Our services</span>
+          <h2 id="services-title">Every part of your trip, in one place</h2>
+          <p class="lead">From a single station pickup to a week-long South India temple circuit.</p>
+        </div>
+        <div class="services-grid">
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-temple"/></svg></span><div><strong>Local temple tours</strong><span>Tirupati in a day</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-route"/></svg></span><div><strong>Tirumala transport</strong><span>Up the ghat road, safely</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-package"/></svg></span><div><strong>Pilgrimage packages</strong><span>Multi-day, all arranged</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-pin"/></svg></span><div><strong>Kanipakam &amp; Srikalahasti</strong><span>Two temples, one day</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-sparkle"/></svg></span><div><strong>Vellore Golden Temple</strong><span>Sripuram day trip</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-plane"/></svg></span><div><strong>Airport &amp; railway transfers</strong><span>Fixed fares, meet and greet</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-car"/></svg></span><div><strong>Local cabs</strong><span>Hourly packages</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="packages.html"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-route"/></svg></span><div><strong>Outstation travel</strong><span>Across South India</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="card service-link" href="booking.html?type=custom"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-edit"/></svg></span><div><strong>Custom itinerary</strong><span>Tell us, we'll plan it</span></div><svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESTINATIONS -->
+    <section class="section" aria-labelledby="dest-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Destinations</span>
+          <h2 id="dest-title">Sacred places within a day's drive</h2>
+        </div>
+        <div class="mosaic">
+          <a href="packages.html"><div class="media media--dawn" role="img" aria-label="Tirumala Venkateswara temple"><span class="media__label">Photo: Tirumala</span></div><div class="mosaic__text"><h3>Tirumala</h3><p>Sri Venkateswara Swamy Temple · 22 km</p></div></a>
+          <a href="packages.html"><div class="media media--warm" role="img" aria-label="Srikalahasti temple"><span class="media__label">Photo: Srikalahasti</span></div><div class="mosaic__text"><h3>Srikalahasti</h3><p>Vayu lingam · 36 km</p></div></a>
+          <a href="packages.html"><div class="media" role="img" aria-label="Kanipakam temple"><span class="media__label">Photo: Kanipakam</span></div><div class="mosaic__text"><h3>Kanipakam</h3><p>Sri Varasiddhi Vinayaka · 70 km</p></div></a>
+          <a href="packages.html"><div class="media media--warm" role="img" aria-label="Sripuram Golden Temple"><span class="media__label">Photo: Sripuram Golden Temple</span></div><div class="mosaic__text"><h3>Vellore Golden Temple</h3><p>Sri Lakshmi Narayani, Sripuram · 120 km</p></div></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY US -->
+    <section class="section section--inverse" aria-labelledby="why-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Why Yatra Travels</span>
+          <h2 id="why-title">Pilgrimage takes patience. We bring it.</h2>
+        </div>
+        <div class="grid grid--4">
+          <div class="feature"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-shield"/></svg></span><h3 class="h4" style="font-size:var(--text-h4)">Experienced drivers</h3><p>Local drivers who know the ghat roads, temple queues and timings.</p></div>
+          <div class="feature"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-rupee"/></svg></span><h3 style="font-size:var(--text-h4)">Clear prices</h3><p>Every inclusion is listed before you book, with no surprises at drop-off.</p></div>
+          <div class="feature"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-clock"/></svg></span><h3 style="font-size:var(--text-h4)">On time, early</h3><p>We plan around darshan slots, so you are never rushing.</p></div>
+          <div class="feature"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg></span><h3 style="font-size:var(--text-h4)">Updates on WhatsApp</h3><p>Booking reference, driver details and live updates on your phone.</p></div>
+        </div>
+        <dl class="stat-strip mt-7">
+          <div><dt>Pilgrims served</dt><dd>X,XXX+</dd></div>
+          <div><dt>Vehicles</dt><dd>XX</dd></div>
+          <div><dt>Years in Tirupati</dt><dd>XX</dd></div>
+          <div><dt>Average rating</dt><dd>X.X</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">How booking works</span>
+          <h2 id="how-title">Three steps, no advance payment needed</h2>
+          <p class="lead">[CONFIRM] payment policy with the business.</p>
+        </div>
+        <ol class="grid grid--3 how" style="list-style:none;margin:0;padding:0">
+          <li class="card card--pad"><h3 style="font-size:var(--text-h4)">Send a request</h3><p class="text-muted mt-2">Choose a package and vehicle, and tell us your date and pickup point.</p></li>
+          <li class="card card--pad"><h3 style="font-size:var(--text-h4)">Get your reference</h3><p class="text-muted mt-2">You'll get a booking reference straight away, and we confirm within 30 minutes.</p></li>
+          <li class="card card--pad"><h3 style="font-size:var(--text-h4)">Travel with peace</h3><p class="text-muted mt-2">Driver details arrive a day before. Pay after the trip, or as agreed.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section section--surface" aria-labelledby="reviews-title">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">Pilgrim stories</span><h2 id="reviews-title">Families who travelled with us</h2></div>
+        <div class="grid grid--3">
+          <figure class="card card--pad testimonial"><blockquote>“Placeholder review text: a real customer quote goes here, 2–3 lines maximum.”</blockquote><figcaption><strong>Customer name</strong> · City · Package</figcaption></figure>
+          <figure class="card card--pad testimonial"><blockquote>“Placeholder review text: a real customer quote goes here, 2–3 lines maximum.”</blockquote><figcaption><strong>Customer name</strong> · City · Package</figcaption></figure>
+          <figure class="card card--pad testimonial"><blockquote>“Placeholder review text: a real customer quote goes here, 2–3 lines maximum.”</blockquote><figcaption><strong>Customer name</strong> · City · Package</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" aria-labelledby="faq-title">
+      <div class="container container--narrow">
+        <div class="section-head"><span class="eyebrow">FAQs</span><h2 id="faq-title">Before you travel</h2></div>
+        <div class="accordion">
+          <details open><summary>Do you arrange darshan tickets?</summary><div>Answer managed in the admin panel. [CONFIRM] with the business.</div></details>
+          <details><summary>Can you pick us up at Renigunta or Tirupati Airport?</summary><div>Yes. Airport and railway transfers are available at fixed fares.</div></details>
+          <details><summary>Is there a dress code at Tirumala?</summary><div>Answer managed in the admin panel.</div></details>
+          <details><summary>How do I cancel or change my booking?</summary><div>Answer managed in the admin panel.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="padding-top:0" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta-band">
+          <div>
+            <span class="eyebrow">Custom pilgrimage</span>
+            <h2 id="cta-title" class="mt-2">Visiting several temples? We'll plan the route.</h2>
+            <p>Tell us your dates, group size and the temples you want to visit. We'll send an itinerary and a quote on WhatsApp.</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a class="btn btn--primary btn--lg" href="booking.html?type=custom">Plan my trip</a>
+            <a class="btn btn--outline-inverse btn--lg" href="tel:+910000000000"><svg aria-hidden="true"><use href="#i-phone"/></svg>Call us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+        <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+      </a>
+          <p>Pilgrimage tours, temple visits and cab services from Tirupati, with experienced local drivers and clear prices.</p>
+        </div>
+        <div>
+          <h3>Packages</h3>
+          <ul>
+            <li><a href="package.html">Tirupati Local Temple Tour</a></li>
+            <li><a href="packages.html">Tirumala Transport</a></li>
+            <li><a href="packages.html">Kanipakam &amp; Srikalahasti</a></li>
+            <li><a href="packages.html">Vellore Golden Temple</a></li>
+            <li><a href="packages.html">All packages</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Our vehicles</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Cancellation policy</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="tel:+910000000000">+91 00000 00000</a></li>
+            <li><a href="https://wa.me/910000000000">WhatsApp</a></li>
+            <li><a href="mailto:hello@example.com">hello@example.com</a></li>
+            <li>Office address, Tirupati, Andhra Pradesh [CONFIRM]</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Yatra Travels. All rights reserved.</span>
+        <span>Not affiliated with TTD. Darshan tickets are subject to TTD availability.</span>
+      </div>
+    </div>
+  </footer>
+  <a class="fab-whatsapp" href="https://wa.me/910000000000" aria-label="Chat with us on WhatsApp"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg></a>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

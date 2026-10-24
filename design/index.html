@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design System · Yatra Travels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap">
+  <link rel="stylesheet" href="tokens/tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <style>
+    .ds-hero { background: var(--color-navy-900); color: #fff; padding-block: var(--space-8); }
+    .ds-hero h1 { color: #fff; font-size: var(--text-display); }
+    .ds-hero p { color: var(--text-muted-on-inverse); max-width: 640px; margin-top: var(--space-4); font-size: var(--text-lg); }
+    .ds-nav { position: sticky; top: 0; z-index: var(--z-header); background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); }
+    .ds-nav .tabs { border: 0; }
+    .ds-section { padding-block: var(--space-8); border-bottom: 1px solid var(--border-subtle); }
+    .ds-section > .container > h2 { margin-bottom: var(--space-2); }
+    .ds-section > .container > p.lead { margin-bottom: var(--space-6); }
+    .ds-sub { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--text-muted-on-page); font-weight: 600; margin: var(--space-7) 0 var(--space-4); font-family: var(--font-body); }
+    .swatches { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    .swatch { overflow: hidden; }
+    .swatch__chip { height: 88px; display: flex; align-items: end; padding: var(--space-3); font-weight: 700; font-size: var(--text-sm); }
+    .swatch__body { padding: var(--space-3) var(--space-4); font-size: var(--text-xs); display: grid; gap: 2px; }
+    .swatch__body strong { font-size: var(--text-sm); color: var(--text-heading); }
+    .swatch__body code { color: var(--text-muted); }
+    .type-row { display: grid; gap: var(--space-2); padding-block: var(--space-4); border-bottom: 1px solid var(--border-subtle); }
+    @media (min-width: 768px) { .type-row { grid-template-columns: 200px 1fr; align-items: baseline; } }
+    .type-row code { font-size: var(--text-xs); color: var(--text-muted-on-page); }
+    .demo-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+    .space-bar { display: flex; align-items: center; gap: var(--space-4); font-size: var(--text-xs); }
+    .space-bar span:first-child { width: 80px; color: var(--text-muted-on-page); }
+    .space-bar i { display: block; height: 16px; background: var(--color-gold-500); border-radius: 3px; }
+    .box-demo { display: grid; place-items: center; height: 96px; background: var(--bg-surface); font-size: var(--text-xs); color: var(--text-muted); }
+    .screens { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .screen-card { display: grid; gap: var(--space-3); padding: var(--space-5); }
+    .screen-card h3 { font-size: var(--text-h4); }
+    .screen-card p { font-size: var(--text-sm); color: var(--text-muted); }
+    .phone { width: 375px; max-width: 100%; height: 700px; border: 10px solid var(--color-navy-900); border-radius: 36px; overflow: hidden; background: #fff; box-shadow: var(--shadow-lg); }
+    .phone iframe { width: 100%; height: 100%; border: 0; }
+    .mnav { display: grid; gap: var(--space-7); }
+    @media (min-width: 1024px) { .mnav { grid-template-columns: auto 1fr; align-items: start; } }
+    .spec { margin: 0; padding-left: var(--space-5); display: grid; gap: var(--space-3); }
+    .contrast { width: 100%; }
+    .contrast td:nth-child(3) { font-variant-numeric: tabular-nums; }
+    .states { display: grid; gap: var(--space-5); }
+    @media (min-width: 768px) { .states { grid-template-columns: 1fr 1fr; } }
+    .state-label { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-muted-on-page); margin-bottom: var(--space-3); }
+    .fake-focus { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+    .fake-hover.btn--primary { background: var(--action-primary-bg-hover); }
+    .fake-focus-input { border-color: var(--color-navy-900) !important; box-shadow: 0 0 0 3px rgba(201, 164, 92, 0.55); }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="ds-hero">
+    <div class="container">
+      <span class="eyebrow">Phase 2 · UI/UX design system</span>
+      <h1 class="mt-4">Yatra Travels</h1>
+      <p>Tokens, components and wireframes for the Tirupati pilgrimage website. Every screen is built from the same responsive components, so desktop, tablet and mobile layouts come from one codebase.</p>
+      <div class="hero__actions mt-6">
+        <a class="btn btn--primary" href="#screens">View wireframes</a>
+        <a class="btn btn--outline-inverse" href="preview.html">Preview desktop, tablet &amp; mobile</a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="ds-nav" aria-label="Design system sections">
+    <div class="container tabs">
+      <a class="tab" href="#screens">Wireframes</a>
+      <a class="tab" href="#color">Colour</a>
+      <a class="tab" href="#type">Typography</a>
+      <a class="tab" href="#space">Spacing &amp; layout</a>
+      <a class="tab" href="#buttons">Buttons</a>
+      <a class="tab" href="#forms">Forms</a>
+      <a class="tab" href="#cards">Cards &amp; badges</a>
+      <a class="tab" href="#states">States</a>
+      <a class="tab" href="#mobile-nav">Mobile navigation</a>
+      <a class="tab" href="#a11y">Accessibility</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- WIREFRAMES -->
+    <section class="ds-section" id="screens">
+      <div class="container">
+        <h2>Wireframes</h2>
+        <p class="lead">Each screen is a responsive page. Open it directly and resize the window, or use the preview to see all three sizes side by side.</p>
+        <div class="screens">
+          <div class="card screen-card"><h3>Homepage</h3><p>Hero, quick booking, popular packages, services, destinations, why us, how it works, reviews, FAQs, custom trip CTA.</p><div class="demo-row"><a class="btn btn--secondary btn--sm" href="screens/home.html">Open</a><a class="btn btn--outline btn--sm" href="preview.html?s=home">3 sizes</a></div></div>
+          <div class="card screen-card"><h3>Package listing</h3><p>Category chips, sidebar filters (bottom sheet on mobile), sort, results grid, pagination. Includes loading, empty and error states.</p><div class="demo-row"><a class="btn btn--secondary btn--sm" href="screens/packages.html">Open</a><a class="btn btn--outline btn--sm" href="preview.html?s=packages">3 sizes</a></div></div>
+          <div class="card screen-card"><h3>Package details</h3><p>Gallery, highlights, itinerary timeline, inclusions, vehicle price table, FAQs, sticky booking card, mobile sticky CTA.</p><div class="demo-row"><a class="btn btn--secondary btn--sm" href="screens/package.html">Open</a><a class="btn btn--outline btn--sm" href="preview.html?s=package">3 sizes</a></div></div>
+          <div class="card screen-card"><h3>Booking form</h3><p>Progress steps, vehicle cards, traveller counters, inline validation, error summary, failed-submission state, live summary.</p><div class="demo-row"><a class="btn btn--secondary btn--sm" href="screens/booking.html">Open</a><a class="btn btn--outline btn--sm" href="preview.html?s=booking">3 sizes</a></div></div>
+          <div class="card screen-card"><h3>Booking confirmation</h3><p>Success state, booking reference with copy button, status timeline, booking details, WhatsApp and print actions.</p><div class="demo-row"><a class="btn btn--secondary btn--sm" href="screens/confirmation.html">Open</a><a class="btn btn--outline btn--sm" href="preview.html?s=confirmation">3 sizes</a></div></div>
+          <div class="card screen-card"><h3>Admin dashboard</h3><p>Sidebar navigation (drawer on mobile), KPIs, bookings by status, enquiries, quick actions, packages table. Tables stack into cards on phones.</p><div class="demo-row"><a class="btn btn--secondary btn--sm" href="screens/admin.html">Open</a><a class="btn btn--outline btn--sm" href="preview.html?s=admin">3 sizes</a></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLOUR -->
+    <section class="ds-section" id="color">
+      <div class="container">
+        <h2>Colour</h2>
+        <p class="lead">The brand palette, plus four accessible variants added so every text pairing meets WCAG AA. Gold is the action colour. Navy carries the brand.</p>
+        <h3 class="ds-sub">Brand palette</h3>
+        <div class="swatches">
+          <div class="card swatch"><div class="swatch__chip" style="background:#101C2C;color:#C9A45C">Aa</div><div class="swatch__body"><strong>Primary navy</strong><code>--color-navy-900 · #101C2C</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#263548;color:#fff">Aa</div><div class="swatch__body"><strong>Secondary navy</strong><code>--color-navy-700 · #263548</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#C9A45C;color:#101C2C">Aa</div><div class="swatch__body"><strong>Premium gold</strong><code>--color-gold-500 · #C9A45C</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#E2C88F;color:#101C2C">Aa</div><div class="swatch__body"><strong>Gold hover</strong><code>--color-gold-300 · #E2C88F</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#F7F5F0;color:#101C2C;border-bottom:1px solid var(--border-subtle)">Aa</div><div class="swatch__body"><strong>Warm white</strong><code>--color-warm-50 · #F7F5F0</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#fff;color:#101C2C;border-bottom:1px solid var(--border-subtle)">Aa</div><div class="swatch__body"><strong>Pure white</strong><code>--color-white · #FFFFFF</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#334155;color:#fff">Aa</div><div class="swatch__body"><strong>Body text</strong><code>--color-slate-700 · #334155</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#64748B;color:#fff">Aa</div><div class="swatch__body"><strong>Muted text</strong><code>--color-slate-500 · #64748B</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#168C58;color:#fff">Aa</div><div class="swatch__body"><strong>Success</strong><code>--color-green-600 · #168C58</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#DC2626;color:#fff">Aa</div><div class="swatch__body"><strong>Error</strong><code>--color-red-600 · #DC2626</code></div></div>
+        </div>
+        <h3 class="ds-sub">Accessible variants (added)</h3>
+        <div class="swatches">
+          <div class="card swatch"><div class="swatch__chip" style="background:#7D5F26;color:#fff">Aa</div><div class="swatch__body"><strong>Gold text</strong><code>--color-gold-700 · #7D5F26</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#5F6B7D;color:#fff">Aa</div><div class="swatch__body"><strong>Muted on warm white</strong><code>--color-slate-550 · #5F6B7D</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#AAB6C6;color:#101C2C">Aa</div><div class="swatch__body"><strong>Muted on navy</strong><code>--color-slate-300 · #AAB6C6</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#8392A6;color:#fff">Aa</div><div class="swatch__body"><strong>Control border</strong><code>--color-slate-400 · #8392A6</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#147A4D;color:#fff">Aa</div><div class="swatch__body"><strong>Success text</strong><code>--color-green-700 · #147A4D</code></div></div>
+          <div class="card swatch"><div class="swatch__chip" style="background:#C62828;color:#fff">Aa</div><div class="swatch__body"><strong>Error text on warm</strong><code>--color-red-700 · #C62828</code></div></div>
+        </div>
+        <h3 class="ds-sub">Contrast rules</h3>
+        <div class="card table-wrap">
+          <table class="table contrast">
+            <thead><tr><th scope="col">Foreground</th><th scope="col">Background</th><th scope="col">Ratio</th><th scope="col">Use</th></tr></thead>
+            <tbody>
+              <tr><td>Navy #101C2C</td><td>Gold #C9A45C</td><td>7.31:1</td><td><span class="badge badge--success">AAA</span> Primary button text</td></tr>
+              <tr><td>Gold #C9A45C</td><td>Navy #101C2C</td><td>7.31:1</td><td><span class="badge badge--success">AAA</span> Accents, eyebrows on dark</td></tr>
+              <tr><td>Gold #C9A45C</td><td>White</td><td>2.35:1</td><td><span class="badge badge--error">Fail</span> Never use for text. Use #7D5F26</td></tr>
+              <tr><td>Muted #64748B</td><td>White</td><td>4.76:1</td><td><span class="badge badge--success">AA</span> Muted text inside cards</td></tr>
+              <tr><td>Muted #64748B</td><td>Warm white</td><td>4.37:1</td><td><span class="badge badge--error">Fail</span> Use #5F6B7D (4.96:1)</td></tr>
+              <tr><td>Success #168C58</td><td>White</td><td>4.26:1</td><td><span class="badge badge--pending">Large/icons</span> Text uses #147A4D (5.36:1)</td></tr>
+              <tr><td>Body #334155</td><td>Warm white</td><td>9.50:1</td><td><span class="badge badge--success">AAA</span> Body copy</td></tr>
+              <tr><td>White</td><td>Navy #101C2C</td><td>17.15:1</td><td><span class="badge badge--success">AAA</span> Headings on dark</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section class="ds-section" id="type">
+      <div class="container">
+        <h2>Typography</h2>
+        <p class="lead">Two families: Manrope for headlines and prices, Inter for everything else. Only six weights are loaded, with <code>display=swap</code> and system fallbacks. In production they will be self-hosted, for example with next/font.</p>
+        <div class="type-row"><code>Display · Manrope 800<br>40 → 72px</code><span style="font-family:var(--font-display);font-weight:800;font-size:var(--text-display);color:var(--text-heading);line-height:1.1;letter-spacing:-0.02em">Tirumala awaits</span></div>
+        <div class="type-row"><code>H1 · Manrope 800<br>34 → 56px</code><h1>Packages &amp; tours</h1></div>
+        <div class="type-row"><code>H2 · Manrope 800<br>28 → 44px</code><h2>Most-booked temple journeys</h2></div>
+        <div class="type-row"><code>H3 · Manrope 700<br>22 → 28px</code><h3>Itinerary</h3></div>
+        <div class="type-row"><code>H4 · Manrope 700<br>20px</code><h4>Tirupati Local Temple Tour</h4></div>
+        <div class="type-row"><code>Lead · Inter 400<br>18px / 1.6</code><p class="lead">Temple tours, Tirumala transport and comfortable cabs.</p></div>
+        <div class="type-row"><code>Body · Inter 400<br>16px / 1.6</code><p>Visit the most important temples in and around Tirupati in one comfortable day. Your driver plans the route around darshan timings.</p></div>
+        <div class="type-row"><code>Small · Inter 400<br>14px</code><p class="text-sm">Prices are per vehicle for the full day.</p></div>
+        <div class="type-row"><code>Navigation · Inter 500<br>14 → 16px</code><span style="font-weight:500;color:var(--text-heading)">Home · Packages · Cabs &amp; Transfers</span></div>
+        <div class="type-row"><code>Button · Inter 600<br>14 / 16 / 18px</code><span style="font-weight:600;color:var(--text-heading)">Send booking request</span></div>
+        <div class="type-row"><code>Eyebrow · Inter 600<br>12px, +0.12em, caps</code><span class="eyebrow">Popular packages</span></div>
+        <div class="type-row"><code>Price · Manrope 800<br>24 → 32px, tabular</code><div class="price"><span class="price__from">From</span><span class="price__amount">₹X,XXX</span><span class="price__unit">per vehicle</span></div></div>
+      </div>
+    </section>
+
+    <!-- SPACING -->
+    <section class="ds-section" id="space">
+      <div class="container">
+        <h2>Spacing &amp; layout</h2>
+        <p class="lead">4px base scale. Content max width 1320px plus fluid gutters (16–32px). Breakpoints: sm 640, md 768 (tablet), lg 1024 (desktop), xl 1280.</p>
+        <div class="grid grid--2">
+          <div class="stack">
+            <div class="space-bar"><span>space-1 · 4</span><i style="width:4px"></i></div>
+            <div class="space-bar"><span>space-2 · 8</span><i style="width:8px"></i></div>
+            <div class="space-bar"><span>space-3 · 12</span><i style="width:12px"></i></div>
+            <div class="space-bar"><span>space-4 · 16</span><i style="width:16px"></i></div>
+            <div class="space-bar"><span>space-5 · 24</span><i style="width:24px"></i></div>
+            <div class="space-bar"><span>space-6 · 32</span><i style="width:32px"></i></div>
+            <div class="space-bar"><span>space-7 · 48</span><i style="width:48px"></i></div>
+            <div class="space-bar"><span>space-8 · 64</span><i style="width:64px"></i></div>
+            <div class="space-bar"><span>space-9 · 96</span><i style="width:96px"></i></div>
+            <div class="space-bar"><span>space-10 · 128</span><i style="width:128px"></i></div>
+          </div>
+          <div class="grid grid--2" style="align-content:start">
+            <div class="box-demo" style="border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)">radius-sm 6 · shadow-sm</div>
+            <div class="box-demo" style="border-radius:var(--radius-md);box-shadow:var(--shadow-sm)">radius-md 10 · inputs</div>
+            <div class="box-demo" style="border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">radius-lg 16 · cards · shadow-md</div>
+            <div class="box-demo" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-lg)">radius-xl 24 · panels · shadow-lg</div>
+          </div>
+        </div>
+        <h3 class="ds-sub">Layout per breakpoint</h3>
+        <div class="card table-wrap">
+          <table class="table">
+            <thead><tr><th scope="col">Element</th><th scope="col">Mobile &lt;768</th><th scope="col">Tablet 768–1023</th><th scope="col">Desktop ≥1024</th></tr></thead>
+            <tbody>
+              <tr><td>Header</td><td>Logo + Book + menu button → drawer</td><td>Logo + Book + menu button → drawer</td><td>Full nav inline; phone shown ≥1280</td></tr>
+              <tr><td>Package grid</td><td>1 column</td><td>2 columns</td><td>3 columns (2 beside filters until 1280)</td></tr>
+              <tr><td>Listing filters</td><td>"Filters" button → bottom sheet</td><td>"Filters" button → bottom sheet</td><td>Sticky left sidebar</td></tr>
+              <tr><td>Package booking</td><td>Sticky bottom bar → form below content</td><td>Sticky bottom bar</td><td>Sticky right card</td></tr>
+              <tr><td>Booking form</td><td>1 column, summary below</td><td>2-column fields, summary below</td><td>Form + sticky summary</td></tr>
+              <tr><td>Admin</td><td>Drawer nav, tables → stacked cards</td><td>Drawer nav, full tables</td><td>Fixed sidebar</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="ds-section" id="buttons">
+      <div class="container">
+        <h2>Buttons</h2>
+        <p class="lead">Pill-shaped, Inter semibold, minimum 48px tall (40px small) so they are easy to tap. Use one primary (gold) action per view.</p>
+        <h3 class="ds-sub">Variants</h3>
+        <div class="demo-row">
+          <button class="btn btn--primary" type="button">Book now</button>
+          <button class="btn btn--secondary" type="button">Check availability</button>
+          <button class="btn btn--outline" type="button">View all packages</button>
+          <button class="btn btn--ghost" type="button">Cancel</button>
+          <button class="btn btn--whatsapp" type="button"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp us</button>
+          <button class="btn btn--danger" type="button">Cancel booking</button>
+        </div>
+        <div class="demo-row mt-5" style="background:var(--color-navy-900);padding:var(--space-5);border-radius:var(--radius-lg)">
+          <button class="btn btn--primary" type="button">Explore packages</button>
+          <button class="btn btn--outline-inverse" type="button"><svg aria-hidden="true"><use href="#i-phone"/></svg>Call us</button>
+        </div>
+        <h3 class="ds-sub">Sizes</h3>
+        <div class="demo-row">
+          <button class="btn btn--primary btn--sm" type="button">Small 40</button>
+          <button class="btn btn--primary" type="button">Default 48</button>
+          <button class="btn btn--primary btn--lg" type="button">Large 56</button>
+          <button class="icon-btn" type="button" aria-label="Menu"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+        </div>
+        <h3 class="ds-sub">States</h3>
+        <div class="demo-row">
+          <button class="btn btn--primary" type="button">Default</button>
+          <button class="btn btn--primary fake-hover" type="button">Hover</button>
+          <button class="btn btn--primary fake-focus" type="button">Focus (keyboard)</button>
+          <button class="btn btn--primary" type="button" disabled>Disabled</button>
+          <button class="btn btn--primary is-loading" type="button" aria-busy="true">Sending<span class="visually-hidden">…</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMS -->
+    <section class="ds-section" id="forms">
+      <div class="container">
+        <h2>Form controls</h2>
+        <p class="lead">Every input has a visible label. Required fields are marked; optional ones say "(optional)". Errors appear below the field, are linked with <code>aria-describedby</code>, and are listed in an error summary when the form is submitted.</p>
+        <div class="form-grid form-grid--2" style="max-width:820px">
+          <div class="field"><label class="label" for="d1">Default</label><input class="input" id="d1" placeholder="Placeholder text"></div>
+          <div class="field"><label class="label" for="d2">Focused</label><input class="input fake-focus-input" id="d2" value="Tirupati Railway Station"></div>
+          <div class="field is-invalid"><label class="label" for="d3">Mobile number <span class="req">*</span></label><div class="input-group"><span class="input-group__addon">+91</span><input class="input" id="d3" value="98765" aria-invalid="true" aria-describedby="d3e"></div><p class="error-msg" id="d3e"><svg aria-hidden="true"><use href="#i-alert"/></svg>Enter a 10-digit mobile number</p></div>
+          <div class="field"><label class="label" for="d4">Disabled</label><input class="input" id="d4" disabled value="Not editable" style="background:var(--bg-subtle);opacity:.7"></div>
+          <div class="field"><label class="label" for="d5">Select</label><select class="select" id="d5"><option>Sedan (4 seats)</option></select></div>
+          <div class="field"><label class="label" for="d6">With hint <span class="opt">(optional)</span></label><input class="input" id="d6" type="email"><p class="hint">We'll email your booking reference too.</p></div>
+          <div class="field span-2"><label class="label" for="d7">Textarea</label><textarea class="textarea" id="d7" placeholder="Special requests…"></textarea></div>
+        </div>
+        <h3 class="ds-sub">Selection</h3>
+        <div class="option-cards option-cards--3" style="max-width:820px">
+          <label class="option-card"><input type="radio" name="demo-veh" checked><span class="option-card__tick"></span><span class="option-card__title">Sedan</span><span class="option-card__meta">Up to 4 · AC</span><span class="option-card__price">₹X,XXX</span></label>
+          <label class="option-card"><input type="radio" name="demo-veh"><span class="option-card__tick"></span><span class="option-card__title">SUV / Innova</span><span class="option-card__meta">Up to 7 · AC</span><span class="option-card__price">₹X,XXX</span></label>
+          <label class="option-card"><input type="radio" name="demo-veh"><span class="option-card__tick"></span><span class="option-card__title">Tempo Traveller</span><span class="option-card__meta">Up to 12 · AC</span><span class="option-card__price">₹X,XXX</span></label>
+        </div>
+        <div class="demo-row mt-5">
+          <label class="check"><input type="checkbox" checked> Send updates on WhatsApp</label>
+          <div class="counter" data-min="1"><button type="button" data-step="-1" aria-label="Fewer adults">−</button><output>2</output><button type="button" data-step="1" aria-label="More adults">+</button></div>
+          <div class="chips" role="group" aria-label="Category"><button class="chip" type="button" aria-pressed="true">All</button><button class="chip" type="button" aria-pressed="false">Day trips</button><button class="chip" type="button" aria-pressed="false">Transfers</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="ds-section" id="cards">
+      <div class="container">
+        <h2>Cards, badges &amp; content</h2>
+        <p class="lead">Rounded 16px cards with a 1px sand border and a subtle shadow. Package cards lift on hover, and the whole card is clickable while the Book button stays a separate target.</p>
+        <div class="grid grid--3">
+          <article class="card package-card">
+            <div class="media" role="img" aria-label="Temple"><span class="media__label">Photo 3:2</span><div class="package-card__badges"><span class="badge badge--gold">Bestseller</span></div></div>
+            <div class="package-card__body">
+              <h3 class="package-card__title"><a href="screens/package.html">Tirupati Local Temple Tour</a></h3>
+              <ul class="meta"><li><svg aria-hidden="true"><use href="#i-clock"/></svg>Full day</li><li><svg aria-hidden="true"><use href="#i-temple"/></svg>5 temples</li></ul>
+              <div class="package-card__foot"><div class="price"><span class="price__from">From</span><span class="price__amount">₹X,XXX</span><span class="price__unit">per vehicle</span></div><a class="btn btn--primary btn--sm package-card__actions" href="screens/booking.html">Book</a></div>
+            </div>
+          </article>
+          <div class="stack">
+            <h3 class="ds-sub" style="margin-top:0">Badges</h3>
+            <div class="demo-row"><span class="badge badge--gold">Bestseller</span><span class="badge badge--navy">2 days</span><span class="badge">Draft</span><span class="badge badge--success">Confirmed</span><span class="badge badge--pending">Awaiting</span><span class="badge badge--error">Cancelled</span><span class="badge badge--info">Completed</span></div>
+            <h3 class="ds-sub">Feature</h3>
+            <div class="feature"><span class="feature__icon"><svg aria-hidden="true"><use href="#i-shield"/></svg></span><h4>Experienced drivers</h4><p>Local drivers who know the ghat roads.</p></div>
+          </div>
+          <div class="stack">
+            <h3 class="ds-sub" style="margin-top:0">Inclusions</h3>
+            <ul class="check-list check-list--yes"><li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>AC vehicle with driver</li><li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Fuel and allowance</li></ul>
+            <ul class="check-list check-list--no"><li><svg aria-hidden="true"><use href="#i-x-circle"/></svg>Darshan tickets</li></ul>
+            <h3 class="ds-sub">Breadcrumbs</h3>
+            <nav class="breadcrumbs" aria-label="Breadcrumb example"><ol><li><a href="#">Home</a></li><li><a href="#">Packages</a></li><li><span aria-current="page">Temple Tour</span></li></ol></nav>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATES -->
+    <section class="ds-section" id="states">
+      <div class="container">
+        <h2>Empty, loading, success &amp; error states</h2>
+        <p class="lead">Every data view has all four. Error states always offer a WhatsApp or phone fallback, so a customer never hits a dead end.</p>
+        <div class="states">
+          <div>
+            <p class="state-label">Empty</p>
+            <div class="empty-state">
+              <span class="empty-state__icon"><svg aria-hidden="true"><use href="#i-search"/></svg></span>
+              <h3 style="font-size:var(--text-h4)">No packages match these filters</h3>
+              <p>Try removing a filter, or ask us to plan a custom trip.</p>
+              <button class="btn btn--outline btn--sm" type="button">Clear filters</button>
+            </div>
+            <div class="empty-state mt-5">
+              <span class="empty-state__icon"><svg aria-hidden="true"><use href="#i-inbox"/></svg></span>
+              <h3 style="font-size:var(--text-h4)">No enquiries yet (admin)</h3>
+              <p>New enquiries from the website and WhatsApp clicks will appear here.</p>
+            </div>
+          </div>
+          <div>
+            <p class="state-label">Loading</p>
+            <div class="card package-card" aria-busy="true" aria-label="Loading">
+              <div class="media skeleton" style="--ratio:3/2;border-radius:0"></div>
+              <div class="package-card__body"><div class="skeleton skeleton--title"></div><div class="skeleton skeleton--text" style="width:55%"></div><div class="package-card__foot"><div class="skeleton" style="width:90px;height:32px"></div><div class="skeleton" style="width:72px;height:40px;border-radius:999px"></div></div></div>
+            </div>
+            <div class="demo-row mt-5"><button class="btn btn--primary is-loading" type="button" aria-busy="true">Sending</button><span class="text-sm text-muted-page">Buttons show a spinner and lock while submitting.</span></div>
+          </div>
+          <div>
+            <p class="state-label">Success</p>
+            <div class="alert alert--success" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><div><strong>Booking request sent</strong>Your reference is YT-261024-7K3Q. We'll confirm on WhatsApp within 30 minutes.</div></div>
+            <div class="toast mt-5" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Prices saved and published to the website.</div>
+          </div>
+          <div>
+            <p class="state-label">Error</p>
+            <div class="alert alert--error" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>We couldn't send your request</strong>Nothing was lost, so you can try again or send the details on WhatsApp.<div class="demo-row mt-4"><button class="btn btn--secondary btn--sm" type="button">Try again</button><a class="btn btn--whatsapp btn--sm" href="#">WhatsApp</a></div></div></div>
+            <div class="alert alert--info mt-5"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Info</strong>Tolls, parking and darshan tickets are extra.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOBILE NAV -->
+    <section class="ds-section" id="mobile-nav">
+      <div class="container">
+        <h2>Mobile navigation</h2>
+        <p class="lead">Below 1024px the header collapses to logo, Book Now and a menu button. The menu opens a full-height drawer from the right.</p>
+        <div class="mnav">
+          <div class="phone"><iframe src="screens/home.html?menu" title="Mobile navigation drawer, open, at 375px wide" loading="lazy"></iframe></div>
+          <div class="stack">
+            <h3 style="font-size:var(--text-h4)">Behaviour</h3>
+            <ol class="spec">
+              <li>Header stays sticky at 72px, so <strong>Book Now</strong> is always one tap away (hidden below 480px, where the drawer and sticky CTAs take over).</li>
+              <li>The menu button has <code>aria-expanded</code> and <code>aria-controls="drawer"</code>, and the drawer is a modal dialog.</li>
+              <li>Opening the drawer moves focus to its first link. <kbd>Tab</kbd> stays inside it, and <kbd>Esc</kbd>, the close button or the backdrop closes it and returns focus to the menu button.</li>
+              <li>The page behind it does not scroll. When closed, the drawer is <code>inert</code>, so screen readers skip it.</li>
+              <li>The drawer footer always shows <strong>Book Now</strong>, <strong>WhatsApp</strong>, <strong>Call</strong> and opening hours, the three ways to reach the business.</li>
+              <li>Links are 56px tall, and the current page is shown in gold.</li>
+              <li>Motion is a 320ms slide, which is disabled under <code>prefers-reduced-motion</code>.</li>
+              <li>The WhatsApp button floats on every page. On package pages a sticky price-and-Book bar sits at the bottom, and the floating button moves above it.</li>
+            </ol>
+            <a class="btn btn--outline" href="screens/home.html?menu">Open full screen</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- A11Y -->
+    <section class="ds-section" id="a11y">
+      <div class="container container--narrow">
+        <h2>Accessibility checklist</h2>
+        <p class="lead">Target: WCAG 2.1 AA on every page.</p>
+        <ul class="check-list check-list--yes mt-5">
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Text contrast ≥ 4.5:1 and UI/control borders ≥ 3:1, verified for every token pairing above.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Visible 3px focus ring on every interactive element: navy on light, light gold on dark.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>"Skip to main content" link, landmarks (header/nav/main/footer) and one H1 per page.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Touch targets at least 44×44px. Buttons are 48px by default.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Forms: visible labels, autocomplete attributes, errors linked with aria-describedby, and an error summary that receives focus.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Colour is never the only signal. Status badges use words, and errors use an icon and text.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Photos have descriptive alt text, entered by the admin when uploading.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>prefers-reduced-motion disables slides, shimmer and hover lifts.</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Page zoom to 200% and 320px width work with no horizontal scroll.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" style="padding-top:0">
+    <div class="container footer-bottom"><span>Yatra Travels design system · Phase 2</span><span>Source: design/tokens/tokens.json</span></div>
+  </footer>
+  <script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+/* Yatra Travels design tokens.
+   Source of truth: tokens.json. Keep both files in sync.
+   Contrast ratios (WCAG 2.1) are noted where a pairing is restricted. */
+
+:root {
+  /* ---------- Brand palette ---------- */
+  --color-navy-900: #101C2C;   /* primary navy */
+  --color-navy-700: #263548;   /* secondary navy */
+  --color-gold-500: #C9A45C;   /* premium gold: fills, icons, text on navy only (2.35:1 on white) */
+  --color-gold-300: #E2C88F;   /* gold hover */
+  --color-gold-700: #7D5F26;   /* gold text on light backgrounds (5.45:1 on warm white) */
+  --color-warm-50:  #F7F5F0;   /* warm white */
+  --color-white:    #FFFFFF;
+  --color-slate-700: #334155;  /* body text */
+  --color-slate-500: #64748B;  /* muted text, white surfaces only (4.76:1) */
+  --color-slate-550: #5F6B7D;  /* muted text on warm white (4.96:1) */
+  --color-slate-400: #8392A6;  /* form control borders (3.17:1) */
+  --color-slate-300: #AAB6C6;  /* muted text on navy (8.34:1) */
+  --color-sand-200:  #E7E2D7;  /* decorative borders, dividers */
+  --color-sand-100:  #EFEBE3;  /* skeletons, subtle fills */
+  --color-green-600: #168C58;  /* success: icons, borders */
+  --color-green-700: #147A4D;  /* success text / solid fill with white text (5.36:1) */
+  --color-green-50:  #E8F4EE;
+  --color-red-600:   #DC2626;  /* error: icons, borders, text on white (4.83:1) */
+  --color-red-700:   #C62828;  /* error text on warm white (5.16:1) */
+  --color-red-50:    #FDECEC;
+  --color-whatsapp:  #1F7A4A;  /* brand-adjacent green that passes 4.5:1 with white */
+
+  /* ---------- Semantic colours ---------- */
+  --bg-page: var(--color-warm-50);
+  --bg-surface: var(--color-white);
+  --bg-inverse: var(--color-navy-900);
+  --bg-inverse-raised: var(--color-navy-700);
+  --bg-subtle: var(--color-sand-100);
+
+  --text-heading: var(--color-navy-900);
+  --text-body: var(--color-slate-700);
+  --text-muted: var(--color-slate-500);
+  --text-muted-on-page: var(--color-slate-550);
+  --text-on-inverse: var(--color-white);
+  --text-muted-on-inverse: var(--color-slate-300);
+  --text-accent: var(--color-gold-700);
+  --text-accent-on-inverse: var(--color-gold-500);
+
+  --border-subtle: var(--color-sand-200);
+  --border-control: var(--color-slate-400);
+  --border-inverse: rgba(255, 255, 255, 0.14);
+
+  --action-primary-bg: var(--color-gold-500);
+  --action-primary-bg-hover: var(--color-gold-300);
+  --action-primary-text: var(--color-navy-900);
+  --action-secondary-bg: var(--color-navy-900);
+  --action-secondary-bg-hover: var(--color-navy-700);
+  --action-secondary-text: var(--color-white);
+
+  --status-success-text: var(--color-green-700);
+  --status-success-border: var(--color-green-600);
+  --status-success-bg: var(--color-green-50);
+  --status-error-text: var(--color-red-700);
+  --status-error-border: var(--color-red-600);
+  --status-error-bg: var(--color-red-50);
+
+  --focus-ring: var(--color-navy-900);
+  --focus-ring-inverse: var(--color-gold-300);
+
+  /* ---------- Typography ---------- */
+  --font-display: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --weight-regular: 400;
+  --weight-medium: 500;    /* navigation */
+  --weight-semibold: 600;  /* buttons, labels */
+  --weight-bold: 700;      /* prices, h3-h4 */
+  --weight-extrabold: 800; /* display, h1-h2 */
+
+  /* Fluid type: min at 360px viewport, max at 1440px */
+  --text-display: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
+  --text-h1: clamp(2.125rem, 1.5rem + 2.8vw, 3.5rem);
+  --text-h2: clamp(1.75rem, 1.35rem + 1.8vw, 2.75rem);
+  --text-h3: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --text-h4: 1.25rem;
+  --text-lg: 1.125rem;
+  --text-md: 1rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.75rem;
+  --text-price: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --tracking-tight: -0.02em;
+  --tracking-wide: 0.12em;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --space-1: 0.25rem;  /*  4 */
+  --space-2: 0.5rem;   /*  8 */
+  --space-3: 0.75rem;  /* 12 */
+  --space-4: 1rem;     /* 16 */
+  --space-5: 1.5rem;   /* 24 */
+  --space-6: 2rem;     /* 32 */
+  --space-7: 3rem;     /* 48 */
+  --space-8: 4rem;     /* 64 */
+  --space-9: 6rem;     /* 96 */
+  --space-10: 8rem;    /* 128 */
+  --section-y: clamp(var(--space-8), 6vw, var(--space-10));
+
+  /* ---------- Layout ---------- */
+  --container-max: 1320px;  /* content width; inside the 1200-1440 brief */
+  --container-narrow: 760px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --header-height: 72px;
+  /* Breakpoints (for reference; CSS vars can't be used in media queries):
+     sm 640px · md 768px (tablet) · lg 1024px · xl 1280px */
+
+  /* ---------- Radius ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ---------- Elevation ---------- */
+  --shadow-sm: 0 1px 2px rgba(16, 28, 44, 0.06), 0 1px 3px rgba(16, 28, 44, 0.08);
+  --shadow-md: 0 4px 12px rgba(16, 28, 44, 0.08), 0 2px 4px rgba(16, 28, 44, 0.05);
+  --shadow-lg: 0 16px 40px rgba(16, 28, 44, 0.14), 0 4px 10px rgba(16, 28, 44, 0.06);
+
+  /* ---------- Motion ---------- */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ---------- Layers ---------- */
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-drawer: 300;
+  --z-toast: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}

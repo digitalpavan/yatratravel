@@ -1,0 +1,31 @@
+{
+  "_note": "Starting website settings, loaded by `npm run db:seed` (and by demo-data mode). After seeding, edit them in /admin/content.",
+  "destinations": [
+    { "slug": "tirumala", "name": "Tirumala", "detail": "Sri Venkateswara Swamy Temple", "distance": "About 22 km by ghat road", "image": "tirumala-hills" },
+    { "slug": "tirupati", "name": "Tirupati", "detail": "Govindaraja, Kapileswara and Tiruchanur temples", "distance": "In and around the city", "image": "tirupati-temple" },
+    { "slug": "srikalahasti", "name": "Srikalahasti", "detail": "Sri Kalahasteeswara Swamy Temple", "distance": "About 36 km", "image": "srikalahasti-temple" },
+    { "slug": "kanipakam", "name": "Kanipakam", "detail": "Sri Varasiddhi Vinayaka Swamy Temple", "distance": "About 70 km", "image": "kanipakam-temple" },
+    { "slug": "vellore", "name": "Vellore Golden Temple", "detail": "Sri Lakshmi Narayani, Sripuram", "distance": "About 120 km", "image": "vellore-golden-temple" }
+  ],
+  "hero": {
+    "eyebrow": "Tirupati · Tirumala · South India",
+    "lines": ["Your Journey.", "Our Commitment."],
+    "text": "Explore Tirupati, plan your Tirumala pilgrimage, and travel comfortably with Yatra Travels.",
+    "image": "tirumala-hero",
+    "mobileImage": "travel-hero-mobile"
+  },
+  "home": {
+    "packageSlugs": ["tirupati-local-temple-tour", "tirupati-to-tirumala-transport", "tirupati-pilgrimage-package"],
+    "faqs": [
+      { "q": "Do you provide TTD darshan tickets?", "a": "No. Yatra Travels is a transport and tour operator. Darshan tickets are issued by TTD through its official website and counters. Book them yourself, and we plan your transport around your slot." },
+      { "q": "Is my booking confirmed when I submit the form?", "a": "Not yet. The form sends a booking request and gives you a reference number. We check vehicle availability, confirm the price with you by phone or WhatsApp, and only then is the trip confirmed." },
+      { "q": "Can you pick us up at Tirupati Airport or Renigunta Junction?", "a": "Yes. Share your flight or train details when you book and the driver will plan around your arrival." },
+      { "q": "Are prices per person or per vehicle?", "a": "Per vehicle. The price depends on the vehicle, distance and duration, not on the number of passengers, within the vehicle's seating capacity." },
+      { "q": "Can we customise a package?", "a": "Yes. Add stops, change the order or combine destinations. Use \"Plan a custom trip\" or tell us on WhatsApp." }
+    ]
+  },
+  "seo": {
+    "title": "Yatra Travels: Tirupati & Tirumala Pilgrimage Tours and Cabs",
+    "description": "Tirupati temple tours, Tirumala transport, pilgrimage packages and cab services with Yatra Travels. Request a booking online or enquire on WhatsApp."
+  }
+}

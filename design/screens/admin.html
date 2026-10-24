@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard · Yatra Travels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap">
+  <link rel="stylesheet" href="../tokens/tokens.css">
+  <link rel="stylesheet" href="../components.css">
+  <style>
+    .admin-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+    @media (min-width: 1280px) { .admin-grid { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; } }
+    .page-title { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-4); }
+    .page-title h1 { font-size: var(--text-h3); }
+    .page-title p { color: var(--text-muted-on-page); font-size: var(--text-sm); }
+    .avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--color-navy-900); color: var(--color-gold-500); font-weight: var(--weight-bold); font-size: var(--text-sm); }
+    .topbar-actions { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+    .list { margin: 0; padding: 0; list-style: none; }
+    .list li { display: flex; gap: var(--space-3); align-items: start; padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--border-subtle); }
+    .list li:last-child { border-bottom: 0; }
+    .list .feature__icon { width: 36px; height: 36px; flex: none; }
+    .list .feature__icon svg { width: 18px; height: 18px; }
+    .list strong { display: block; color: var(--text-heading); font-size: var(--text-sm); }
+    .list span { font-size: var(--text-xs); color: var(--text-muted); }
+    .list .time { margin-left: auto; white-space: nowrap; font-size: var(--text-xs); color: var(--text-muted); }
+    .quick { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); padding: var(--space-5); }
+    .quick .btn { justify-content: flex-start; }
+    .tabs { padding-inline: var(--space-3); }
+    .mono { font-family: ui-monospace, Menlo, monospace; }
+    .drawer.admin-drawer .admin-nav a { color: var(--text-muted-on-inverse); }
+    .drawer.admin-drawer .admin-nav a[aria-current="page"] { color: var(--color-white); }
+    .wf-admin-note { grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="admin">
+    <div class="wf-note wf-admin-note" role="note">Wireframe: all names, numbers and bookings are sample data. <a href="../index.html">Design system</a></div>
+
+    <!-- Sidebar (desktop) -->
+    <aside class="admin-sidebar" aria-label="Admin">
+      <a class="logo" href="#">
+        <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="logo__text">Yatra Travels<small>Admin</small></span>
+      </a>
+      <nav aria-label="Admin sections">
+        <ul class="admin-nav">
+          <li><a href="#" aria-current="page"><svg aria-hidden="true"><use href="#i-home"/></svg>Dashboard</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-clipboard"/></svg>Bookings<span class="count">4</span></a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-inbox"/></svg>Enquiries<span class="count">7</span></a></li>
+          <li class="admin-nav__group">Catalogue</li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-package"/></svg>Packages</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-rupee"/></svg>Prices</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-car"/></svg>Vehicles</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-image"/></svg>Media library</a></li>
+          <li class="admin-nav__group">Website</li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-file"/></svg>Pages &amp; content</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-settings"/></svg>Settings</a></li>
+          <li><a href="home.html"><svg aria-hidden="true"><use href="#i-logout"/></svg>View website</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Drawer (mobile/tablet) -->
+    <div class="drawer admin-drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Admin menu">
+      <div class="drawer__head">
+        <span class="logo"><span class="logo__text">Yatra Travels<small>Admin</small></span></span>
+        <button class="icon-btn" type="button" data-close aria-label="Close menu"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <nav class="drawer__nav" aria-label="Admin sections (mobile)">
+        <ul class="admin-nav">
+          <li><a href="#" aria-current="page"><svg aria-hidden="true"><use href="#i-home"/></svg>Dashboard</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-clipboard"/></svg>Bookings<span class="count">4</span></a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-inbox"/></svg>Enquiries<span class="count">7</span></a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-package"/></svg>Packages</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-rupee"/></svg>Prices</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-car"/></svg>Vehicles</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-image"/></svg>Media library</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-file"/></svg>Pages &amp; content</a></li>
+          <li><a href="#"><svg aria-hidden="true"><use href="#i-settings"/></svg>Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="drawer-backdrop" aria-hidden="true"></div>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <button class="icon-btn nav-toggle" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Open admin menu"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+        <form class="search" role="search"><label class="visually-hidden" for="admin-search">Search bookings, customers, references</label><input class="input" id="admin-search" type="search" placeholder="Search by reference, name or phone"></form>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" aria-label="Notifications, 3 unread"><svg aria-hidden="true"><use href="#i-bell"/></svg></button>
+          <span class="avatar" aria-label="Signed in as Admin">AD</span>
+        </div>
+      </header>
+
+      <main id="main" class="admin-content">
+        <div class="page-title">
+          <div><h1>Good evening</h1><p>Saturday, 24 October 2026 · 3 trips today</p></div>
+          <div class="flex gap-2 flex-wrap">
+            <a class="btn btn--outline btn--sm" href="#"><svg aria-hidden="true"><use href="#i-download"/></svg>Export</a>
+            <a class="btn btn--primary btn--sm" href="#"><svg aria-hidden="true"><use href="#i-plus"/></svg>New package</a>
+          </div>
+        </div>
+
+        <section class="kpis" aria-label="Key figures">
+          <div class="card kpi"><div class="kpi__label">New enquiries</div><div class="kpi__value">7</div><div class="kpi__delta">+3 since yesterday</div></div>
+          <div class="card kpi"><div class="kpi__label">Awaiting confirmation</div><div class="kpi__value">4</div><div class="kpi__delta" style="color:var(--text-accent)">Oldest: 22 min</div></div>
+          <div class="card kpi"><div class="kpi__label">Confirmed this week</div><div class="kpi__value">18</div><div class="kpi__delta">+12% vs last week</div></div>
+          <div class="card kpi"><div class="kpi__label">Trips today</div><div class="kpi__value">3</div><div class="kpi__delta" style="color:var(--text-muted)">2 vehicles free</div></div>
+        </section>
+
+        <div class="admin-grid">
+          <section class="card" aria-labelledby="bk-title">
+            <div class="card__head">
+              <h2 id="bk-title">Recent bookings</h2>
+              <a class="btn btn--ghost btn--sm" href="#">View all <svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Booking status">
+              <button class="tab" role="tab" aria-selected="true">Awaiting (4)</button>
+              <button class="tab" role="tab" aria-selected="false">Confirmed</button>
+              <button class="tab" role="tab" aria-selected="false">Completed</button>
+              <button class="tab" role="tab" aria-selected="false">Cancelled</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table table--stack">
+                <caption class="visually-hidden">Bookings awaiting confirmation</caption>
+                <thead><tr><th scope="col">Reference</th><th scope="col">Customer</th><th scope="col">Package</th><th scope="col">Travel date</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">YT-261024-7K3Q</td><td><strong>Ravi K.</strong><br><span class="text-muted">+91 98765 XXXXX</span></td><td data-hide-sm>Local Temple Tour · Sedan</td><td>14 Nov</td><td><span class="badge badge--pending">Awaiting</span></td><td><a class="btn btn--secondary btn--sm" href="#">Confirm</a></td></tr>
+                  <tr><td class="mono">YT-261024-M8XW</td><td><strong>Priya S.</strong><br><span class="text-muted">+91 90000 XXXXX</span></td><td data-hide-sm>Tirumala Transport · SUV</td><td>26 Oct</td><td><span class="badge badge--pending">Awaiting</span></td><td><a class="btn btn--secondary btn--sm" href="#">Confirm</a></td></tr>
+                  <tr><td class="mono">YT-261023-QJ4D</td><td><strong>Anand group</strong><br><span class="text-muted">+91 81234 XXXXX</span></td><td data-hide-sm>Kanipakam &amp; Srikalahasti · Tempo</td><td>28 Oct</td><td><span class="badge badge--pending">Awaiting</span></td><td><a class="btn btn--secondary btn--sm" href="#">Confirm</a></td></tr>
+                  <tr><td class="mono">YT-261023-9HTN</td><td><strong>Meena R.</strong><br><span class="text-muted">+91 70000 XXXXX</span></td><td data-hide-sm>Airport transfer · Sedan</td><td>25 Oct</td><td><span class="badge badge--pending">Awaiting</span></td><td><a class="btn btn--secondary btn--sm" href="#">Confirm</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <div class="admin-grid" style="grid-template-columns:1fr">
+            <section class="card" aria-labelledby="enq-title">
+              <div class="card__head"><h2 id="enq-title">New enquiries</h2><a class="btn btn--ghost btn--sm" href="#">All</a></div>
+              <ul class="list">
+                <li><span class="feature__icon"><svg aria-hidden="true"><use href="#i-edit"/></svg></span><div><strong>Custom trip · 6 people</strong><span>Tirumala + Srikalahasti + Kanchipuram, 3 days</span></div><span class="time">12m</span></li>
+                <li><span class="feature__icon"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg></span><div><strong>WhatsApp click</strong><span>From: Vellore Golden Temple Tour page</span></div><span class="time">40m</span></li>
+                <li><span class="feature__icon"><svg aria-hidden="true"><use href="#i-phone"/></svg></span><div><strong>Callback requested</strong><span>Outstation to Chennai, 2 Nov</span></div><span class="time">1h</span></li>
+              </ul>
+            </section>
+            <section class="card" aria-labelledby="quick-title">
+              <div class="card__head"><h2 id="quick-title">Quick actions</h2></div>
+              <div class="quick">
+                <a class="btn btn--outline btn--sm" href="#"><svg aria-hidden="true"><use href="#i-rupee"/></svg>Edit prices</a>
+                <a class="btn btn--outline btn--sm" href="#"><svg aria-hidden="true"><use href="#i-image"/></svg>Upload photos</a>
+                <a class="btn btn--outline btn--sm" href="#"><svg aria-hidden="true"><use href="#i-car"/></svg>Vehicles</a>
+                <a class="btn btn--outline btn--sm" href="#"><svg aria-hidden="true"><use href="#i-file"/></svg>Edit homepage</a>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <section class="card" aria-labelledby="pk-title">
+          <div class="card__head"><h2 id="pk-title">Packages</h2><a class="btn btn--ghost btn--sm" href="#">Manage</a></div>
+          <div class="table-wrap">
+            <table class="table table--stack">
+              <caption class="visually-hidden">Packages and their status</caption>
+              <thead><tr><th scope="col">Package</th><th scope="col">Category</th><th scope="col" class="num">From price</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tirupati Local Temple Tour</strong></td><td data-hide-sm>Local tour</td><td class="num">₹X,XXX</td><td><span class="badge badge--success">Published</span></td><td><a class="btn btn--ghost btn--sm" href="#" aria-label="Edit Tirupati Local Temple Tour"><svg aria-hidden="true"><use href="#i-edit"/></svg>Edit</a></td></tr>
+                <tr><td><strong>Vellore Golden Temple Tour</strong></td><td data-hide-sm>Day tour</td><td class="num"><span class="text-muted">Not set</span></td><td><span class="badge">Draft</span></td><td><a class="btn btn--ghost btn--sm" href="#" aria-label="Edit Vellore Golden Temple Tour"><svg aria-hidden="true"><use href="#i-edit"/></svg>Edit</a></td></tr>
+                <tr><td><strong>Customised Pilgrimage Itineraries</strong></td><td data-hide-sm>Custom</td><td class="num"><span class="text-muted">On request</span></td><td><span class="badge badge--success">Published</span></td><td><a class="btn btn--ghost btn--sm" href="#" aria-label="Edit Customised Pilgrimage Itineraries"><svg aria-hidden="true"><use href="#i-edit"/></svg>Edit</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

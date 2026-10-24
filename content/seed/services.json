@@ -1,0 +1,343 @@
+{
+  "_note": "Seed content for packages and vehicles. Prices are null until the business confirms them; the site then shows 'Price on request'. Vehicle capacities are typical figures and need to be confirmed against the real fleet (verified=false).",
+  "vehicles": [
+    {
+      "slug": "sedan",
+      "name": "Sedan",
+      "examples": "Swift Dzire, Toyota Etios or similar",
+      "passengers": 4,
+      "luggage": "2 medium bags",
+      "ac": true,
+      "image": "sedan",
+      "bestFor": "Couples and small families, airport and station transfers",
+      "features": ["Air-conditioned", "Boot space for 2 medium bags", "Comfortable for ghat roads"],
+      "verified": false
+    },
+    {
+      "slug": "suv",
+      "name": "SUV",
+      "examples": "Maruti Ertiga or similar",
+      "passengers": 6,
+      "luggage": "2 medium bags (more with the last row folded)",
+      "ac": true,
+      "image": "suv",
+      "bestFor": "Families of 5–6 on temple tours",
+      "features": ["Air-conditioned", "Three rows of seating", "Roof carrier on request"],
+      "verified": false
+    },
+    {
+      "slug": "innova-crysta",
+      "name": "Premium MPV",
+      "examples": "Toyota Innova Crysta or similar",
+      "passengers": 7,
+      "luggage": "3 medium bags",
+      "ac": true,
+      "image": "innova",
+      "bestFor": "Families wanting extra comfort, elderly travellers, long day trips",
+      "features": ["Air-conditioned, with rear vents", "Captain seats (on selected vehicles)", "Smooth ride on long routes"],
+      "verified": false
+    },
+    {
+      "slug": "tempo-traveller",
+      "name": "Tempo Traveller",
+      "examples": "Force Tempo Traveller or similar",
+      "passengers": 12,
+      "luggage": "8 medium bags",
+      "ac": true,
+      "image": "tempo-traveller",
+      "bestFor": "Groups and extended families visiting several temples",
+      "features": ["Air-conditioned", "Push-back seats", "Space for group luggage"],
+      "verified": false
+    }
+  ],
+  "packages": [
+    {
+      "slug": "tirupati-local-temple-tour",
+      "title": "Tirupati Local Temple Tour",
+      "category": "temple-tour",
+      "destinations": ["tirupati"],
+      "durationDays": 1,
+      "durationLabel": "Full day, 8–9 hours",
+      "summary": "The main temples in and around Tirupati in one comfortable day.",
+      "overview": "A full day visiting the temples in Tirupati and nearby Tiruchanur. Your driver plans the order around opening times and crowds, waits at each stop, and drops you back at your hotel or station in the evening. Temple entry and darshan tickets are not included; you can buy them at the temples or online.",
+      "image": "local-darshan",
+      "gallery": ["tirupati-temple"],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null, "tempo-traveller": null },
+      "priceUnit": "per vehicle, full day",
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Tirupati and Tiruchanur temples",
+          "stops": [
+            { "name": "Sri Padmavathi Ammavari Temple, Tiruchanur", "note": "Start early for a shorter queue." },
+            { "name": "Sri Govindaraja Swamy Temple", "note": "In the centre of Tirupati town." },
+            { "name": "Sri Kapileswara Swamy Temple", "note": "Shiva temple at the foot of the hills, beside a waterfall." },
+            { "name": "Sri Kalyana Venkateswara Swamy Temple, Srinivasa Mangapuram", "note": "About 12 km west of Tirupati." },
+            { "name": "ISKCON Tirupati, then drop-off", "note": "Evening visit, then drop at your hotel or station." }
+          ]
+        }
+      ],
+      "inclusions": ["Air-conditioned vehicle with driver", "Fuel and driver allowance", "Pickup and drop within Tirupati"],
+      "exclusions": ["Temple entry and darshan tickets", "Meals", "Parking and tolls"],
+      "faqs": [
+        { "q": "What time does the tour start?", "a": "Usually between 6 and 7 AM. Your driver confirms the time the evening before." },
+        { "q": "Can we change the order of temples or add a stop?", "a": "Yes. Mention it in your booking request or tell the driver on the day. Extra time or distance may be charged." }
+      ],
+      "popularity": 95,
+      "published": true
+    },
+    {
+      "slug": "tirupati-to-tirumala-transport",
+      "title": "Tirupati to Tirumala Transport",
+      "category": "transfer",
+      "destinations": ["tirumala"],
+      "durationDays": 0.5,
+      "durationLabel": "About 1 hour each way",
+      "summary": "A safe ride up the ghat road to Tirumala, one-way or return.",
+      "overview": "Pickup from your hotel, the railway station or the airport, and a drive up the ghat road to Tirumala. All vehicles stop at the Alipiri checkpoint for TTD's security check. For a return trip, the driver waits or comes back at the agreed time. This is a transport service only: book your darshan tickets separately through TTD.",
+      "image": "tirumala-trip",
+      "gallery": ["tirumala-hills"],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null, "tempo-traveller": null },
+      "priceUnit": "per vehicle, one way",
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Tirupati to Tirumala",
+          "stops": [
+            { "name": "Pickup in Tirupati", "note": "Hotel, railway station, bus stand or airport." },
+            { "name": "Alipiri checkpoint", "note": "TTD security check of every vehicle and its passengers." },
+            { "name": "Drop at Tirumala", "note": "At your accommodation or the darshan queue complex." }
+          ]
+        }
+      ],
+      "inclusions": ["Air-conditioned vehicle with driver", "Fuel"],
+      "exclusions": ["Tirumala entry/toll fee", "Waiting beyond the agreed time", "Darshan tickets"],
+      "faqs": [
+        { "q": "Do you arrange darshan tickets?", "a": "No. We provide transport only. Book darshan tickets through TTD's official channels." },
+        { "q": "Can the driver wait while we have darshan?", "a": "Yes, on a return booking. Waiting time depends on your darshan slot, so tell us your slot when you book." }
+      ],
+      "popularity": 90,
+      "published": true
+    },
+    {
+      "slug": "tirupati-pilgrimage-package",
+      "title": "Tirupati Pilgrimage Package",
+      "category": "package",
+      "destinations": ["tirupati", "tirumala"],
+      "durationDays": 2,
+      "durationLabel": "2 days, 1 night",
+      "summary": "Arrival pickup, Tirumala transport for your darshan slot, local temples and drop-off.",
+      "overview": "Planned for pilgrims arriving from other cities. We meet you at the station or airport, take you up to Tirumala for the darshan slot you have booked, and spend the next day at the temples in Tirupati and Tiruchanur before dropping you for your journey home.",
+      "image": "tirumala-hills",
+      "gallery": ["local-darshan", "tirupati-temple"],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null, "tempo-traveller": null },
+      "priceUnit": "per vehicle, 2 days",
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival and Tirumala",
+          "stops": [
+            { "name": "Pickup at Tirupati or Renigunta station, or Tirupati Airport" },
+            { "name": "Drop at your accommodation", "note": "Accommodation is not included unless agreed." },
+            { "name": "Tirumala, for your booked darshan slot", "note": "Via the Alipiri checkpoint." }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Tirupati temples and departure",
+          "stops": [
+            { "name": "Sri Padmavathi Ammavari Temple, Tiruchanur" },
+            { "name": "Sri Govindaraja Swamy Temple" },
+            { "name": "Sri Kapileswara Swamy Temple" },
+            { "name": "Drop at station or airport" }
+          ]
+        }
+      ],
+      "inclusions": ["Air-conditioned vehicle with driver for both days", "Pickup and drop", "Fuel and driver allowance"],
+      "exclusions": ["Darshan tickets", "Accommodation", "Meals", "Parking and tolls"],
+      "faqs": [
+        { "q": "Is accommodation included?", "a": "Not by default. Tell us if you need help finding a hotel and we'll suggest options." },
+        { "q": "What if our darshan slot changes?", "a": "Let us know as soon as possible and we'll adjust the schedule wherever we can." }
+      ],
+      "popularity": 85,
+      "published": true
+    },
+    {
+      "slug": "kanipakam-srikalahasti-tour",
+      "title": "Kanipakam & Srikalahasti Tour",
+      "category": "day-tour",
+      "destinations": ["kanipakam", "srikalahasti"],
+      "durationDays": 1,
+      "durationLabel": "Full day",
+      "summary": "Sri Varasiddhi Vinayaka Temple at Kanipakam and Srikalahasti Temple in one day.",
+      "overview": "A full-day trip from Tirupati to two of the region's best-known temples: Sri Varasiddhi Vinayaka Swamy Temple at Kanipakam and Sri Kalahasteeswara Swamy Temple at Srikalahasti. The driver plans the route around temple timings, and you return to Tirupati in the evening.",
+      "image": "kanipakam-temple",
+      "gallery": ["srikalahasti-temple"],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null, "tempo-traveller": null },
+      "priceUnit": "per vehicle, full day",
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Kanipakam and Srikalahasti",
+          "stops": [
+            { "name": "Pickup in Tirupati", "note": "Early morning." },
+            { "name": "Sri Varasiddhi Vinayaka Swamy Temple, Kanipakam", "note": "About 70 km from Tirupati." },
+            { "name": "Sri Kalahasteeswara Swamy Temple, Srikalahasti", "note": "Known for the Vayu lingam and Rahu–Ketu pooja." },
+            { "name": "Return to Tirupati", "note": "Evening." }
+          ]
+        }
+      ],
+      "inclusions": ["Air-conditioned vehicle with driver", "Fuel and driver allowance"],
+      "exclusions": ["Darshan and pooja tickets", "Meals", "Parking and tolls"],
+      "faqs": [
+        { "q": "Can we do Srikalahasti first?", "a": "Yes. The driver will suggest the best order for your day." }
+      ],
+      "popularity": 80,
+      "published": true
+    },
+    {
+      "slug": "vellore-golden-temple-tour",
+      "title": "Vellore Golden Temple Tour",
+      "category": "day-tour",
+      "destinations": ["vellore"],
+      "durationDays": 1,
+      "durationLabel": "Full day",
+      "summary": "Day trip to Sri Lakshmi Narayani Golden Temple at Sripuram, Vellore.",
+      "overview": "A day trip across the state border to the Sri Lakshmi Narayani Golden Temple at Sripuram, Vellore, about 120 km from Tirupati. There's an optional stop at Vellore Fort if time allows. Tamil Nadu interstate permit charges may apply.",
+      "image": "vellore-golden-temple",
+      "gallery": [],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null, "tempo-traveller": null },
+      "priceUnit": "per vehicle, full day",
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Sripuram Golden Temple",
+          "stops": [
+            { "name": "Pickup in Tirupati", "note": "Early morning." },
+            { "name": "Sripuram Golden Temple, Vellore", "note": "Allow 2–3 hours." },
+            { "name": "Vellore Fort (optional)" },
+            { "name": "Return to Tirupati" }
+          ]
+        }
+      ],
+      "inclusions": ["Air-conditioned vehicle with driver", "Fuel and driver allowance"],
+      "exclusions": ["Interstate permit/tax", "Entry tickets", "Meals", "Parking and tolls"],
+      "faqs": [
+        { "q": "Are there rules for visitors at Sripuram?", "a": "The temple has its own dress and security rules, including restrictions on phones. Please check them before you travel." }
+      ],
+      "popularity": 70,
+      "published": true
+    },
+    {
+      "slug": "airport-railway-transfers",
+      "title": "Airport & Railway Station Transfers",
+      "category": "transfer",
+      "destinations": ["tirupati", "tirumala"],
+      "durationDays": 0.5,
+      "durationLabel": "Depends on the route",
+      "summary": "Pickups and drops at Tirupati Airport, Tirupati station and Renigunta Junction.",
+      "overview": "Your driver tracks your train or flight and meets you on arrival. Transfers run to and from anywhere in Tirupati, or straight up to Tirumala.",
+      "image": "airport-railway-transfer",
+      "gallery": ["sedan"],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null, "tempo-traveller": null },
+      "priceUnit": "per vehicle, per transfer",
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Common routes",
+          "stops": [
+            { "name": "Tirupati Airport (TIR) ↔ Tirupati city" },
+            { "name": "Tirupati Railway Station ↔ Tirupati city" },
+            { "name": "Renigunta Junction ↔ Tirupati city" },
+            { "name": "Airport or station ↔ Tirumala", "note": "Via the Alipiri checkpoint." }
+          ]
+        }
+      ],
+      "inclusions": ["Vehicle with driver", "Meet at arrival"],
+      "exclusions": ["Airport parking fee", "Tirumala entry/toll fee"],
+      "faqs": [
+        { "q": "What if my train is late?", "a": "Share your train or flight number when you book, and the driver will adjust to your actual arrival time." }
+      ],
+      "popularity": 75,
+      "published": true
+    },
+    {
+      "slug": "local-cab-booking",
+      "title": "Local Cab Booking",
+      "category": "cab",
+      "destinations": ["tirupati"],
+      "durationDays": 0.5,
+      "durationLabel": "4-hour or 8-hour packages",
+      "summary": "A cab with driver by the hour, for errands and visits around Tirupati.",
+      "overview": "Hire a cab with a driver for a half day or a full day around Tirupati. Use it for shopping, hospital visits, or temples you want to visit at your own pace.",
+      "image": "sedan",
+      "gallery": ["suv"],
+      "passengers": { "min": 1, "max": 7 },
+      "vehicles": ["sedan", "suv", "innova-crysta"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null },
+      "priceUnit": "per package; extra km and hours charged",
+      "itinerary": [],
+      "inclusions": ["Vehicle with driver", "Fuel within package limits"],
+      "exclusions": ["Extra kilometres and hours", "Parking and tolls"],
+      "faqs": [],
+      "popularity": 60,
+      "published": true
+    },
+    {
+      "slug": "outstation-travel",
+      "title": "Outstation Travel",
+      "category": "cab",
+      "destinations": ["vellore"],
+      "durationDays": null,
+      "durationLabel": "Flexible",
+      "summary": "One-way and round trips from Tirupati across Andhra Pradesh and South India.",
+      "overview": "Travel from Tirupati to Chennai, Bengaluru, Kanchipuram, Srisailam and beyond. Choose a one-way drop or a multi-day round trip with the same driver throughout.",
+      "image": "outstation-journey",
+      "gallery": ["tempo-traveller"],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": { "sedan": null, "suv": null, "innova-crysta": null, "tempo-traveller": null },
+      "priceUnit": "per km, with a minimum distance per day",
+      "itinerary": [],
+      "inclusions": ["Vehicle with driver"],
+      "exclusions": ["Tolls", "Interstate permits", "Driver's night allowance"],
+      "faqs": [],
+      "popularity": 55,
+      "published": true
+    },
+    {
+      "slug": "custom-pilgrimage-itinerary",
+      "title": "Customised Pilgrimage Itinerary",
+      "category": "custom",
+      "destinations": ["tirupati", "tirumala", "kanipakam", "srikalahasti", "vellore"],
+      "durationDays": null,
+      "durationLabel": "Your choice",
+      "summary": "Tell us your dates, group size and temples, and we'll plan a route and send a quote.",
+      "overview": "Visiting several temples, travelling with elderly family members, or combining a pilgrimage with sightseeing? Share your plan and we'll suggest a route, a vehicle and a schedule, then send a written quote on WhatsApp.",
+      "image": "multi-temple-tour",
+      "gallery": [],
+      "passengers": { "min": 1, "max": 12 },
+      "vehicles": ["sedan", "suv", "innova-crysta", "tempo-traveller"],
+      "prices": {},
+      "priceUnit": "quote on request",
+      "itinerary": [],
+      "inclusions": [],
+      "exclusions": [],
+      "faqs": [],
+      "popularity": 50,
+      "published": true
+    }
+  ]
+}

@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request a Booking · Yatra Travels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap">
+  <link rel="stylesheet" href="../tokens/tokens.css">
+  <link rel="stylesheet" href="../components.css">
+  <style>
+    .booking { display: grid; gap: var(--space-6); padding-block: var(--space-7) var(--space-9); }
+    @media (min-width: 1024px) { .booking { grid-template-columns: 1fr 380px; align-items: start; gap: var(--space-7); } }
+    .booking h1 { font-size: var(--text-h2); margin-top: var(--space-4); }
+    .form-card { padding: var(--space-5); display: grid; gap: var(--space-7); }
+    @media (min-width: 768px) { .form-card { padding: var(--space-7); } }
+    #form-states:has(> [data-state="default"]:not([hidden])) { display: none; }
+    .pax-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) 0; }
+    .pax-row + .pax-row { border-top: 1px solid var(--border-subtle); }
+    .pax-row strong { display: block; color: var(--text-heading); font-weight: var(--weight-semibold); }
+    .pax-row span { font-size: var(--text-sm); color: var(--text-muted); }
+    .summary { position: sticky; top: calc(var(--header-height) + var(--space-5)); overflow: hidden; }
+    .summary .media { border-radius: 0; --ratio: 16 / 9; }
+    .summary__body { padding: var(--space-5); display: grid; gap: var(--space-4); }
+    .summary dl { display: grid; gap: var(--space-3); margin: 0; font-size: var(--text-sm); }
+    .summary dl div { display: flex; justify-content: space-between; gap: var(--space-3); }
+    .summary dt { color: var(--text-muted); }
+    .summary dd { margin: 0; color: var(--text-heading); font-weight: var(--weight-semibold); text-align: right; }
+    .summary__total { display: flex; justify-content: space-between; align-items: end; padding-top: var(--space-4); border-top: 1px solid var(--border-subtle); }
+    .submit-row { display: grid; gap: var(--space-3); }
+    @media (min-width: 640px) { .submit-row { grid-template-columns: auto 1fr; align-items: center; } }
+    .demo-switch { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; padding: var(--space-3); border: 1px dashed #C9A45C; border-radius: var(--radius-md); background: #FFFBF0; font-size: var(--text-xs); }
+    .demo-switch .chip { min-height: 32px; font-size: var(--text-xs); }
+    .error-summary ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
+    .error-summary a { color: inherit; font-weight: var(--weight-semibold); }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="wf-note" role="note">Wireframe: photos, prices (₹X,XXX), phone numbers and reviews are placeholders. <a href="../index.html">Design system</a></div>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+        <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="home.html">Home</a></li>
+          <li><a class="nav__link" href="packages.html">Packages</a></li>
+          <li><a class="nav__link" href="packages.html?category=cab">Cabs &amp; Transfers</a></li>
+          <li><a class="nav__link" href="booking.html?type=custom">Plan a Custom Trip</a></li>
+          <li><a class="nav__link" href="#">About</a></li>
+          <li><a class="nav__link" href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--ghost btn--sm header-phone" href="tel:+910000000000" style="color:#fff"><svg aria-hidden="true"><use href="#i-phone"/></svg>+91 00000 00000</a>
+        <a class="btn btn--primary btn--sm" href="booking.html">Book Now</a>
+        <button class="icon-btn nav-toggle" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Open menu"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="drawer__head">
+      <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+      <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+    </a>
+      <button class="icon-btn" type="button" data-close aria-label="Close menu"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <nav class="drawer__nav" aria-label="Mobile">
+      <ul>
+        <li><a class="drawer__link" href="home.html">Home<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="packages.html">Packages<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="packages.html?category=cab">Cabs &amp; Transfers<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="booking.html?type=custom">Plan a Custom Trip<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="#">About<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="#">Contact<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+      </ul>
+    </nav>
+    <div class="drawer__foot">
+      <a class="btn btn--primary btn--block" href="booking.html">Book Now</a>
+      <a class="btn btn--whatsapp btn--block" href="https://wa.me/910000000000"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp us</a>
+      <a class="btn btn--outline-inverse btn--block" href="tel:+910000000000"><svg aria-hidden="true"><use href="#i-phone"/></svg>Call +91 00000 00000</a>
+      <p>Open daily, 5:00 AM – 10:00 PM</p>
+    </div>
+  </div>
+  <div class="drawer-backdrop" aria-hidden="true"></div>
+
+  <main id="main">
+    <div class="container booking">
+      <div>
+        <nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="home.html">Home</a></li><li><a href="package.html">Tirupati Local Temple Tour</a></li><li><span aria-current="page">Request booking</span></li></ol></nav>
+        <h1>Request your booking</h1>
+        <p class="lead mt-2">It takes about 2 minutes. No payment now. We confirm availability within 30 minutes.</p>
+
+        <ol class="steps mt-6" aria-label="Booking progress">
+          <li class="is-done">Choose package</li>
+          <li aria-current="step">Trip &amp; contact details</li>
+          <li>Confirmation</li>
+        </ol>
+
+        <div class="demo-switch" data-state-switch="#form-states" role="group" aria-label="Wireframe state preview" style="margin-bottom:var(--space-5)">
+          <strong>Preview state:</strong>
+          <button class="chip" type="button" data-show="default">Default</button>
+          <button class="chip" type="button" data-show="invalid">Validation errors</button>
+          <button class="chip" type="button" data-show="failed">Submit failed</button>
+        </div>
+
+        <form class="card form-card" action="confirmation.html" novalidate>
+          <div id="form-states">
+            <div data-state="default" hidden></div>
+            <div data-state="invalid" hidden>
+              <div class="alert alert--error error-summary" role="alert" tabindex="-1">
+                <svg aria-hidden="true"><use href="#i-alert"/></svg>
+                <div><strong>Please fix 2 things before sending</strong>
+                  <ul><li><a href="#f-phone">Enter a 10-digit mobile number</a></li><li><a href="#f-date">Choose a travel date</a></li></ul>
+                </div>
+              </div>
+            </div>
+            <div data-state="failed" hidden>
+              <div class="alert alert--error" role="alert">
+                <svg aria-hidden="true"><use href="#i-alert"/></svg>
+                <div><strong>Your request didn't go through</strong>Nothing was lost, so you can try again. If it keeps failing, send these details on WhatsApp instead.
+                  <div class="flex flex-wrap gap-2 mt-4"><button class="btn btn--secondary btn--sm" type="button"><svg aria-hidden="true"><use href="#i-refresh"/></svg>Try again</button><a class="btn btn--whatsapp btn--sm" href="https://wa.me/910000000000"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>Send on WhatsApp</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1. Trip -->
+          <fieldset class="fieldset">
+            <legend>1. Your trip</legend>
+            <div class="form-grid form-grid--2">
+              <div class="field span-2">
+                <label class="label" for="f-service">Package or service <span class="req" aria-hidden="true">*</span></label>
+                <select class="select" id="f-service" required>
+                  <option>Tirupati Local Temple Tour</option><option>Tirupati to Tirumala Transport</option><option>Tirupati Pilgrimage Package</option><option>Kanipakam &amp; Srikalahasti Tour</option><option>Vellore Golden Temple Tour</option><option>Airport / Railway Transfer</option><option>Local Cab</option><option>Outstation Trip</option><option>Custom itinerary: describe below</option>
+                </select>
+              </div>
+              <fieldset class="fieldset span-2">
+                <legend class="label" style="font-family:var(--font-body);font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-3)">Vehicle <span class="req" aria-hidden="true">*</span></legend>
+                <div class="option-cards option-cards--3">
+                  <label class="option-card"><input type="radio" name="veh" checked><span class="option-card__tick"></span><span class="option-card__title">Sedan</span><span class="option-card__meta">Up to 4 · AC</span><span class="option-card__price">₹X,XXX</span></label>
+                  <label class="option-card"><input type="radio" name="veh"><span class="option-card__tick"></span><span class="option-card__title">SUV / Innova</span><span class="option-card__meta">Up to 7 · AC</span><span class="option-card__price">₹X,XXX</span></label>
+                  <label class="option-card"><input type="radio" name="veh"><span class="option-card__tick"></span><span class="option-card__title">Tempo Traveller</span><span class="option-card__meta">Up to 12 · AC</span><span class="option-card__price">₹X,XXX</span></label>
+                </div>
+              </fieldset>
+              <div class="field is-invalid">
+                <label class="label" for="f-date">Travel date <span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="f-date" type="date" required aria-invalid="true" aria-describedby="f-date-err">
+                <p class="error-msg" id="f-date-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>Choose a travel date</p>
+              </div>
+              <div class="field">
+                <label class="label" for="f-time">Pickup time <span class="opt">(optional)</span></label>
+                <select class="select" id="f-time"><option>Let the driver suggest</option><option>5:00 AM</option><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option></select>
+              </div>
+              <div class="field">
+                <label class="label" for="f-pickup">Pickup point <span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="f-pickup" placeholder="Hotel, station or address" required autocomplete="street-address">
+              </div>
+              <div class="field">
+                <label class="label" for="f-drop">Drop point <span class="opt">(optional)</span></label>
+                <input class="input" id="f-drop" placeholder="Same as pickup">
+              </div>
+              <div class="field span-2">
+                <span class="label" id="pax-label">Travellers</span>
+                <div class="card" style="padding:0 var(--space-4);box-shadow:none" role="group" aria-labelledby="pax-label">
+                  <div class="pax-row"><div><strong>Adults</strong><span>Age 12+</span></div><div class="counter" data-min="1"><button type="button" data-step="-1" aria-label="Fewer adults">−</button><output aria-live="polite">2</output><button type="button" data-step="1" aria-label="More adults">+</button></div></div>
+                  <div class="pax-row"><div><strong>Children</strong><span>Age 2–11</span></div><div class="counter" data-min="0"><button type="button" data-step="-1" aria-label="Fewer children">−</button><output aria-live="polite">1</output><button type="button" data-step="1" aria-label="More children">+</button></div></div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- 2. Contact -->
+          <fieldset class="fieldset">
+            <legend>2. Your details</legend>
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label class="label" for="f-name">Full name <span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="f-name" required autocomplete="name">
+              </div>
+              <div class="field is-invalid">
+                <label class="label" for="f-phone">Mobile number <span class="req" aria-hidden="true">*</span></label>
+                <div class="input-group"><span class="input-group__addon">+91</span><input class="input" id="f-phone" type="tel" inputmode="numeric" value="98765" required autocomplete="tel-national" aria-invalid="true" aria-describedby="f-phone-err"></div>
+                <p class="error-msg" id="f-phone-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>Enter a 10-digit mobile number</p>
+              </div>
+              <div class="field">
+                <label class="label" for="f-email">Email <span class="opt">(optional)</span></label>
+                <input class="input" id="f-email" type="email" autocomplete="email">
+                <p class="hint">We'll email your booking reference too.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="f-city">Travelling from <span class="opt">(optional)</span></label>
+                <input class="input" id="f-city" placeholder="e.g. Hyderabad" autocomplete="address-level2">
+              </div>
+              <label class="check span-2"><input type="checkbox" checked> Send booking updates on WhatsApp to this number</label>
+            </div>
+          </fieldset>
+
+          <!-- 3. Notes -->
+          <fieldset class="fieldset">
+            <legend>3. Anything else?</legend>
+            <div class="field">
+              <label class="label" for="f-notes">Special requests <span class="opt">(optional)</span></label>
+              <textarea class="textarea" id="f-notes" placeholder="Elderly travellers, wheelchair, extra stops, darshan time…"></textarea>
+              <p class="hint">For a custom itinerary, list the temples and the number of days here.</p>
+            </div>
+          </fieldset>
+
+          <div class="submit-row">
+            <button class="btn btn--primary btn--lg" type="submit">Send booking request</button>
+            <p class="text-sm text-muted">By sending this request you agree to our <a href="#">cancellation policy</a>. Nothing is charged now.</p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Summary -->
+      <aside aria-labelledby="sum-title">
+        <div class="card summary">
+          <div class="media" role="img" aria-label="Padmavathi temple"><span class="media__label">Package photo</span></div>
+          <div class="summary__body">
+            <h2 id="sum-title" style="font-size:var(--text-h4)">Tirupati Local Temple Tour</h2>
+            <dl>
+              <div><dt>Vehicle</dt><dd>Sedan (4 seats)</dd></div>
+              <div><dt>Date</dt><dd>Not selected</dd></div>
+              <div><dt>Travellers</dt><dd>2 adults, 1 child</dd></div>
+              <div><dt>Duration</dt><dd>Full day</dd></div>
+            </dl>
+            <div class="summary__total"><span class="text-sm text-muted">Estimated total</span><div class="price" style="text-align:right"><span class="price__amount">₹X,XXX</span><span class="price__unit">Pay after confirmation</span></div></div>
+            <div class="alert alert--info"><svg aria-hidden="true"><use href="#i-info"/></svg><div>Tolls, parking and darshan tickets are extra.</div></div>
+            <a class="btn btn--whatsapp btn--block" href="https://wa.me/910000000000"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>Prefer WhatsApp? Chat now</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+        <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+      </a>
+          <p>Pilgrimage tours, temple visits and cab services from Tirupati, with experienced local drivers and clear prices.</p>
+        </div>
+        <div>
+          <h3>Packages</h3>
+          <ul>
+            <li><a href="package.html">Tirupati Local Temple Tour</a></li>
+            <li><a href="packages.html">Tirumala Transport</a></li>
+            <li><a href="packages.html">Kanipakam &amp; Srikalahasti</a></li>
+            <li><a href="packages.html">Vellore Golden Temple</a></li>
+            <li><a href="packages.html">All packages</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Our vehicles</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Cancellation policy</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="tel:+910000000000">+91 00000 00000</a></li>
+            <li><a href="https://wa.me/910000000000">WhatsApp</a></li>
+            <li><a href="mailto:hello@example.com">hello@example.com</a></li>
+            <li>Office address, Tirupati, Andhra Pradesh [CONFIRM]</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Yatra Travels. All rights reserved.</span>
+        <span>Not affiliated with TTD. Darshan tickets are subject to TTD availability.</span>
+      </div>
+    </div>
+  </footer>
+  <a class="fab-whatsapp" href="https://wa.me/910000000000" aria-label="Chat with us on WhatsApp"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg></a>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

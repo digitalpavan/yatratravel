@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking Request Received · Yatra Travels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap">
+  <link rel="stylesheet" href="../tokens/tokens.css">
+  <link rel="stylesheet" href="../components.css">
+  <style>
+    .confirm { padding-block: var(--space-8) var(--space-9); display: grid; gap: var(--space-6); }
+    .confirm-hero { text-align: center; display: grid; justify-items: center; gap: var(--space-4); }
+    .confirm-hero__icon { display: grid; place-items: center; width: 80px; height: 80px; border-radius: 50%; background: var(--status-success-bg); color: var(--color-green-600); }
+    .confirm-hero__icon svg { width: 40px; height: 40px; }
+    .confirm-hero h1 { font-size: var(--text-h2); }
+    .ref { display: grid; gap: var(--space-3); justify-items: center; padding: var(--space-6) var(--space-5); text-align: center; background: var(--color-navy-900); color: var(--color-white); border-radius: var(--radius-xl); }
+    .ref :focus-visible { outline-color: var(--focus-ring-inverse); }
+    .ref__label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--text-muted-on-inverse); font-weight: var(--weight-semibold); }
+    .ref__code { font-family: var(--font-display); font-weight: var(--weight-extrabold); font-size: clamp(1.75rem, 1.2rem + 2.5vw, 2.75rem); letter-spacing: 0.06em; color: var(--color-gold-500); font-variant-numeric: tabular-nums; }
+    .ref p { font-size: var(--text-sm); color: var(--text-muted-on-inverse); max-width: 420px; }
+    .progress { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; }
+    .progress li { position: relative; display: grid; grid-template-columns: 32px 1fr; gap: var(--space-4); padding-bottom: var(--space-5); }
+    .progress li::before { content: ""; position: absolute; left: 15px; top: 32px; bottom: 0; width: 2px; background: var(--border-subtle); }
+    .progress li:last-child { padding-bottom: 0; }
+    .progress li:last-child::before { display: none; }
+    .progress__dot { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border-subtle); background: var(--bg-surface); }
+    .progress__dot svg { width: 16px; height: 16px; }
+    .progress .is-done .progress__dot { background: var(--color-green-700); border-color: var(--color-green-700); color: #fff; }
+    .progress .is-done::before { background: var(--color-green-600); }
+    .progress .is-current .progress__dot { border-color: var(--color-gold-500); box-shadow: 0 0 0 4px rgba(201, 164, 92, 0.25); }
+    .progress .is-current .progress__dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-gold-500); }
+    .progress strong { display: block; color: var(--text-heading); }
+    .progress span { font-size: var(--text-sm); color: var(--text-muted); }
+    .details dl { display: grid; gap: var(--space-4); margin: 0; }
+    @media (min-width: 640px) { .details dl { grid-template-columns: 1fr 1fr; } }
+    .details dt { font-size: var(--text-sm); color: var(--text-muted); }
+    .details dd { margin: 2px 0 0; font-weight: var(--weight-semibold); color: var(--text-heading); }
+    .actions { display: grid; gap: var(--space-3); }
+    @media (min-width: 640px) { .actions { grid-template-columns: repeat(3, 1fr); } }
+    @media print { .site-header, .site-footer, .fab-whatsapp, .wf-note, .actions { display: none !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="wf-note" role="note">Wireframe: photos, prices (₹X,XXX), phone numbers and reviews are placeholders. <a href="../index.html">Design system</a></div>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+        <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="home.html">Home</a></li>
+          <li><a class="nav__link" href="packages.html">Packages</a></li>
+          <li><a class="nav__link" href="packages.html?category=cab">Cabs &amp; Transfers</a></li>
+          <li><a class="nav__link" href="booking.html?type=custom">Plan a Custom Trip</a></li>
+          <li><a class="nav__link" href="#">About</a></li>
+          <li><a class="nav__link" href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--ghost btn--sm header-phone" href="tel:+910000000000" style="color:#fff"><svg aria-hidden="true"><use href="#i-phone"/></svg>+91 00000 00000</a>
+        <a class="btn btn--primary btn--sm" href="booking.html">Book Now</a>
+        <button class="icon-btn nav-toggle" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Open menu"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="drawer__head">
+      <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+      <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+    </a>
+      <button class="icon-btn" type="button" data-close aria-label="Close menu"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <nav class="drawer__nav" aria-label="Mobile">
+      <ul>
+        <li><a class="drawer__link" href="home.html">Home<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="packages.html">Packages<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="packages.html?category=cab">Cabs &amp; Transfers<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="booking.html?type=custom">Plan a Custom Trip<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="#">About<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        <li><a class="drawer__link" href="#">Contact<svg aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+      </ul>
+    </nav>
+    <div class="drawer__foot">
+      <a class="btn btn--primary btn--block" href="booking.html">Book Now</a>
+      <a class="btn btn--whatsapp btn--block" href="https://wa.me/910000000000"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp us</a>
+      <a class="btn btn--outline-inverse btn--block" href="tel:+910000000000"><svg aria-hidden="true"><use href="#i-phone"/></svg>Call +91 00000 00000</a>
+      <p>Open daily, 5:00 AM – 10:00 PM</p>
+    </div>
+  </div>
+  <div class="drawer-backdrop" aria-hidden="true"></div>
+
+  <main id="main">
+    <div class="container container--narrow confirm">
+      <div class="confirm-hero">
+        <span class="confirm-hero__icon"><svg aria-hidden="true"><use href="#i-check"/></svg></span>
+        <h1 tabindex="-1">Booking request received</h1>
+        <p class="lead">Thank you, Ravi. We're checking availability and will confirm on WhatsApp within 30 minutes.</p>
+      </div>
+
+      <section class="ref" aria-labelledby="ref-label">
+        <span class="ref__label" id="ref-label">Your booking reference</span>
+        <span class="ref__code">YT-261024-7K3Q</span>
+        <button class="btn btn--outline-inverse btn--sm" type="button" data-copy="YT-261024-7K3Q"><svg aria-hidden="true"><use href="#i-copy"/></svg><span>Copy reference</span></button>
+        <p>Keep this reference. Quote it on calls and WhatsApp messages, or use it to check your booking status.</p>
+      </section>
+
+      <section class="card card--pad" aria-labelledby="status-title">
+        <h2 id="status-title" style="font-size:var(--text-h4);margin-bottom:var(--space-5)">What happens next</h2>
+        <ol class="progress">
+          <li class="is-done"><span class="progress__dot"><svg aria-hidden="true"><use href="#i-check"/></svg></span><div><strong>Request received</strong><span>Today, 7:42 PM · sent to +91 98765 XXXXX</span></div></li>
+          <li class="is-current" aria-current="step"><span class="progress__dot"></span><div><strong>Availability confirmed</strong><span>Usually within 30 minutes, 5 AM – 10 PM</span></div></li>
+          <li><span class="progress__dot"></span><div><strong>Driver &amp; vehicle details</strong><span>Sent by WhatsApp the evening before your trip</span></div></li>
+          <li><span class="progress__dot"></span><div><strong>Have a blessed journey</strong><span>Pay the driver after the trip, or as agreed [CONFIRM]</span></div></li>
+        </ol>
+      </section>
+
+      <section class="card card--pad details" aria-labelledby="details-title">
+        <div class="flex justify-between items-center gap-3" style="margin-bottom:var(--space-5)">
+          <h2 id="details-title" style="font-size:var(--text-h4)">Booking details</h2>
+          <span class="badge badge--pending">Awaiting confirmation</span>
+        </div>
+        <dl>
+          <div><dt>Package</dt><dd>Tirupati Local Temple Tour</dd></div>
+          <div><dt>Vehicle</dt><dd>Sedan (up to 4)</dd></div>
+          <div><dt>Date</dt><dd>Sat, 14 Nov 2026</dd></div>
+          <div><dt>Pickup</dt><dd>Tirupati Railway Station, 6:00 AM</dd></div>
+          <div><dt>Travellers</dt><dd>2 adults, 1 child</dd></div>
+          <div><dt>Estimated total</dt><dd style="font-family:var(--font-display);font-size:1.25rem;font-weight:800">₹X,XXX</dd></div>
+        </dl>
+      </section>
+
+      <div class="actions">
+        <a class="btn btn--whatsapp" href="https://wa.me/910000000000?text=Booking%20YT-261024-7K3Q"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>Message us</a>
+        <button class="btn btn--outline" type="button" onclick="window.print()"><svg aria-hidden="true"><use href="#i-download"/></svg>Save / print</button>
+        <a class="btn btn--secondary" href="home.html">Back to home</a>
+      </div>
+
+      <p class="text-center text-sm text-muted-page">Need to change something? Call <a href="tel:+910000000000">+91 00000 00000</a> and quote your reference.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="logo" href="home.html" aria-label="Yatra Travels, home">
+        <svg class="logo__mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#C9A45C"/><path d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17" fill="none" stroke="#101C2C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="logo__text">Yatra Travels<small>Tirupati pilgrim tours</small></span>
+      </a>
+          <p>Pilgrimage tours, temple visits and cab services from Tirupati, with experienced local drivers and clear prices.</p>
+        </div>
+        <div>
+          <h3>Packages</h3>
+          <ul>
+            <li><a href="package.html">Tirupati Local Temple Tour</a></li>
+            <li><a href="packages.html">Tirumala Transport</a></li>
+            <li><a href="packages.html">Kanipakam &amp; Srikalahasti</a></li>
+            <li><a href="packages.html">Vellore Golden Temple</a></li>
+            <li><a href="packages.html">All packages</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Our vehicles</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Cancellation policy</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="tel:+910000000000">+91 00000 00000</a></li>
+            <li><a href="https://wa.me/910000000000">WhatsApp</a></li>
+            <li><a href="mailto:hello@example.com">hello@example.com</a></li>
+            <li>Office address, Tirupati, Andhra Pradesh [CONFIRM]</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Yatra Travels. All rights reserved.</span>
+        <span>Not affiliated with TTD. Darshan tickets are subject to TTD availability.</span>
+      </div>
+    </div>
+  </footer>
+  <a class="fab-whatsapp" href="https://wa.me/910000000000" aria-label="Chat with us on WhatsApp"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg></a>
+  <script src="../assets/site.js"></script>
+</body>
+</html>
