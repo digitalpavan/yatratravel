@@ -27,7 +27,7 @@
       "placeholder": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAADwAwCdASoQABwAPu1orU6ppiSiMAgBMB2JbACdACHV6IQ3Szb1Pe1gAP3es7DZ/2JhXM2ek/SuZmuJUMBf6LAH11esXr07TC+31RJPZb7ktbWiNa8fGwBWeHyT3KBNhsmAAA=="
     },
     "sedan": {
-      "alt": "Representative image: silver Maruti Suzuki Dzire sedan",
+      "alt": "Representative image: white sedan on a hill road near Tirupati",
       "aspect": "3:2",
       "loading": "lazy",
       "width": 1200,
@@ -37,10 +37,10 @@
         "webp": "/images/vehicles/sedan-480.webp 480w, /images/vehicles/sedan-800.webp 800w, /images/vehicles/sedan-1200.webp 1200w"
       },
       "src": "/images/vehicles/sedan.webp",
-      "placeholder": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAAAQAgCdASoQAAsAA4BaJZwAAtvUdP2kVsAAAP6D4T6hAC8baCDQbVXyNqCxiwgU4qXgvmBcwVgFAAAA"
+      "placeholder": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAQAgCdASoQAAsAA4BaJYwCdAEPDiVUUVygAP7KCnnu/7+gl8M8K/R6QqOlOrHdnDGLfIr+QpfR01iN9O+AAA=="
     },
     "suv": {
-      "alt": "Representative image: white Maruti Suzuki Ertiga",
+      "alt": "Representative image: white seven-seat SUV on a hill road near Tirumala",
       "aspect": "3:2",
       "loading": "lazy",
       "width": 1200,
@@ -50,10 +50,10 @@
         "webp": "/images/vehicles/suv-480.webp 480w, /images/vehicles/suv-800.webp 800w, /images/vehicles/suv-1200.webp 1200w"
       },
       "src": "/images/vehicles/suv.webp",
-      "placeholder": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADQAQCdASoQAAsAA4BaJZACw7DybVvWIAD+qhzSFQyMrLG6ZUDiAVJUjMiHHNn/WdB/4qqFuFIAAA=="
+      "placeholder": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQAAsAA4BaJZQCdAEVJ2qyTEAA+kUWDEDOjykOGZagWl0hSpBrsrMRuVr103os8oxwdWQAAAA="
     },
     "innova": {
-      "alt": "Representative image: white Toyota Innova Crysta",
+      "alt": "Representative image: white Toyota Innova Crysta on a hill road near Tirupati",
       "aspect": "3:2",
       "loading": "lazy",
       "width": 1200,
@@ -63,10 +63,10 @@
         "webp": "/images/vehicles/innova-480.webp 480w, /images/vehicles/innova-800.webp 800w, /images/vehicles/innova-1200.webp 1200w"
       },
       "src": "/images/vehicles/innova.webp",
-      "placeholder": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADQAQCdASoQAAsAA4BaJZQAAn+/tlm+AAD6hW5x06Xasya+oxJki3lnFFHWxh+hriNmKl1w4IF9kvbmSxLHcfxebytAAA=="
+      "placeholder": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAsAA4BaJQBOgCHaWn9YAAD13Kinzt6l/vmqA4wx21JdE98biyV2Z/AN9QpqlC5TUavlAAA="
     },
     "tempo-traveller": {
-      "alt": "Representative image: white Force Traveller van",
+      "alt": "Representative image: white 12-seat Tempo Traveller-style van by a lake",
       "aspect": "3:2",
       "loading": "lazy",
       "width": 1200,
@@ -76,7 +76,7 @@
         "webp": "/images/vehicles/tempo-traveller-480.webp 480w, /images/vehicles/tempo-traveller-800.webp 800w, /images/vehicles/tempo-traveller-1200.webp 1200w"
       },
       "src": "/images/vehicles/tempo-traveller.webp",
-      "placeholder": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACwAQCdASoQAAsAA4BaJaQAAl2Ua6AAAP7l8FyvJYgCcgJ6a3u+mr55OjKlk/a1YfDnRuAAAAA="
+      "placeholder": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAQAgCdASoQAAsAA4BaJQBOgCIG/NHppaIAAP4BLc9LAPPtRcnH6GvhkFg/hUajxzWC012NXEZquNNTJv9U7omEAAA="
     }
   },
   "videos": {

@@ -225,7 +225,7 @@
       ],
       "crop": "center",
       "loading": "lazy",
-      "alt": "Representative image: silver Maruti Suzuki Dzire sedan",
+      "alt": "Representative image: white sedan on a hill road near Tirupati",
       "usedOn": [
         "package details (vehicle options)",
         "booking form",
@@ -235,11 +235,11 @@
       "prompt": "Photorealistic professional advertisement photograph of a clean white compact Indian sedan (Dzire/Etios class, unbadged) parked on a quiet tree-lined South Indian road, three-quarter front view, natural soft daylight, realistic proportions, premium commercial automotive photography, no logos, no number plate text, no people, no text, no watermark, 3:2.",
       "rights": {
         "status": "cleared",
-        "provider": "Wikimedia Commons",
-        "author": "Biswarup Ganguly",
-        "license": "CC BY 3.0",
-        "url": "https://commons.wikimedia.org/wiki/File:Maruti_Suzuki_Dzire_VXi_VVT.JPG",
-        "attribution": "Photo: Biswarup Ganguly, CC BY 3.0, via Wikimedia Commons"
+        "provider": "Supplied by Yatra Travels",
+        "author": "",
+        "license": "AI-generated, supplied by the business owner",
+        "url": "",
+        "attribution": ""
       }
     },
     {
@@ -251,9 +251,9 @@
         800,
         1200
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Representative image: white Maruti Suzuki Ertiga",
+      "alt": "Representative image: white seven-seat SUV on a hill road near Tirumala",
       "usedOn": [
         "package details (vehicle options)",
         "booking form",
@@ -263,10 +263,10 @@
       "prompt": "Photorealistic professional travel advertisement photograph of a clean white seven-seat Indian tourist SUV (Ertiga class, unbadged) parked on a scenic South Indian hill road, three-quarter front view, natural lighting, realistic proportions, premium commercial automotive photography, no logos, no number plate text, no text, no watermark, 3:2.",
       "rights": {
         "status": "cleared",
-        "provider": "Wikimedia Commons",
-        "author": "Ramakrishna Mission Vidyapith",
-        "license": "Public domain",
-        "url": "https://commons.wikimedia.org/wiki/File:2022_Maruti_Suzuki_Ertiga_LXi.jpg",
+        "provider": "Supplied by Yatra Travels",
+        "author": "",
+        "license": "AI-generated, supplied by the business owner",
+        "url": "",
         "attribution": ""
       }
     },
@@ -279,9 +279,9 @@
         800,
         1200
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Representative image: white Toyota Innova Crysta",
+      "alt": "Representative image: white Toyota Innova Crysta on a hill road near Tirupati",
       "usedOn": [
         "package details (vehicle options)",
         "booking form",
@@ -292,11 +292,11 @@
       "notes": "Innova is a Toyota trademark. Show the model name in page text only if the fleet actually has one.",
       "rights": {
         "status": "cleared",
-        "provider": "Wikimedia Commons",
-        "author": "Premnath Kudva",
-        "license": "CC BY-SA 4.0",
-        "url": "https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_front_right.jpg",
-        "attribution": "Photo: Premnath Kudva, CC BY-SA 4.0, via Wikimedia Commons (resized)"
+        "provider": "Supplied by Yatra Travels",
+        "author": "",
+        "license": "AI-generated, supplied by the business owner",
+        "url": "",
+        "attribution": ""
       }
     },
     {
@@ -308,9 +308,9 @@
         800,
         1200
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Representative image: white Force Traveller van",
+      "alt": "Representative image: white 12-seat Tempo Traveller-style van by a lake",
       "usedOn": [
         "package details (vehicle options)",
         "booking form",
@@ -321,11 +321,11 @@
       "prompt": "Photorealistic professional travel advertisement photograph of a clean white 12-seater Indian tempo traveller van (unbadged) parked on a wide South Indian road with green hills behind, side three-quarter view, natural daylight, realistic proportions, premium commercial photography, no logos, no number plate text, no text, no watermark, 3:2.",
       "rights": {
         "status": "cleared",
-        "provider": "Wikimedia Commons",
-        "author": "Yann Forget",
-        "license": "CC BY-SA 3.0",
-        "url": "https://commons.wikimedia.org/wiki/File:Force_Traveller,_Leh-Manali_Highway.jpg",
-        "attribution": "Photo: Yann Forget, CC BY-SA 3.0, via Wikimedia Commons (resized)"
+        "provider": "Supplied by Yatra Travels",
+        "author": "",
+        "license": "AI-generated, supplied by the business owner",
+        "url": "",
+        "attribution": ""
       }
     },
     {
