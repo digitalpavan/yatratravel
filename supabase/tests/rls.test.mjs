@@ -194,5 +194,30 @@ await as('service_role', null, async () => {
   ok((await rows("select * from public.notifications where title like '%YT-261025-WXYZ'")).length === 2, 'every active staff member is notified of a new booking');
 });
 
+// --- online payments (the server records gateway payments with the secret key)
+await as('service_role', null, async () => {
+  await db.query("update public.bookings set quoted_price_paise=200000 where reference='YT-261025-WXYZ'");
+  await db.query("insert into public.payment_attempts (booking_id, gateway_order_id, amount_paise) select id, 'order_TEST1', 200000 from public.bookings where reference='YT-261025-WXYZ'");
+  const pay = "insert into public.payments (booking_id, amount_paise, method, transaction_ref, gateway_payment_id) select id, 200000, 'netbanking', 'pay_TEST1', 'pay_TEST1' from public.bookings where reference='YT-261025-WXYZ'";
+  ok(!(await fails(pay)), 'server records a gateway payment (netbanking)');
+  ok(await fails(pay), 'the same gateway payment cannot be recorded twice');
+  const b = (await rows("select amount_paid_paise, payment_status from public.bookings where reference='YT-261025-WXYZ'"))[0];
+  ok(Number(b.amount_paid_paise) === 200000 && b.payment_status === 'paid', 'a full online payment marks the booking paid');
+  await db.query("insert into public.whatsapp_messages (booking_id, event, recipient, to_number, template) select id, 'paid', 'customer', '919876500000', 't' from public.bookings where reference='YT-261025-WXYZ'");
+  ok(await fails("insert into public.whatsapp_messages (booking_id, event, recipient, to_number, template) select id, 'paid', 'customer', '919876500000', 't' from public.bookings where reference='YT-261025-WXYZ'"), 'the same WhatsApp message is never logged (or sent) twice');
+});
+await as('anon', null, async () => {
+  ok(await hidden('select * from public.payment_attempts'), 'anon cannot read payment attempts');
+  ok(await hidden('select * from public.whatsapp_messages'), 'anon cannot read WhatsApp messages');
+  ok(await hidden('select * from public.gateway_events'), 'anon cannot read gateway events');
+  ok((await rows("select pay_online from public.packages where slug='live'"))[0]?.pay_online === true, 'anon sees whether a package can be paid online');
+});
+await as('authenticated', STAFF, async () => {
+  ok((await rows('select * from public.payment_attempts')).length === 1, 'staff see payment attempts');
+  ok(await fails("insert into public.payment_attempts (booking_id, gateway_order_id, amount_paise) select id, 'order_FAKE', 100 from public.bookings limit 1"), 'staff cannot create payment attempts');
+  ok(await fails("update public.payment_attempts set status='paid'"), 'staff cannot mark an attempt paid');
+  ok(await hidden('select * from public.gateway_events'), 'staff cannot read gateway events');
+});
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

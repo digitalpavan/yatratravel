@@ -72,7 +72,7 @@ export async function recordPayment(_: ActionState, form: FormData): Promise<Act
     booking_id: id,
     kind: z.enum(['payment', 'refund']),
     amount_paise: rupees.refine(v => v > 0, 'Enter an amount').transform(v => toPaise(v)!),
-    method: z.enum(['cash', 'upi', 'card', 'bank_transfer', 'other']),
+    method: z.enum(['cash', 'upi', 'card', 'netbanking', 'wallet', 'bank_transfer', 'other']),
     received_on: z.iso.date(),
     transaction_ref: z.string().trim().max(100),
   }).safeParse(Object.fromEntries(form));

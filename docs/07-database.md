@@ -17,6 +17,9 @@ Supabase Postgres. The schema lives in `supabase/migrations/` and is applied in 
 | `bookings` | Booking requests: reference, customer, package, travel date, travellers, pickup, `quoted_price_paise`, status, payment status, timestamps | – | read; update status, payment status, quote, assignee | same |
 | `booking_items` | Line items per booking; the first is added automatically with the price listed at request time | – | read, write | read, write |
 | `payments` | Payment and refund ledger; keeps `bookings.amount_paid_paise` and payment status up to date | – | read, add | read, add, delete |
+| `payment_attempts` | Razorpay orders opened for a booking (server only; see [08](08-booking-workflow.md#online-payments)) | – | read | read |
+| `whatsapp_messages` | Automatic WhatsApp messages sent per booking, logged before sending so none go twice | – | read | read |
+| `gateway_events` | Razorpay webhook events already handled | – | – | – |
 | `booking_notes`, `enquiry_notes` | Internal notes (can't be edited) | – | read, add | read, add |
 | `enquiries` | Contact and WhatsApp enquiries | – | read; update status, follow-up, assignee | same |
 | `reviews` | Customer reviews | read published | read | write |

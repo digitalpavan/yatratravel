@@ -15,7 +15,7 @@ type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ created?
 
 const BLANK: PackageRow = {
   slug: '', title: '', category: 'temple-tour', destinations: [], duration_days: 1, duration_label: '', summary: '', overview: '', image: '', gallery: [],
-  passengers_min: 1, passengers_max: 12, price_unit: 'per vehicle', itinerary: [], inclusions: [], exclusions: [], faqs: [], popularity: 50,
+  passengers_min: 1, passengers_max: 12, price_unit: 'per vehicle', pay_online: true, itinerary: [], inclusions: [], exclusions: [], faqs: [], popularity: 50,
   featured: false, published: false, seo_title: '', seo_description: '',
 };
 

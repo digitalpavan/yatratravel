@@ -27,7 +27,7 @@ export function demoCatalog(): { packages: Package[]; vehicles: Vehicle[]; desti
     id: `demo-p-${i}`, slug: p.slug, title: p.title, category: p.category as PackageCategory, destinations: p.destinations,
     durationDays: p.durationDays, durationLabel: p.durationLabel, summary: p.summary, overview: p.overview,
     image: p.image, imageEntry: getImage(p.image), gallery: p.gallery.map(id => ({ id, entry: getImage(id) })),
-    passengers: p.passengers, vehicles: p.vehicles.map(slug => ({ slug, price: p.prices?.[slug] ?? null })), priceUnit: p.priceUnit,
+    passengers: p.passengers, vehicles: p.vehicles.map(slug => ({ slug, price: p.prices?.[slug] ?? null })), priceUnit: p.priceUnit, payOnline: false,
     itinerary: p.itinerary, inclusions: p.inclusions, exclusions: p.exclusions, faqs: p.faqs, popularity: p.popularity,
     featured: ['temple-tour', 'transfer', 'package'].includes(p.category), seoTitle: '', seoDescription: '',
   })).sort((a, b) => b.popularity - a.popularity);

@@ -9,7 +9,7 @@ import { savePackage } from './actions';
 
 export type PackageRow = {
   id?: string; slug: string; title: string; category: string; destinations: string[]; duration_days: number | null; duration_label: string;
-  summary: string; overview: string; image: string; gallery: string[]; passengers_min: number; passengers_max: number; price_unit: string;
+  summary: string; overview: string; image: string; gallery: string[]; passengers_min: number; passengers_max: number; price_unit: string; pay_online: boolean;
   itinerary: { day: number; title: string; stops: { name: string; note?: string }[] }[]; inclusions: string[]; exclusions: string[];
   faqs: { q: string; a: string }[]; popularity: number; featured: boolean; published: boolean; seo_title: string; seo_description: string;
 };
@@ -69,6 +69,7 @@ export function PackageForm({ pkg, prices, vehicles, destinations, images }: Pro
           </table>
         </div>
         <div className="field mt-4"><label className="label" htmlFor="price_unit">Price basis</label><input className="input" id="price_unit" name="price_unit" defaultValue={pkg.price_unit} placeholder="per vehicle, full day" /></div>
+        <label className="check mt-4"><input type="checkbox" name="pay_online" defaultChecked={pkg.pay_online} /> <span><strong>Customers pay online when booking</strong>: the listed price for the chosen vehicle is paid by UPI, card or netbanking. Turn off for prices per km or on request.</span></label>
       </section>
 
       <section className="card card--pad" aria-labelledby="dest">

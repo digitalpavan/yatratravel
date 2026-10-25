@@ -4,6 +4,7 @@ import { Icon } from '@/components/Icon';
 import { PageHero } from '@/components/ui';
 import { getPackages, getSettings, getVehicles } from '@/lib/data';
 import { todayInIndia, toPaise } from '@/lib/format';
+import { paymentsEnabled } from '@/lib/server/razorpay';
 import { contactLinks } from '@/lib/site';
 
 export const metadata: Metadata = {
@@ -22,8 +23,9 @@ export default async function BookPage({ searchParams }: Props) {
   const links = contactLinks(settings.contact);
   const packages = allPackages.map(p => ({
     slug: p.slug, title: p.title, vehicles: p.vehicles.map(v => v.slug), passengers: p.passengers,
-    prices: Object.fromEntries(p.vehicles.map(v => [v.slug, toPaise(v.price)])),
+    prices: Object.fromEntries(p.vehicles.map(v => [v.slug, toPaise(v.price)])), priceUnit: p.priceUnit, payOnline: p.payOnline,
   }));
+  const onlinePayment = paymentsEnabled();
   const vehicles = allVehicles.map(v => ({ slug: v.slug, name: v.name, passengers: v.passengers, examples: v.examples }));
   const today = todayInIndia();
 
@@ -45,13 +47,15 @@ export default async function BookPage({ searchParams }: Props) {
       <PageHero crumbs={[{ href: '/', label: 'Home' }, { label: 'Request a booking' }]} title="Request a booking"
         lead="It takes about two minutes. You'll get a booking reference straight away, and we'll confirm availability and the price with you before anything is final." />
       <div className="container booking-layout">
-        <BookingForm packages={packages} vehicles={vehicles} initial={initial} today={today} whatsappNumber={links.whatsappNumber} />
+        <BookingForm packages={packages} vehicles={vehicles} initial={initial} today={today} whatsappNumber={links.whatsappNumber} onlinePayment={onlinePayment} />
         <aside aria-label="Help with booking">
           <div className="card aside-card">
             <h2 className="h4">What happens next</h2>
             <ol className="steps-list">
               <li><div><strong>You get a reference</strong><span>Straight away, on screen.</span></div></li>
-              <li><div><strong>We confirm with you</strong><span>Availability and final price, by phone or WhatsApp.</span></div></li>
+              {onlinePayment
+                ? <li><div><strong>Pay securely online</strong><span>For fixed-price trips: UPI or QR code, debit or credit card, or netbanking. Confirmation arrives on WhatsApp.</span></div></li>
+                : <li><div><strong>We confirm with you</strong><span>Availability and final price, by phone or WhatsApp.</span></div></li>}
               <li><div><strong>Driver details</strong><span>Sent before your trip.</span></div></li>
             </ol>
             <hr style={{ border: 0, borderTop: '1px solid var(--border-subtle)', margin: 0 }} />

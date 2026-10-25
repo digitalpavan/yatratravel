@@ -13,7 +13,7 @@ import { addBookingNote, assignBooking, markCustomerNotified, recordPayment, upd
 export const metadata: Metadata = { title: 'Booking' };
 type Props = { params: Promise<{ id: string }> };
 
-const PAYMENT_METHODS: Record<string, string> = { upi: 'UPI', cash: 'Cash', card: 'Card', bank_transfer: 'Bank transfer', other: 'Other' };
+const PAYMENT_METHODS: Record<string, string> = { upi: 'UPI', cash: 'Cash', card: 'Card', netbanking: 'Netbanking', wallet: 'Wallet', bank_transfer: 'Bank transfer', other: 'Other' };
 
 const CONFIRM = { status: 'confirmed', label: 'Confirm booking', variant: 'primary', confirm: 'Confirm this booking? Make sure the vehicle is available and you have agreed the price with the customer.' };
 const NEXT_STATUS: Record<string, { status: string; label: string; variant: string; confirm?: string }[]> = {

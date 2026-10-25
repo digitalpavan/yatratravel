@@ -5,12 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState, type ChangeEvent, type SubmitEvent, type ReactNode } from 'react';
 import { AnimatePresence, m } from 'motion/react';
 import { Icon } from '@/components/Icon';
+import { PaymentMethods, payWithRazorpay } from '@/components/Razorpay';
 import { motionTokens, transition } from '@/lib/motion';
 import { bookingSchema, capacityError, fieldErrors, groupSizeError } from '@/lib/validation';
 import { formatDate, formatPaise } from '@/lib/format';
 
-/** prices: listed price per vehicle slug in paise, null = on request. */
-type PackageOption = { slug: string; title: string; vehicles: string[]; passengers: { min: number; max: number }; prices: Record<string, number | null> };
+/** prices: listed price per vehicle slug in paise, null = on request. payOnline: the listed price can be paid when booking. */
+type PackageOption = {
+  slug: string; title: string; vehicles: string[]; passengers: { min: number; max: number }; prices: Record<string, number | null>;
+  priceUnit: string; payOnline: boolean;
+};
 type VehicleOption = { slug: string; name: string; passengers: number; examples: string };
 
 type Values = {
@@ -31,8 +35,10 @@ const STEPS = [
   { title: 'Review & send', fields: ['consent'] },
 ] as const;
 
-export function BookingForm({ packages, vehicles, initial, today, whatsappNumber }: {
+export function BookingForm({ packages, vehicles, initial, today, whatsappNumber, onlinePayment }: {
   packages: PackageOption[]; vehicles: VehicleOption[]; initial: Partial<Values>; today: string; whatsappNumber: string;
+  /** Razorpay is configured: trips with a listed price are paid when booking. */
+  onlinePayment: boolean;
 }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -42,7 +48,7 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
     name: '', phone: '', email: '', requests: '', consent: false, website: '', ...initial,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'redirecting' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'paying' | 'redirecting' | 'error'>('idle');
   const [serverError, setServerError] = useState('');
   const idempotencyKey = useRef<string | null>(null);
   // Set when the server reports a newer price than this page was built with ("package:vehicle" → paise).
@@ -57,6 +63,11 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
   const vehicle = vehicles.find(v => v.slug === values.vehicle);
   const priceKey = `${values.packageSlug}:${values.vehicle}`;
   const listedPricePaise = !pkg || values.vehicle === 'any' ? null : priceKey in priceUpdates ? priceUpdates[priceKey] : (pkg.prices[values.vehicle] ?? null);
+  const payNow = onlinePayment && !!pkg?.payOnline && listedPricePaise !== null;
+  const priceOf = (slug: string) => {
+    const key = `${values.packageSlug}:${slug}`;
+    return pkg ? (key in priceUpdates ? priceUpdates[key] : (pkg.prices[slug] ?? null)) : null;
+  };
 
   const set = (name: keyof Values) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
@@ -95,7 +106,7 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
   const submit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (step < STEPS.length - 1) return next();
-    if (status === 'submitting' || status === 'redirecting') return; // guards against double submission
+    if (status === 'submitting' || status === 'paying' || status === 'redirecting') return; // guards against double submission
     const errs = validate(STEPS.length - 1);
     setErrors(errs);
     if (Object.keys(errs).length) {
@@ -116,6 +127,13 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.url) {
+        // The booking is saved. Pay now if checkout opened; either way the booking page shows where things stand,
+        // with a "Pay now" button if the payment didn't go through.
+        if (data.checkout) {
+          setStatus('paying');
+          const token = new URL(data.url, window.location.origin).searchParams.get('t') ?? '';
+          await payWithRazorpay(data.checkout, { reference: data.reference, token });
+        }
         setStatus('redirecting');
         router.push(data.url);
         return;
@@ -145,7 +163,8 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
   )}`;
 
   const errorList = Object.entries(errors);
-  const busy = status === 'submitting' || status === 'redirecting';
+  const busy = status === 'submitting' || status === 'paying' || status === 'redirecting';
+  const price = formatPaise(listedPricePaise);
 
   return (
     <form className="card form-card booking-form" onSubmit={submit} noValidate aria-describedby="booking-note">
@@ -208,13 +227,27 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
               <legend className="label">Vehicle preference</legend>
               <div className="option-cards option-cards--3" id="f-vehicle">
                 <VehicleChoice value="any" title="Suggest for me" meta="We'll match the vehicle to your group" checked={values.vehicle === 'any'} onChange={set('vehicle')} />
-                {offered.map(v => (
-                  <VehicleChoice key={v.slug} value={v.slug} title={v.name} meta={`Up to ${v.passengers} · ${v.examples}`} checked={values.vehicle === v.slug} onChange={set('vehicle')}
-                    warn={Number(values.passengers) > v.passengers} />
-                ))}
+                {offered.map(v => {
+                  const p = priceOf(v.slug);
+                  return (
+                    <VehicleChoice key={v.slug} value={v.slug} title={v.name} meta={`Up to ${v.passengers} · ${v.examples}`} checked={values.vehicle === v.slug} onChange={set('vehicle')}
+                      price={pkg ? (p === null ? 'Price on request' : formatPaise(p)!) : undefined} warn={Number(values.passengers) > v.passengers} />
+                  );
+                })}
               </div>
               {errors.vehicle && <p className="error-msg" id="f-vehicle-err"><Icon name="alert" size={16} />{errors.vehicle}</p>}
             </fieldset>
+            {pkg && (
+              <div className="price-total span-2" aria-live="polite">
+                {price ? <>
+                  <span className="price-total__label">{payNow ? 'Total to pay' : 'Listed price'}</span>
+                  <strong className="price-total__amount">{price}</strong>
+                  <span className="price-total__meta">{vehicle?.name}{pkg.priceUnit && ` · ${pkg.priceUnit}`}</span>
+                </> : <span className="price-total__meta">
+                  {values.vehicle === 'any' ? 'Choose a vehicle to see the price.' : "This trip is priced on request. We'll confirm the price with you."}
+                </span>}
+              </div>
+            )}
           </div>
         )}
 
@@ -246,7 +279,8 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
               <Row label="Travellers" value={values.passengers} onEdit={() => goTo(0)} />
               <Row label="Pickup" value={values.pickup} onEdit={() => goTo(0)} />
               <Row label="Vehicle" value={vehicle ? vehicle.name : 'Suggest for me'} onEdit={() => goTo(0)} />
-              <Row label="Listed price" value={listedPricePaise !== null ? `${formatPaise(listedPricePaise)} (we confirm the final price with you)` : 'Confirmed with you on request'} onEdit={() => goTo(0)} />
+              <Row label={payNow ? 'Total to pay' : 'Listed price'} onEdit={() => goTo(0)}
+                value={payNow ? `${price}${pkg?.priceUnit ? ` (${pkg.priceUnit})` : ''}` : price ? `${price} (we confirm the final price with you)` : 'Confirmed with you on request'} />
               <Row label="Name" value={values.name} onEdit={() => goTo(1)} />
               <Row label="Mobile" value={values.phone ? `+91 ${values.phone}` : undefined} onEdit={() => goTo(1)} />
               {values.email && <Row label="Email" value={values.email} onEdit={() => goTo(1)} />}
@@ -273,11 +307,17 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
       <div className="form-actions">
         {step > 0 && <button type="button" className="btn btn--ghost" onClick={() => goTo(step - 1)} disabled={busy}>Back</button>}
         <button type="submit" className={`btn btn--primary btn--lg${busy ? ' is-loading' : ''}`} aria-busy={busy} disabled={busy}>
-          {step < STEPS.length - 1 ? <>Continue <Icon name="arrow-right" /></> : busy ? 'Sending…' : 'Send booking request'}
+          {step < STEPS.length - 1 ? <>Continue <Icon name="arrow-right" /></>
+            : status === 'paying' ? 'Complete payment in the window…'
+            : busy ? (payNow ? 'Opening payment…' : 'Sending…')
+            : payNow ? `Pay ${price} & book` : 'Send booking request'}
         </button>
       </div>
+      {payNow && step === STEPS.length - 1 && <PaymentMethods />}
       <p className="text-sm text-muted" id="booking-note">
-        This is a request, not a confirmed booking. Nothing is charged now. We'll check availability and confirm the price with you by phone or WhatsApp.
+        {payNow
+          ? "You'll get a booking reference straight away and pay securely by UPI (scan the QR code with any UPI app), card or netbanking. If we can't provide your vehicle on that date, we refund you in full."
+          : "This is a request, not a confirmed booking. Nothing is charged now. We'll check availability and confirm the price with you by phone or WhatsApp."}
       </p>
     </form>
   );
@@ -302,8 +342,8 @@ function Field({ id, label, required, optional, hint, error, className = '', chi
   );
 }
 
-function VehicleChoice({ value, title, meta, checked, onChange, warn }: {
-  value: string; title: string; meta: string; checked: boolean; onChange: (e: ChangeEvent<HTMLInputElement>) => void; warn?: boolean;
+function VehicleChoice({ value, title, meta, price, checked, onChange, warn }: {
+  value: string; title: string; meta: string; price?: string; checked: boolean; onChange: (e: ChangeEvent<HTMLInputElement>) => void; warn?: boolean;
 }) {
   return (
     <label className="option-card">
@@ -311,6 +351,7 @@ function VehicleChoice({ value, title, meta, checked, onChange, warn }: {
       <span className="option-card__tick" />
       <span className="option-card__title">{title}</span>
       <span className="option-card__meta">{meta}</span>
+      {price && <span className="option-card__price">{price}</span>}
       {warn && <span className="option-card__warn">Too small for your group</span>}
     </label>
   );

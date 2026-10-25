@@ -41,6 +41,8 @@ export type Package = {
   /** Vehicles offered, with the confirmed price or null ("on request"). */
   vehicles: { slug: string; price: number | null }[];
   priceUnit: string;
+  /** The listed price can be paid online when booking (false for per-km or on-request pricing). */
+  payOnline: boolean;
   itinerary: ItineraryDay[];
   inclusions: string[];
   exclusions: string[];

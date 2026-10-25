@@ -2,6 +2,8 @@ import { after, NextResponse } from 'next/server';
 import { bookingSchema, fieldErrors } from '@/lib/validation';
 import { checkOffer, createBooking, confirmationPath } from '@/lib/server/bookings';
 import { notifyNewBooking } from '@/lib/server/notify';
+import { startPayment, type CheckoutOptions } from '@/lib/server/payments';
+import { paymentsEnabled } from '@/lib/server/razorpay';
 import { rateLimit, clientIp } from '@/lib/server/rate-limit';
 
 export async function POST(request: Request) {
@@ -34,8 +36,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: offer.error, fields: offer.fields, listedPricePaise: offer.listedPricePaise }, { status: offer.status });
     }
 
-    // 3. Stored as "pending"; staff confirm it after checking availability and agreeing the price.
-    const { reference, duplicate } = await createBooking(input, offer.packageTitle);
+    // 3. Stored as "pending"; staff confirm it after checking availability. When the listed price is paid online,
+    //    that price is the agreed price; otherwise staff agree it with the customer.
+    const payNow = paymentsEnabled() && offer.payOnline && offer.listedPricePaise !== null;
+    const { reference, duplicate } = await createBooking(input, offer.packageTitle, payNow ? offer.listedPricePaise : null);
     const url = confirmationPath(reference);
     if (!duplicate) {
       console.info(`[booking] new request ${reference} for ${input.packageSlug}`); // reference only, never personal details
@@ -46,7 +50,18 @@ export async function POST(request: Request) {
         listedPricePaise: offer.listedPricePaise,
       }));
     }
-    return NextResponse.json({ reference, url }, { status: duplicate ? 200 : 201 });
+    // 5. Checkout opens straight away. If the order can't be created, the booking still stands and the customer
+    //    can pay from their booking page.
+    let checkout: CheckoutOptions | undefined;
+    if (payNow) {
+      try {
+        const started = await startPayment(reference);
+        if (started.ok) checkout = started.checkout;
+      } catch (e) {
+        console.error(`[payment] ${reference}: could not open an order`, e);
+      }
+    }
+    return NextResponse.json({ reference, url, checkout }, { status: duplicate ? 200 : 201 });
   } catch (e) {
     console.error('[booking] failed to save', e);
     return NextResponse.json({ error: "We couldn't save your request. Please try again, or send it on WhatsApp." }, { status: 500 });

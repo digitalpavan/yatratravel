@@ -3,10 +3,12 @@ import Link from 'next/link';
 import { CopyButton } from '@/components/CopyButton';
 import { Icon } from '@/components/Icon';
 import { Intro, IntroItem } from '@/components/motion';
+import { PayButton } from '@/components/PayButton';
 import { SuccessIcon } from '@/components/SuccessIcon';
 import { getSettings, getVehicles } from '@/lib/data';
 import { formatDate, formatPaise } from '@/lib/format';
 import { getBookingForCustomer, verifyAccessToken, type BookingStatus } from '@/lib/server/bookings';
+import { paymentsEnabled } from '@/lib/server/razorpay';
 import { contactLinks } from '@/lib/site';
 import { customerAboutBookingMessage } from '@/lib/whatsapp';
 
@@ -40,8 +42,14 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
 
   const vehicle = (await getVehicles()).find(v => v.slug === booking.vehicle);
   const firstName = booking.name.split(/\s+/)[0];
-  const status = STATUS[booking.status];
   const balance = booking.quoted_price_paise !== null ? Number(booking.quoted_price_paise) - Number(booking.amount_paid_paise) : null;
+  const open = booking.status === 'pending' || booking.status === 'contacted';
+  const paidInFull = balance !== null && balance <= 0 && Number(booking.amount_paid_paise) > 0;
+  const canPay = paymentsEnabled() && !!token && balance !== null && balance > 0 && booking.status !== 'cancelled' && booking.status !== 'completed';
+  // Once paid online, the request is no longer waiting on a price: say so instead of the usual pending text.
+  const status = open && paidInFull
+    ? { ...STATUS[booking.status], heading: 'Payment received', lead: `We've received your payment of ${formatPaise(booking.amount_paid_paise)}. We're assigning your vehicle and will send the driver's details on WhatsApp before your trip.` }
+    : STATUS[booking.status];
 
   return (
     <div className="container container--narrow confirm">
@@ -69,18 +77,30 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
           <div><dt>Travel date</dt><dd>{formatDate(booking.travel_date)}</dd></div>
           <div><dt>Travellers</dt><dd>{booking.passengers}</dd></div>
           <div><dt>Vehicle</dt><dd>{vehicle?.name ?? 'We will suggest one'}</dd></div>
-          {(booking.status === 'confirmed' || booking.status === 'completed') && booking.quoted_price_paise !== null && <>
-            <div><dt>Agreed price</dt><dd>{formatPaise(booking.quoted_price_paise)}</dd></div>
-            <div><dt>Paid</dt><dd>{formatPaise(booking.amount_paid_paise)}{balance !== null && balance > 0 && <> · {formatPaise(balance)} due</>}</dd></div>
+          {booking.quoted_price_paise !== null && <>
+            <div><dt>{booking.status === 'confirmed' || booking.status === 'completed' ? 'Agreed price' : 'Price'}</dt><dd>{formatPaise(booking.quoted_price_paise)}</dd></div>
+            <div><dt>Paid</dt><dd>{paidInFull ? <span className="badge badge--success">Paid {formatPaise(booking.amount_paid_paise)}</span>
+              : <>{formatPaise(booking.amount_paid_paise)}{balance !== null && balance > 0 && <> · {formatPaise(balance)} due</>}</>}</dd></div>
           </>}
         </dl>
       </section>
 
-      {(booking.status === 'pending' || booking.status === 'contacted') && <section className="card card--pad" aria-labelledby="next-title">
+      {canPay && token && <section className="card card--pad stack" aria-labelledby="pay-title">
+        <h2 id="pay-title" className="h4">Complete your payment</h2>
+        <p className="text-sm text-muted">Pay {formatPaise(balance)} securely to secure your booking. Scan the QR code with any UPI app, or pay by UPI ID, debit or credit card, or netbanking.</p>
+        <PayButton reference={booking.reference} token={token} duePaise={balance!} />
+      </section>}
+
+      {open && <section className="card card--pad" aria-labelledby="next-title">
         <h2 id="next-title" className="h4" style={{ marginBottom: 'var(--space-5)' }}>Next steps</h2>
         <ol className="steps-list">
-          <li><div><strong>We review your request</strong><span>We check vehicle availability for your date.</span></div></li>
-          <li><div><strong>We contact you to confirm</strong><span>By phone or WhatsApp, with the final price and pickup time. Your trip is confirmed only after this.</span></div></li>
+          {paidInFull ? <>
+            <li><div><strong>Payment received</strong><span>A confirmation is on its way to you on WhatsApp.</span></div></li>
+            <li><div><strong>We assign your vehicle</strong><span>We reserve a vehicle for your date and confirm your pickup time.</span></div></li>
+          </> : <>
+            <li><div><strong>We review your request</strong><span>We check vehicle availability for your date.</span></div></li>
+            <li><div><strong>We contact you to confirm</strong><span>By phone or WhatsApp, with the final price and pickup time. Your trip is confirmed only after this.</span></div></li>
+          </>}
           <li><div><strong>Driver details before the trip</strong><span>The driver's name, number and vehicle are sent to you before your travel date.</span></div></li>
         </ol>
       </section>}

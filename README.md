@@ -61,6 +61,12 @@ No Supabase project yet? Set `YATRA_DEMO_DATA=1` in `.env.local` to run with bui
 | `RESEND_API_KEY` | Optional. Turns on automatic booking emails (owner alert + customer updates) |
 | `NOTIFY_EMAIL_FROM` | Sender for those emails, on a domain verified in Resend |
 | `OWNER_NOTIFY_EMAIL` | Who gets new-booking alerts (comma-separated); defaults to the contact email in /admin/content |
+| `RAZORPAY_KEY_ID` | Optional. Turns on online payment when booking (UPI and QR, cards, netbanking); `rzp_test_…` or `rzp_live_…` |
+| `RAZORPAY_KEY_SECRET` | Server-only secret for the Razorpay API and checkout signatures |
+| `RAZORPAY_WEBHOOK_SECRET` | Secret of the Razorpay webhook (`/api/payments/webhook`) |
+| `WHATSAPP_CLOUD_TOKEN` | Optional. Meta WhatsApp Cloud API token: turns on automatic WhatsApp messages after payment |
+| `WHATSAPP_PHONE_NUMBER_ID` | Phone number id from WhatsApp Manager → API setup |
+| `WHATSAPP_ADMIN_NUMBERS` | Who gets owner WhatsApp alerts (comma-separated, with country code); defaults to the business WhatsApp number |
 | `SUPABASE_DB_URL` | Only for the database scripts below, not needed on Vercel |
 
 Never commit `.env.local`. It is git-ignored.

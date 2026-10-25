@@ -1,7 +1,10 @@
 import 'server-only';
-import { getSettings } from '@/lib/data';
+import { getSettings, getVehicles } from '@/lib/data';
 import { formatDate, formatPaise } from '@/lib/format';
-import { siteUrl } from '@/lib/site';
+import { confirmationPath } from '@/lib/server/bookings';
+import type { PaidBooking } from '@/lib/server/payments';
+import { adminWhatsappNumbers, sendWhatsappTemplate } from '@/lib/server/whatsapp-cloud';
+import { contactLinks, siteUrl } from '@/lib/site';
 import { statusUpdateMessage, waLink } from '@/lib/whatsapp';
 
 // Automatic email notifications through Resend (https://resend.com). Without RESEND_API_KEY nothing is sent and
@@ -97,6 +100,66 @@ export async function notifyNewBooking(b: NewBooking): Promise<void> {
   }, b.reference);
 
   await Promise.all([owner, customer]);
+}
+
+// WhatsApp template names (approved in WhatsApp Manager; texts in docs/08-booking-workflow.md).
+const TEMPLATE_CUSTOMER_PAID = process.env.WHATSAPP_TEMPLATE_CUSTOMER_PAID || 'booking_payment_received';
+const TEMPLATE_OWNER_PAID = process.env.WHATSAPP_TEMPLATE_OWNER_PAID || 'new_paid_booking';
+
+const METHOD_LABEL: Record<string, string> = { upi: 'UPI', card: 'card', netbanking: 'netbanking', wallet: 'wallet' };
+
+/**
+ * Online payment received: WhatsApp and email to the owner and the customer, all at once. Only called by whoever
+ * recorded the payment, and each message is also de-duplicated, so retries never send twice.
+ */
+export async function notifyPaymentReceived(b: PaidBooking): Promise<void> {
+  const settings = await getSettings();
+  const { brand, contact } = settings;
+  const vehicle = (await getVehicles()).find(v => v.slug === b.vehicle)?.name ?? 'To be suggested';
+  const amount = formatPaise(b.amountPaise)!;
+  const method = METHOD_LABEL[b.method] ?? 'online';
+  const link = `${siteUrl}${confirmationPath(b.reference)}`;
+  const firstName = b.name.split(/\s+/)[0];
+  const trip: [string, string][] = [
+    ['Reference', b.reference], ['Package', b.package_title], ['Travel date', day(b.travel_date)],
+    ['Travellers', String(b.passengers)], ['Vehicle', vehicle], ['Paid', `${amount} by ${method}`],
+  ];
+
+  const whatsappOwners = adminWhatsappNumbers(contactLinks(contact).whatsappNumber);
+  const owners = await ownerAddresses();
+  await Promise.all([
+    sendWhatsappTemplate({
+      bookingId: b.id, reference: b.reference, event: 'payment-received', recipient: 'customer', to: `91${b.phone}`, template: TEMPLATE_CUSTOMER_PAID,
+      params: [firstName, amount, b.reference, b.package_title, day(b.travel_date), link],
+    }),
+    ...whatsappOwners.map(to => sendWhatsappTemplate({
+      bookingId: b.id, reference: b.reference, event: 'payment-received', recipient: 'owner', to, template: TEMPLATE_OWNER_PAID,
+      params: [b.reference, b.package_title, day(b.travel_date), vehicle, String(b.passengers), amount, b.name, `+91 ${b.phone}`, b.pickup],
+    })),
+    owners.length && sendEmail({
+      to: owners,
+      subject: `Paid ${amount}: booking ${b.reference}, ${b.package_title}, ${day(b.travel_date)}`,
+      replyTo: b.email ?? undefined,
+      idempotencyKey: `payment-owner-${b.reference}-${b.amountPaise}`,
+      ...layout(
+        [`${b.name} has paid ${amount} online for booking ${b.reference}. Assign a vehicle and driver, then confirm the booking in the dashboard.`],
+        [...trip, ['Pickup', b.pickup], ['Customer', b.name], ['Mobile', `+91 ${b.phone}`]],
+        { href: `${siteUrl}/admin/bookings?q=${b.reference}`, label: 'Open in dashboard' },
+      ),
+    }, b.reference),
+    b.email && sendEmail({
+      to: [b.email],
+      subject: `Payment received for your booking ${b.reference}`,
+      replyTo: contact.email ?? undefined,
+      idempotencyKey: `payment-customer-${b.reference}-${b.amountPaise}`,
+      ...layout(
+        [`Thank you, ${firstName}. We've received your payment of ${amount}.`,
+          `We'll send your driver's name, number and vehicle on WhatsApp before your travel date. Questions? Reply to this email or message ${brand.name} on WhatsApp.`],
+        trip,
+        { href: link, label: 'View your booking' },
+      ),
+    }, b.reference),
+  ]);
 }
 
 /** Status change: tells the customer by email when they gave one. Returns true if the email went out. */

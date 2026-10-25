@@ -8,10 +8,12 @@ import { Icon } from '@/components/Icon';
 import { ImageSettle, Intro, IntroItem, Reveal, RevealGroup, Timeline } from '@/components/motion';
 import { Photo } from '@/components/Photo';
 import { Breadcrumbs, JsonLd, PackageCard, Price } from '@/components/ui';
+import { VehiclePricePicker } from '@/components/VehiclePricePicker';
 import { categoryLabels, startingPrice, toSummary } from '@/lib/catalog';
 import { getDestinations, getPackage, getPackages, getSettings, getVehicles, relatedPackages } from '@/lib/data';
 import { formatPrice, todayInIndia } from '@/lib/format';
 import { getImage } from '@/lib/images';
+import { paymentsEnabled } from '@/lib/server/razorpay';
 import { contactLinks, siteUrl } from '@/lib/site';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -46,6 +48,7 @@ export default async function PackagePage({ params }: Props) {
   const links = contactLinks(settings.contact);
   const vehicles = pkg.vehicles.map(pv => ({ ...pv, vehicle: allVehicles.find(v => v.slug === pv.slug) })).filter(v => !!v.vehicle);
   const from = startingPrice(pkg);
+  const payOnline = paymentsEnabled() && pkg.payOnline && vehicles.some(v => v.price !== null);
   const faqs = [...pkg.faqs, ...generalFaqs.filter(g => !pkg.faqs.some(f => f.q === g.q))];
   const goesToTirumala = pkg.destinations.includes('tirumala');
   const bookHref = `/book?package=${pkg.slug}`;
@@ -192,7 +195,7 @@ export default async function PackagePage({ params }: Props) {
               <div><dt>Duration</dt><dd>{pkg.durationLabel}</dd></div>
               <div><dt>Travellers</dt><dd>1–{pkg.passengers.max}</dd></div>
               {vehicles.length > 0 && <div><dt>Vehicles</dt><dd>{vehicles.map(v => v.vehicle!.name).join(', ')}</dd></div>}
-              <div><dt>Payment</dt><dd>After confirmation</dd></div>
+              <div><dt>Payment</dt><dd>{payOnline ? 'Online when booking' : 'After confirmation'}</dd></div>
             </dl>
             {/* Date and group size are chosen here and carried into the booking form, which checks them again. */}
             <Form action="/book" className="stack">
@@ -201,10 +204,13 @@ export default async function PackagePage({ params }: Props) {
                 <div className="field"><label className="label" htmlFor="pkg-date">Travel date</label><input className="input" id="pkg-date" name="date" type="date" min={todayInIndia()} required /></div>
                 <div className="field"><label className="label" htmlFor="pkg-pax">Travellers</label><input className="input" id="pkg-pax" name="passengers" type="number" inputMode="numeric" min={pkg.passengers.min} max={pkg.passengers.max} defaultValue={Math.min(Math.max(2, pkg.passengers.min), pkg.passengers.max)} required /></div>
               </div>
-              <button type="submit" className="btn btn--primary btn--lg btn--block">Request a booking</button>
+              {vehicles.length > 0 && <VehiclePricePicker unit={pkg.priceUnit} options={vehicles.map(v => ({ slug: v.slug, name: v.vehicle!.name, passengers: v.vehicle!.passengers, price: v.price }))} />}
+              <button type="submit" className="btn btn--primary btn--lg btn--block">{payOnline ? 'Book now' : 'Request a booking'}</button>
             </Form>
             <a className="btn btn--whatsapp btn--block" href={links.whatsappHref(`Hello, I'd like to check availability for: ${pkg.title}`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Check availability on WhatsApp</a>
-            <p className="text-sm text-muted text-center">No payment online. We'll confirm availability and price with you first.</p>
+            <p className="text-sm text-muted text-center">{payOnline
+              ? 'Pay securely by UPI (or scan the QR code), card or netbanking. Full refund if we cannot provide your vehicle.'
+              : "No payment online. We'll confirm availability and price with you first."}</p>
           </div>
         </aside>
       </div>

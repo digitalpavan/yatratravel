@@ -66,6 +66,7 @@ const loadCatalog = unstable_cache(async (): Promise<Catalog> => {
       .sort((a, b) => a.vehicles!.sort - b.vehicles!.sort)
       .map(v => ({ slug: v.vehicles!.slug, price: toRupees(v.price_paise) })),
     priceUnit: r.price_unit as string,
+    payOnline: r.pay_online as boolean,
     itinerary: [...r.itinerary_days].sort((a, b) => a.day - b.day).map(({ day, title, stops }) => ({ day, title, stops })),
     inclusions: r.inclusions as string[],
     exclusions: r.exclusions as string[],

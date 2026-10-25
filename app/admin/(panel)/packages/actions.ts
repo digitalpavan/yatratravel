@@ -27,6 +27,7 @@ const schema = z.object({
   passengers_min: z.number().int().min(1).max(60),
   passengers_max: z.number().int().min(1).max(60),
   price_unit: z.string().trim().max(80),
+  pay_online: z.boolean(),
   itinerary: z.array(z.object({
     day: z.number().int().min(1),
     title: z.string().trim().max(120),
@@ -64,6 +65,7 @@ export async function savePackage(_: ActionState, form: FormData): Promise<Actio
     passengers_min: num(form.get('passengers_min')) ?? 1,
     passengers_max: num(form.get('passengers_max')) ?? 12,
     price_unit: form.get('price_unit') ?? '',
+    pay_online: form.get('pay_online') === 'on',
     itinerary: json(form.get('itinerary')),
     inclusions: lines(form.get('inclusions')),
     exclusions: lines(form.get('exclusions')),

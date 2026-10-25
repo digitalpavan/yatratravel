@@ -62,7 +62,7 @@ export type PublicBooking = {
 };
 
 type OfferCheck =
-  | { ok: true; packageTitle: string; vehicleName: string; listedPricePaise: number | null }
+  | { ok: true; packageTitle: string; vehicleName: string; listedPricePaise: number | null; payOnline: boolean }
   | { ok: false; status: 409 | 422; error: string; fields?: Record<string, string>; listedPricePaise?: number | null };
 
 /**
@@ -72,21 +72,22 @@ type OfferCheck =
 export async function checkOffer(input: Booking): Promise<OfferCheck> {
   const invalid = (field: string, message: string): OfferCheck => ({ ok: false, status: 422, error: 'Please check the highlighted fields.', fields: { [field]: message } });
 
-  let pkg: { title: string; passengers: { min: number; max: number }; vehicles: { slug: string; name: string; passengers: number; pricePaise: number | null }[] } | null = null;
+  let pkg: { title: string; payOnline: boolean; passengers: { min: number; max: number }; vehicles: { slug: string; name: string; passengers: number; pricePaise: number | null }[] } | null = null;
   if (DEMO) {
     const [p, vehicles] = await Promise.all([getPackage(input.packageSlug), getVehicles()]);
-    if (p) pkg = { title: p.title, passengers: p.passengers, vehicles: p.vehicles.flatMap(o => {
+    if (p) pkg = { title: p.title, payOnline: p.payOnline, passengers: p.passengers, vehicles: p.vehicles.flatMap(o => {
       const v = vehicles.find(x => x.slug === o.slug);
       return v ? [{ slug: v.slug, name: v.name, passengers: v.passengers, pricePaise: toPaise(o.price) }] : [];
     }) };
   } else {
     const { data, error } = await createServiceClient().from('packages')
-      .select('title, passengers_min, passengers_max, package_vehicles(price_paise, vehicles(slug, name, passengers, active))')
+      .select('title, pay_online, passengers_min, passengers_max, package_vehicles(price_paise, vehicles(slug, name, passengers, active))')
       .eq('slug', input.packageSlug).eq('published', true).maybeSingle();
     if (error) throw new Error(error.message);
     type Offer = { price_paise: number | null; vehicles: { slug: string; name: string; passengers: number; active: boolean } | null };
     if (data) pkg = {
       title: data.title,
+      payOnline: data.pay_online,
       passengers: { min: data.passengers_min, max: data.passengers_max },
       vehicles: (data.package_vehicles as unknown as Offer[]).flatMap(o => (o.vehicles?.active ? [{ ...o.vehicles, pricePaise: o.price_paise === null ? null : Number(o.price_paise) }] : [])),
     };
@@ -113,7 +114,7 @@ export async function checkOffer(input: Booking): Promise<OfferCheck> {
         : `The price for this trip has changed to ${formatPaise(listedPricePaise)}. Please review and send again.`,
     };
   }
-  return { ok: true, packageTitle: pkg.title, vehicleName, listedPricePaise };
+  return { ok: true, packageTitle: pkg.title, vehicleName, listedPricePaise, payOnline: pkg.payOnline };
 }
 
 const UNIQUE_VIOLATION = '23505';
@@ -122,8 +123,9 @@ const UNIQUE_VIOLATION = '23505';
  * Stores a booking request with status "pending". It is never auto-confirmed; staff confirm it in the dashboard.
  * The same idempotency key always returns the original reference, so double clicks or retries can't create duplicates.
  * Uses the service client: the public role has no access to the bookings table, and input was validated by the caller.
+ * agreedPricePaise is set when the customer pays the listed price online: that price is then the agreed price.
  */
-export async function createBooking(input: Booking, packageTitle: string): Promise<{ reference: string; duplicate: boolean }> {
+export async function createBooking(input: Booking, packageTitle: string, agreedPricePaise: number | null = null): Promise<{ reference: string; duplicate: boolean }> {
   if (DEMO) {
     const existing = [...demoBookings.values()].find(b => b.key === input.idempotencyKey);
     if (existing) return { reference: existing.reference, duplicate: true };
@@ -150,6 +152,7 @@ export async function createBooking(input: Booking, packageTitle: string): Promi
       pickup: input.pickup,
       vehicle: input.vehicle,
       requests: input.requests || null,
+      quoted_price_paise: agreedPricePaise,
       consent_at: new Date().toISOString(),
     });
     if (!error) return { reference, duplicate: false };
