@@ -262,7 +262,7 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
                 <input className="input" id="f-phone" type="tel" inputMode="tel" value={values.phone} onChange={set('phone')} autoComplete="tel-national" {...invalid(errors.phone, 'phone')} />
               </div>
             </Field>
-            <Field id="email" label="Email" optional error={errors.email} className="span-2">
+            <Field id="email" label="Email" required error={errors.email} className="span-2" hint="Your booking confirmation and invoice are emailed here">
               <input className="input" id="f-email" type="email" value={values.email} onChange={set('email')} autoComplete="email" {...invalid(errors.email, 'email')} />
             </Field>
             <Field id="requests" label="Special requests" optional error={errors.requests} className="span-2" hint="Elderly travellers, extra stops, darshan slot time, train or flight number…">
@@ -283,7 +283,7 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
                 value={payNow ? `${price}${pkg?.priceUnit ? ` (${pkg.priceUnit})` : ''}` : price ? `${price} (we confirm the final price with you)` : 'Confirmed with you on request'} />
               <Row label="Name" value={values.name} onEdit={() => goTo(1)} />
               <Row label="Mobile" value={values.phone ? `+91 ${values.phone}` : undefined} onEdit={() => goTo(1)} />
-              {values.email && <Row label="Email" value={values.email} onEdit={() => goTo(1)} />}
+              <Row label="Email" value={values.email} onEdit={() => goTo(1)} />
               {values.requests && <Row label="Requests" value={values.requests} onEdit={() => goTo(1)} />}
             </dl>
             <div className={`field${errors.consent ? ' is-invalid' : ''}`}>

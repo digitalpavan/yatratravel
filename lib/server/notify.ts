@@ -1,4 +1,5 @@
 import 'server-only';
+import nodemailer, { type Transporter } from 'nodemailer';
 import { getSettings, getVehicles } from '@/lib/data';
 import { formatDate, formatPaise } from '@/lib/format';
 import { confirmationPath } from '@/lib/server/bookings';
@@ -8,19 +9,28 @@ import { adminWhatsappNumbers, sendWhatsappTemplate } from '@/lib/server/whatsap
 import { contactLinks, siteUrl } from '@/lib/site';
 import { statusUpdateMessage, waLink } from '@/lib/whatsapp';
 
-// Automatic email notifications through Resend (https://resend.com). Without RESEND_API_KEY nothing is sent and
-// the booking flow works as before. Logs carry the booking reference only, never personal details.
+// Automatic email notifications. They go through Gmail when GMAIL_USER and GMAIL_APP_PASSWORD are set, otherwise
+// through Resend (https://resend.com) when RESEND_API_KEY is set; with neither, nothing is sent and the booking flow
+// works as before. Logs carry the booking reference only, never personal details.
 //
-//   RESEND_API_KEY       API key from Resend
-//   NOTIFY_EMAIL_FROM    Sender, e.g. "Yatra Travels <bookings@yourdomain.in>" (the domain must be verified in Resend)
-//   OWNER_NOTIFY_EMAIL   Where new-booking alerts go (comma-separated for several); falls back to the contact email in /admin/content
+//   GMAIL_USER           The Gmail address emails are sent from (and replies come back to)
+//   GMAIL_APP_PASSWORD   A 16-character App Password for that account (Google Account → Security → App passwords;
+//                        needs 2-Step Verification). Not the normal Gmail password.
+//   RESEND_API_KEY       Alternative to Gmail: API key from Resend
+//   NOTIFY_EMAIL_FROM    Resend sender, e.g. "Yatra Travels <bookings@yourdomain.in>" (the domain must be verified in Resend)
+//   OWNER_NOTIFY_EMAIL   Where new-booking alerts go (comma-separated for several); falls back to the contact email in
+//                        /admin/content, then to GMAIL_USER
 
 type Attachment = { filename: string; content: Uint8Array };
 type Email = { to: string[]; subject: string; text: string; html: string; replyTo?: string; idempotencyKey: string; attachments?: Attachment[] };
 
+const gmailConfigured = () => !!process.env.GMAIL_USER && !!process.env.GMAIL_APP_PASSWORD;
+let gmail: Transporter | null = null;
+
 async function sendEmail(email: Email, ref: string): Promise<boolean> {
+  if (gmailConfigured()) return sendWithGmail(email, ref);
   const key = process.env.RESEND_API_KEY;
-  if (!key) { console.info(`[notify] ${ref}: email skipped, RESEND_API_KEY not set`); return false; }
+  if (!key) { console.info(`[notify] ${ref}: email skipped, no email service configured (GMAIL_APP_PASSWORD or RESEND_API_KEY)`); return false; }
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -37,6 +47,29 @@ async function sendEmail(email: Email, ref: string): Promise<boolean> {
     return true;
   } catch {
     console.error(`[notify] ${ref}: email failed (network)`);
+    return false;
+  }
+}
+
+/** Gmail over SMTP with an App Password. Gmail only sends from the signed-in address, shown with the business name. */
+async function sendWithGmail(email: Email, ref: string): Promise<boolean> {
+  gmail ??= nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD!.replace(/\s/g, '') },
+    connectionTimeout: 10_000, socketTimeout: 20_000,
+  });
+  const { brand } = await getSettings();
+  try {
+    await gmail.sendMail({
+      from: { name: brand.name, address: process.env.GMAIL_USER! },
+      to: email.to, replyTo: email.replyTo, subject: email.subject, text: email.text, html: email.html,
+      attachments: email.attachments?.map(a => ({ filename: a.filename, content: Buffer.from(a.content), contentType: 'application/pdf' })),
+      headers: { 'X-Entity-Ref-ID': email.idempotencyKey },
+    });
+    return true;
+  } catch (e) {
+    // EAUTH means the App Password is wrong or was revoked.
+    console.error(`[notify] ${ref}: Gmail send failed (${(e as { code?: string }).code ?? 'error'})`);
     return false;
   }
 }
@@ -58,7 +91,8 @@ async function ownerAddresses(): Promise<string[]> {
   const configured = (process.env.OWNER_NOTIFY_EMAIL ?? '').split(',').map(s => s.trim()).filter(Boolean);
   if (configured.length) return configured;
   const { contact } = await getSettings();
-  return contact.email ? [contact.email] : [];
+  if (contact.email) return [contact.email];
+  return process.env.GMAIL_USER ? [process.env.GMAIL_USER] : [];
 }
 
 export type NewBooking = {
@@ -66,7 +100,7 @@ export type NewBooking = {
   packageTitle: string; travelDate: string; passengers: number; vehicle: string; pickup: string; requests?: string; listedPricePaise: number | null;
 };
 
-/** New request: an alert to the owner and an acknowledgement to the customer (if they gave an email), sent together. */
+/** New request: an alert to the owner and an acknowledgement to the customer, sent together. */
 export async function notifyNewBooking(b: NewBooking): Promise<void> {
   const { brand, contact } = await getSettings();
   const owners = await ownerAddresses();

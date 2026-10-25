@@ -42,18 +42,28 @@ Booking:  pending ─→ contacted ─→ confirmed ─→ completed
 
 ## Notifications
 
-Emails go through [Resend](https://resend.com) (`lib/server/notify.ts`), sent after the response so the customer isn't kept waiting. Without `RESEND_API_KEY` nothing is sent and the rest works as before.
+Emails go through **Gmail** when `GMAIL_USER` and `GMAIL_APP_PASSWORD` are set, otherwise through [Resend](https://resend.com) when `RESEND_API_KEY` is set (`lib/server/notify.ts`). They are sent after the response so the customer isn't kept waiting. With neither set, nothing is sent and the rest works as before. **Email is required on the booking form**, so every booking gets its confirmation and invoice by email.
 
 | When | Owner | Customer |
 |---|---|---|
-| New booking request | Alert with all details, a WhatsApp link to the customer, and a dashboard link (to `OWNER_NOTIFY_EMAIL`, or the contact email in /admin/content) | Acknowledgement with the reference and their private booking link, if they gave an email |
-| Status changed | – | Status email, if they gave an email; the booking is then marked as notified. **Confirmed** also attaches the invoice PDF (see Invoices) |
+| New booking request | Alert with all details, a WhatsApp link to the customer, and a dashboard link (to `OWNER_NOTIFY_EMAIL`, else the contact email in /admin/content, else `GMAIL_USER`) | Acknowledgement with the reference and their private booking link |
+| Status changed | – | Status email; the booking is then marked as notified. **Confirmed** also attaches the invoice PDF (see Invoices) |
 
-Each email has an idempotency key (reference + event), so retries never send duplicates. Email is optional on the booking form, so WhatsApp stays the main channel for customers without one.
+Each email is sent once per event: new-booking emails only for a new reference, status emails only when the status actually changes, payment emails only by whichever call records the payment. (Resend also de-duplicates by idempotency key.) Bookings made before email became required may have none; for those, staff use WhatsApp.
+
+### Setting up Gmail
+
+1. Sign in to the Gmail account that should send the emails (e.g. `digitalpavan61@gmail.com`).
+2. Google Account → **Security** → turn on **2-Step Verification** (App Passwords need it).
+3. Google Account → search **App passwords** (myaccount.google.com/apppasswords) → name it "Yatra Travels website" → **Create**. Google shows a 16-character password once.
+4. In Vercel → Settings → Environment Variables (Production), add `GMAIL_USER` = the Gmail address and `GMAIL_APP_PASSWORD` = that 16-character password. Redeploy.
+5. Confirm a test booking with your own email address: the confirmation with the invoice PDF should arrive within a minute, from "Yatra Travels <your Gmail>".
+
+Gmail allows about 500 emails a day from a personal account. Changing the Google password revokes App Passwords: create a new one and update `GMAIL_APP_PASSWORD`. If emails stop, the Vercel logs show `Gmail send failed (EAUTH)` for a wrong or revoked password.
 
 Setup: create a Resend account, verify the business's domain (Resend → Domains, add the DNS records), create an API key, then set `RESEND_API_KEY`, `NOTIFY_EMAIL_FROM` and `OWNER_NOTIFY_EMAIL` in Vercel. Until a domain is verified, Resend's test sender only delivers to the Resend account's own address.
 
-| Online payment received | WhatsApp (to `WHATSAPP_ADMIN_NUMBERS`) and email, with the trip, pickup and customer's number | WhatsApp, and email if they gave one, with the amount and their booking link |
+| Online payment received | WhatsApp (to `WHATSAPP_ADMIN_NUMBERS`) and email, with the trip, pickup and customer's number | WhatsApp and email, with the amount and their booking link |
 
 Automatic WhatsApp messages go through Meta's WhatsApp Cloud API (`lib/server/whatsapp-cloud.ts`). Each message is logged in `whatsapp_messages` before it is sent, one per booking, event and number, so a retried webhook never sends it twice. Without `WHATSAPP_CLOUD_TOKEN` nothing is sent.
 
@@ -65,7 +75,7 @@ Automatic WhatsApp messages go through Meta's WhatsApp Cloud API (`lib/server/wh
 
 ## Invoices
 
-When staff mark a booking **confirmed**, the confirmation email to the customer carries an **invoice PDF** (`lib/server/invoice.ts`), if they gave an email.
+When staff mark a booking **confirmed**, the confirmation email to the customer carries an **invoice PDF** (`lib/server/invoice.ts`), automatically.
 
 - **Number:** consecutive per financial year (April–March), e.g. `YT/2026-27/0001`. It is issued once per booking by the database function `issue_invoice` and never changes, even if the invoice is sent again.
 - **Contents:** the business details from /admin/content (name, address, phone, email), the customer, the trip, the **agreed price** as the total, every payment and refund from the ledger, and the balance due or "Paid in full".

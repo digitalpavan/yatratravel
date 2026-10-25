@@ -26,6 +26,13 @@ const email = z
   .optional()
   .transform(v => v || undefined)
   .refine(v => !v || z.email().safeParse(v).success, 'Enter a valid email address, or leave it blank');
+// Bookings need an email: the confirmation and the invoice PDF are sent there.
+const requiredEmail = z
+  .string({ error: 'Enter your email address' })
+  .trim()
+  .min(1, 'Enter your email address. We send your booking confirmation and invoice there')
+  .max(120)
+  .refine(v => z.email().safeParse(v).success, 'Enter a valid email address, for example name@gmail.com');
 const travelDate = z
   .string()
   .min(1, 'Choose a travel date')
@@ -41,7 +48,7 @@ export const bookingSchema = z
   .object({
     name,
     phone,
-    email,
+    email: requiredEmail,
     packageSlug: z.string().min(1, 'Choose a package or service'),
     travelDate,
     passengers: z.coerce.number({ error: 'Enter the number of travellers' }).int().min(1, 'At least 1 traveller').max(50, 'For more than 50 travellers, please contact us'),

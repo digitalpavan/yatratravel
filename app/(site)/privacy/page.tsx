@@ -18,7 +18,7 @@ export default async function PrivacyPage() {
         <div className="prose">
           {!brand.verified && <p><Pending>Draft: to be reviewed before launch</Pending></p>}
           <h2>What we collect</h2>
-          <p>When you request a booking or send an enquiry, we collect your name, mobile number, optional email address, travel date, number of travellers, pickup location, vehicle preference and any notes you add.</p>
+          <p>When you request a booking or send an enquiry, we collect your name, mobile number, email address (required for bookings, so we can send your confirmation and invoice; optional for enquiries), travel date, number of travellers, pickup location, vehicle preference and any notes you add.</p>
           <h2>Why we use it</h2>
           <ul>
             <li>To check availability, confirm your trip and price, and arrange your driver and vehicle.</li>

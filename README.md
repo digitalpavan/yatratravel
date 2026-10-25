@@ -58,7 +58,9 @@ No Supabase project yet? Set `YATRA_DEMO_DATA=1` in `.env.local` to run with bui
 | `WHATSAPP_BUSINESS_NUMBER` | Business WhatsApp number for click-to-chat links, digits with country code (e.g. `919876543210`) |
 | `GOOGLE_SITE_VERIFICATION` | Optional. Search Console HTML-tag verification code |
 | `NEXT_PUBLIC_SPEED_INSIGHTS` | Optional. `1` turns on real-user Core Web Vitals (enable Speed Insights in Vercel first) |
-| `RESEND_API_KEY` | Optional. Turns on automatic booking emails (owner alert + customer updates) |
+| `GMAIL_USER` | Gmail address that sends booking emails (confirmation with invoice PDF, alerts) |
+| `GMAIL_APP_PASSWORD` | 16-character Google App Password for that account (not the normal password) |
+| `RESEND_API_KEY` | Optional alternative to Gmail for booking emails |
 | `NOTIFY_EMAIL_FROM` | Sender for those emails, on a domain verified in Resend |
 | `OWNER_NOTIFY_EMAIL` | Who gets new-booking alerts (comma-separated); defaults to the contact email in /admin/content |
 | `RAZORPAY_KEY_ID` | Optional. Turns on online payment when booking (UPI and QR, cards, netbanking); `rzp_test_…` or `rzp_live_…` |
