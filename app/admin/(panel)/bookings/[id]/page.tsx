@@ -8,7 +8,7 @@ import { getSettings } from '@/lib/data';
 import { formatDate, formatPaise, todayInIndia, toRupees } from '@/lib/format';
 import { createUserClient } from '@/lib/supabase/clients';
 import { statusUpdateMessage, waLink } from '@/lib/whatsapp';
-import { addBookingNote, assignBooking, markCustomerNotified, recordPayment, updateBookingStatus, updatePayment } from '../actions';
+import { addBookingNote, assignBooking, markCustomerNotified, recordPayment, sendInvoice, updateBookingStatus, updatePayment } from '../actions';
 
 export const metadata: Metadata = { title: 'Booking' };
 type Props = { params: Promise<{ id: string }> };
@@ -38,7 +38,7 @@ export default async function BookingDetail({ params }: Props) {
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   const db = await createUserClient();
 
-  const [{ data: b }, items, payments, notes, staff, history, settings] = await Promise.all([
+  const [{ data: b }, items, payments, notes, staff, history, settings, invoice] = await Promise.all([
     db.from('bookings').select('*').eq('id', id).maybeSingle(),
     db.from('booking_items').select('id, kind, description, quantity, unit_price_paise, amount_paise').eq('booking_id', id).order('created_at'),
     db.from('payments').select('id, kind, amount_paise, method, transaction_ref, received_on, profiles(full_name, email)').eq('booking_id', id).order('received_on', { ascending: false }),
@@ -47,6 +47,7 @@ export default async function BookingDetail({ params }: Props) {
     // RLS returns history to admins only.
     db.from('audit_log').select('id, action, actor_email, details, created_at').eq('entity', 'bookings').eq('entity_id', id).order('created_at', { ascending: false }).limit(20),
     getSettings(),
+    db.from('invoices').select('number, issued_at').eq('booking_id', id).maybeSingle(),
   ]);
   if (!b) notFound();
 
@@ -161,6 +162,18 @@ export default async function BookingDetail({ params }: Props) {
 
           <section className="card card--pad" aria-labelledby="pay-title">
             <h2 id="pay-title" className="h4">Payment</h2>
+            {(b.status === 'confirmed' || b.status === 'completed') && b.quoted_price_paise !== null && (
+              <div className="flex flex-wrap items-center gap-3 mt-4">
+                <span className="text-sm">{invoice.data ? <>Invoice <strong>{invoice.data.number}</strong> · issued {formatDateTime(invoice.data.issued_at)}</> : 'The invoice is issued when it is first sent or downloaded.'}</span>
+                <a className="btn btn--secondary btn--sm" href={`/admin/bookings/${b.id}/invoice`}><Icon name="download" />Download invoice</a>
+                {b.email && (
+                  <ActionForm action={sendInvoice} className="" confirm={`Email the invoice to ${b.email}?`}>
+                    <input type="hidden" name="id" value={b.id} />
+                    <SubmitButton size="sm"><Icon name="mail" />Email invoice</SubmitButton>
+                  </ActionForm>
+                )}
+              </div>
+            )}
             <ActionForm action={updatePayment} className="form-grid form-grid--3 mt-4">
               <input type="hidden" name="id" value={b.id} />
               <div className="field"><label className="label" htmlFor="payment_status">Payment status</label>

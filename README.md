@@ -67,6 +67,7 @@ No Supabase project yet? Set `YATRA_DEMO_DATA=1` in `.env.local` to run with bui
 | `WHATSAPP_CLOUD_TOKEN` | Optional. Meta WhatsApp Cloud API token: turns on automatic WhatsApp messages after payment |
 | `WHATSAPP_PHONE_NUMBER_ID` | Phone number id from WhatsApp Manager → API setup |
 | `WHATSAPP_ADMIN_NUMBERS` | Who gets owner WhatsApp alerts (comma-separated, with country code); defaults to the business WhatsApp number |
+| `INVOICE_GSTIN` | Optional. GSTIN printed on invoice PDFs |
 | `SUPABASE_DB_URL` | Only for the database scripts below, not needed on Vercel |
 
 Never commit `.env.local`. It is git-ignored.

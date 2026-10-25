@@ -6,7 +6,7 @@ import type { ActionState } from '@/components/admin/ActionForm';
 import { requireRole } from '@/lib/auth';
 import { toPaise } from '@/lib/format';
 import { confirmationPath } from '@/lib/server/bookings';
-import { notifyStatusChange } from '@/lib/server/notify';
+import { emailInvoice, notifyStatusChange } from '@/lib/server/notify';
 import { createUserClient } from '@/lib/supabase/clients';
 
 const id = z.uuid();
@@ -22,7 +22,7 @@ export async function updateBookingStatus(_: ActionState, form: FormData): Promi
   if (!parsed.success) return { error: 'Invalid request.' };
   const db = await createUserClient();
   const { data: b, error } = await db.from('bookings').update({ status: parsed.data.status }).eq('id', parsed.data.id)
-    .select('reference, status, name, email, package_title, travel_date, quoted_price_paise').single();
+    .select('id, reference, status, name, email, package_title, travel_date, quoted_price_paise').single();
   // check_violation (23514) messages come from the workflow trigger and are written for staff.
   if (error) return { error: error.code === '23514' ? error.message : 'Could not update the status.' };
 
@@ -31,6 +31,21 @@ export async function updateBookingStatus(_: ActionState, form: FormData): Promi
   if (emailed) await db.from('bookings').update({ customer_notified_status: b.status, customer_notified_at: new Date().toISOString() }).eq('id', parsed.data.id);
   revalidatePath('/admin', 'layout');
   return done(emailed ? `Booking marked ${parsed.data.status}. The customer has been emailed.` : `Booking marked ${parsed.data.status}. Now let the customer know.`);
+}
+
+/** Emails the invoice PDF to the customer again (it shows the payments received so far). */
+export async function sendInvoice(_: ActionState, form: FormData): Promise<ActionState> {
+  await requireRole('staff');
+  const parsed = id.safeParse(form.get('id'));
+  if (!parsed.success) return { error: 'Invalid request.' };
+  const db = await createUserClient();
+  const { data: b } = await db.from('bookings').select('id, reference, name, email, package_title, travel_date').eq('id', parsed.data).maybeSingle();
+  if (!b) return { error: 'Booking not found.' };
+  const result = await emailInvoice(b);
+  if (result === 'no-email') return { error: 'This customer has no email address. Download the invoice and send it on WhatsApp instead.' };
+  if (result === 'no-invoice') return { error: 'Invoices are made for confirmed bookings with an agreed price.' };
+  if (result === 'failed') return { error: 'The email could not be sent. Check the email settings (RESEND_API_KEY) and try again.' };
+  return done(`Invoice emailed to ${b.email}.`);
 }
 
 /** Click-to-chat can't confirm a message was sent, so staff record it after sending the update. */

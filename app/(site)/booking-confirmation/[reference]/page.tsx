@@ -105,6 +105,12 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
         </ol>
       </section>}
 
+      {(booking.status === 'confirmed' || booking.status === 'completed') && booking.quoted_price_paise !== null && token && (
+        <a className="btn btn--outline btn--block" href={`/booking-confirmation/${booking.reference}/invoice?t=${encodeURIComponent(token)}`} download>
+          <Icon name="download" />Download invoice (PDF)
+        </a>
+      )}
+
       <div className="grid grid--2">
         <a className="btn btn--whatsapp btn--lg" href={links.whatsappHref(customerAboutBookingMessage(booking))} target="_blank" rel="noopener"><Icon name="whatsapp" />Message us on WhatsApp</a>
         <a className="btn btn--outline btn--lg" href={links.phoneHref}><Icon name="phone" />Call {links.phoneLabel}</a>

@@ -47,7 +47,7 @@ Emails go through [Resend](https://resend.com) (`lib/server/notify.ts`), sent af
 | When | Owner | Customer |
 |---|---|---|
 | New booking request | Alert with all details, a WhatsApp link to the customer, and a dashboard link (to `OWNER_NOTIFY_EMAIL`, or the contact email in /admin/content) | Acknowledgement with the reference and their private booking link, if they gave an email |
-| Status changed | – | Status email, if they gave an email; the booking is then marked as notified |
+| Status changed | – | Status email, if they gave an email; the booking is then marked as notified. **Confirmed** also attaches the invoice PDF (see Invoices) |
 
 Each email has an idempotency key (reference + event), so retries never send duplicates. Email is optional on the booking form, so WhatsApp stays the main channel for customers without one.
 
@@ -62,6 +62,17 @@ Automatic WhatsApp messages go through Meta's WhatsApp Cloud API (`lib/server/wh
 - Links use click-to-chat: `https://wa.me/<number>?text=<encoded message>` (`waLink()` in `lib/whatsapp.ts`). The chat opens with the message typed in. Nothing is sent until the person taps send, which is why staff confirm with "I've sent it".
 - The business number comes from **`WHATSAPP_BUSINESS_NUMBER`** (country code + number, digits only, e.g. `919876543210`). If it isn't set, the number saved in /admin/content is used.
 - Message text sits in a URL that passes through browsers and WhatsApp's redirect, so it holds only what the chat needs: the reference, package, date, travellers, vehicle and status. **No names, phone numbers, pickup addresses or private booking links.** The customer's phone number appears only as the chat recipient in staff-side links.
+
+## Invoices
+
+When staff mark a booking **confirmed**, the confirmation email to the customer carries an **invoice PDF** (`lib/server/invoice.ts`), if they gave an email.
+
+- **Number:** consecutive per financial year (April–March), e.g. `YT/2026-27/0001`. It is issued once per booking by the database function `issue_invoice` and never changes, even if the invoice is sent again.
+- **Contents:** the business details from /admin/content (name, address, phone, email), the customer, the trip, the **agreed price** as the total, every payment and refund from the ledger, and the balance due or "Paid in full".
+- **Amounts:** the total is fixed when the invoice is issued. Payments are read each time the PDF is made, so a copy sent later shows later payments.
+- **GST:** this is a plain invoice, with no tax lines. If the business is GST-registered, set `INVOICE_GSTIN` to print the GSTIN. A GST tax invoice (tax rate, SAC code, CGST/SGST split) would need those rules added.
+- **Copies:** staff can **Download invoice** or **Email invoice** from the booking page. The customer can **Download invoice (PDF)** from their private booking page once the booking is confirmed.
+- **Characters:** the PDF uses the standard Helvetica font, so text in other scripts (e.g. Telugu) is left out, and ₹ prints as "Rs.".
 
 ## Online payments
 

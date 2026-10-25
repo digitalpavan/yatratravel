@@ -20,6 +20,8 @@ Supabase Postgres. The schema lives in `supabase/migrations/` and is applied in 
 | `payment_attempts` | Razorpay orders opened for a booking (server only; see [08](08-booking-workflow.md#online-payments)) | – | read | read |
 | `whatsapp_messages` | Automatic WhatsApp messages sent per booking, logged before sending so none go twice | – | read | read |
 | `gateway_events` | Razorpay webhook events already handled | – | – | – |
+| `invoices` | One per confirmed booking: number (`YT/2026-27/0001`), total and issue time; issued by `issue_invoice()` on the server | – | read | read |
+| `invoice_counters` | Last invoice number per financial year | – | – | – |
 | `booking_notes`, `enquiry_notes` | Internal notes (can't be edited) | – | read, add | read, add |
 | `enquiries` | Contact and WhatsApp enquiries | – | read; update status, follow-up, assignee | same |
 | `reviews` | Customer reviews | read published | read | write |

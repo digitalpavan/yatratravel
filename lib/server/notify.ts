@@ -2,6 +2,7 @@ import 'server-only';
 import { getSettings, getVehicles } from '@/lib/data';
 import { formatDate, formatPaise } from '@/lib/format';
 import { confirmationPath } from '@/lib/server/bookings';
+import { invoiceForBooking } from '@/lib/server/invoice';
 import type { PaidBooking } from '@/lib/server/payments';
 import { adminWhatsappNumbers, sendWhatsappTemplate } from '@/lib/server/whatsapp-cloud';
 import { contactLinks, siteUrl } from '@/lib/site';
@@ -14,7 +15,8 @@ import { statusUpdateMessage, waLink } from '@/lib/whatsapp';
 //   NOTIFY_EMAIL_FROM    Sender, e.g. "Yatra Travels <bookings@yourdomain.in>" (the domain must be verified in Resend)
 //   OWNER_NOTIFY_EMAIL   Where new-booking alerts go (comma-separated for several); falls back to the contact email in /admin/content
 
-type Email = { to: string[]; subject: string; text: string; html: string; replyTo?: string; idempotencyKey: string };
+type Attachment = { filename: string; content: Uint8Array };
+type Email = { to: string[]; subject: string; text: string; html: string; replyTo?: string; idempotencyKey: string; attachments?: Attachment[] };
 
 async function sendEmail(email: Email, ref: string): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
@@ -27,8 +29,9 @@ async function sendEmail(email: Email, ref: string): Promise<boolean> {
         from: process.env.NOTIFY_EMAIL_FROM || 'Yatra Travels <onboarding@resend.dev>',
         to: email.to, subject: email.subject, text: email.text, html: email.html,
         ...(email.replyTo && { reply_to: email.replyTo }),
+        ...(email.attachments?.length && { attachments: email.attachments.map(a => ({ filename: a.filename, content: Buffer.from(a.content).toString('base64') })) }),
       }),
-      signal: AbortSignal.timeout(10_000),
+      signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) { console.error(`[notify] ${ref}: email failed (${res.status})`); return false; }
     return true;
@@ -162,9 +165,12 @@ export async function notifyPaymentReceived(b: PaidBooking): Promise<void> {
   ]);
 }
 
-/** Status change: tells the customer by email when they gave one. Returns true if the email went out. */
+/**
+ * Status change: tells the customer by email when they gave one. Returns true if the email went out.
+ * A confirmation carries the invoice PDF; if the invoice can't be made, the email still goes without it.
+ */
 export async function notifyStatusChange(b: {
-  reference: string; status: string; name: string; email: string | null; package_title: string; travel_date: string; quoted_price_paise: number | null; confirmationPath: string;
+  id: string; reference: string; status: string; name: string; email: string | null; package_title: string; travel_date: string; quoted_price_paise: number | null; confirmationPath: string;
 }): Promise<boolean> {
   if (!b.email) return false;
   const { brand, contact } = await getSettings();
@@ -175,13 +181,44 @@ export async function notifyStatusChange(b: {
     completed: `Thank you for travelling with us (${b.reference})`,
     cancelled: `Your booking ${b.reference} has been cancelled`,
   };
+  const invoice = b.status === 'confirmed' ? await invoiceOrNull(b.id, b.reference) : null;
   return sendEmail({
     to: [b.email],
     subject: subjects[b.status] ?? `Update on your booking ${b.reference}`,
     replyTo: contact.email ?? undefined,
     idempotencyKey: `booking-status-${b.reference}-${b.status}`,
-    ...layout([`Dear ${b.name.split(/\s+/)[0]},`, message.replace(/^Hello from [^.]+\. /, '')],
-      [['Reference', b.reference], ['Package', b.package_title], ['Travel date', day(b.travel_date)]],
+    ...layout([`Dear ${b.name.split(/\s+/)[0]},`, message.replace(/^Hello from [^.]+\. /, ''),
+      ...(invoice ? [`Your invoice ${invoice.number} is attached as a PDF.`] : [])],
+      [['Reference', b.reference], ['Package', b.package_title], ['Travel date', day(b.travel_date)], ...(invoice ? [['Invoice', invoice.number] as [string, string]] : [])],
       { href: `${siteUrl}${b.confirmationPath}`, label: 'View your booking' }),
+    ...(invoice && { attachments: [{ filename: invoice.filename, content: invoice.pdf }] }),
   }, b.reference);
+}
+
+async function invoiceOrNull(bookingId: string, reference: string) {
+  try {
+    return await invoiceForBooking(bookingId);
+  } catch (e) {
+    console.error(`[notify] ${reference}: invoice could not be made`, e);
+    return null;
+  }
+}
+
+/** Sends the invoice again (from the dashboard), e.g. after a later payment or when the customer asks for it. */
+export async function emailInvoice(b: { id: string; reference: string; name: string; email: string | null; package_title: string; travel_date: string }): Promise<'sent' | 'no-email' | 'no-invoice' | 'failed'> {
+  if (!b.email) return 'no-email';
+  const invoice = await invoiceOrNull(b.id, b.reference);
+  if (!invoice) return 'no-invoice';
+  const { contact } = await getSettings();
+  const sent = await sendEmail({
+    to: [b.email],
+    subject: `Invoice ${invoice.number} for your booking ${b.reference}`,
+    replyTo: contact.email ?? undefined,
+    idempotencyKey: `invoice-${b.reference}-${Date.now()}`,
+    ...layout([`Dear ${b.name.split(/\s+/)[0]},`, `Please find your invoice ${invoice.number} attached as a PDF. It shows the payments we've received so far.`],
+      [['Reference', b.reference], ['Package', b.package_title], ['Travel date', day(b.travel_date)], ['Invoice', invoice.number]],
+      { href: `${siteUrl}${confirmationPath(b.reference)}`, label: 'View your booking' }),
+    attachments: [{ filename: invoice.filename, content: invoice.pdf }],
+  }, b.reference);
+  return sent ? 'sent' : 'failed';
 }

@@ -206,7 +206,24 @@ await as('service_role', null, async () => {
   await db.query("insert into public.whatsapp_messages (booking_id, event, recipient, to_number, template) select id, 'paid', 'customer', '919876500000', 't' from public.bookings where reference='YT-261025-WXYZ'");
   ok(await fails("insert into public.whatsapp_messages (booking_id, event, recipient, to_number, template) select id, 'paid', 'customer', '919876500000', 't' from public.bookings where reference='YT-261025-WXYZ'"), 'the same WhatsApp message is never logged (or sent) twice');
 });
+// --- invoices (issued by the server when a booking is confirmed)
+await as('service_role', null, async () => {
+  const bid = (await rows("select id from public.bookings where reference='YT-261025-WXYZ'"))[0].id;
+  ok(await fails(`select public.issue_invoice('${bid}')`), 'no invoice for a booking that is not confirmed');
+  await db.query(`update public.bookings set status='confirmed' where id='${bid}'`);
+  const first = (await rows(`select (public.issue_invoice('${bid}')).number`))[0].number;
+  const again = (await rows(`select (public.issue_invoice('${bid}')).number`))[0].number;
+  ok(/^YT\/\d{4}-\d{2}\/0001$/.test(first) && first === again, 'a confirmed booking gets one invoice number, the same every time');
+  ok((await rows('select * from public.invoices')).length === 1, 'issuing again does not create a second invoice');
+});
+await as('authenticated', STAFF, async () => {
+  const bid = (await rows("select id from public.bookings where reference='YT-261025-WXYZ'"))[0].id;
+  ok((await rows('select number from public.invoices')).length === 1, 'staff see invoices');
+  ok(await fails(`select public.issue_invoice('${bid}')`), 'staff cannot issue invoices directly (only the server can)');
+  ok(await fails("update public.invoices set total_paise=1"), 'staff cannot change an invoice');
+});
 await as('anon', null, async () => {
+  ok(await hidden('select * from public.invoices'), 'anon cannot read invoices');
   ok(await hidden('select * from public.payment_attempts'), 'anon cannot read payment attempts');
   ok(await hidden('select * from public.whatsapp_messages'), 'anon cannot read WhatsApp messages');
   ok(await hidden('select * from public.gateway_events'), 'anon cannot read gateway events');
