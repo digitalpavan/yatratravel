@@ -60,6 +60,8 @@ fieldset.card { min-width: 0; margin: 0; }
 fieldset.card > legend { float: left; width: 100%; margin-bottom: var(--space-2); padding: 0; }
 fieldset[disabled] .input, fieldset[disabled] .select, fieldset[disabled] .textarea { background: var(--bg-subtle); }
 .input--sm { min-height: 40px; max-width: 180px; }
+.confirm-form { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-3); }
+.confirm-form > .alert { flex-basis: 100%; }
 .textarea--code { font-family: ui-monospace, Menlo, monospace; font-size: var(--text-sm); line-height: 1.6; }
 .check-grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 .sticky-save { position: sticky; bottom: var(--space-4); z-index: 5; display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: center; box-shadow: var(--shadow-lg); }

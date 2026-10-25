@@ -69,6 +69,12 @@ export default async function BookingDetail({ params }: Props) {
   const waText = `Hello, this is ${settings.brand.name} about your booking ${b.reference}.`;
   const updateText = statusUpdateMessage(settings.brand.name, b.status, { ...b, quoted_price: b.quoted_price_paise === null ? null : formatPaise(b.quoted_price_paise) });
   const customerBehind = b.customer_notified_status !== b.status;
+  const vehicleName = (fleet.data ?? []).find(v => v.slug === b.vehicle)?.name ?? b.vehicle;
+  // Suggested agreed price for confirming: the saved one, else the listed price of the requested items.
+  const priced = (items.data ?? []).filter(it => it.amount_paise !== null);
+  const listedPaise = priced.length && priced.length === items.data?.length
+    ? priced.reduce((sum, it) => sum + (it.kind === 'discount' ? -1 : 1) * Number(it.amount_paise), 0) : null;
+  const suggestedPaise = b.quoted_price_paise ?? listedPaise;
 
   return (
     <>
@@ -83,7 +89,7 @@ export default async function BookingDetail({ params }: Props) {
               <div><dt>Package</dt><dd>{b.package_title}</dd></div>
               <div><dt>Travel date</dt><dd>{formatDate(b.travel_date)}</dd></div>
               <div><dt>Travellers</dt><dd>{b.passengers}</dd></div>
-              <div><dt>Vehicle</dt><dd>{b.vehicle === 'any' ? 'Customer asked us to suggest' : b.vehicle}</dd></div>
+              <div><dt>Vehicle</dt><dd>{b.vehicle === 'any' ? 'Customer asked us to suggest' : vehicleName}</dd></div>
               <div style={{ gridColumn: '1 / -1' }}><dt>Pickup</dt><dd>{b.pickup}</dd></div>
               {b.requests && <div style={{ gridColumn: '1 / -1' }}><dt>Special requests</dt><dd className="pre">{b.requests}</dd></div>}
             </dl>
@@ -103,7 +109,17 @@ export default async function BookingDetail({ params }: Props) {
             <h2 id="status-title" className="h4">Status</h2>
             {NEXT_STATUS[b.status] ? (
               <div className="flex flex-wrap gap-3 mt-4">
-                {NEXT_STATUS[b.status].map(s => (
+                {NEXT_STATUS[b.status].map(s => s.status === 'confirmed' ? (
+                  // Confirming needs an agreed price: it's entered right here (prefilled with the listed price) and saved with the status.
+                  <ActionForm key={s.status} action={updateBookingStatus} confirm={s.confirm} className="confirm-form">
+                    <input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value={s.status} />
+                    <div className="field">
+                      <label className="label" htmlFor="confirm-quoted">Agreed price (₹)</label>
+                      <input className="input input--sm" id="confirm-quoted" name="quoted" inputMode="decimal" required defaultValue={toRupees(suggestedPaise) ?? ''} placeholder="e.g. 11999" />
+                    </div>
+                    <SubmitButton variant={s.variant}>{s.label}</SubmitButton>
+                  </ActionForm>
+                ) : (
                   <ActionForm key={s.status} action={updateBookingStatus} confirm={s.confirm} className="">
                     <input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value={s.status} />
                     <SubmitButton variant={s.variant}>{s.label}</SubmitButton>
@@ -114,7 +130,7 @@ export default async function BookingDetail({ params }: Props) {
             <p className="text-sm text-muted mt-4">
               {b.status === 'confirmed'
                 ? 'Mark the trip completed after the service, on or after the travel date.'
-                : <>Confirm only after checking availability below and agreeing the price with the customer.{b.quoted_price_paise === null && <> <strong>Add the agreed price under Payment first.</strong></>}</>}
+                : <>Confirm only after checking availability below and agreeing the price with the customer.{b.quoted_price_paise === null && suggestedPaise !== null && <> The agreed price is filled in with the listed price; change it if you agreed a different one.</>}</>}
             </p>
 
             <div className={`alert ${customerBehind ? 'alert--info' : 'alert--success'} mt-4`} role="status">

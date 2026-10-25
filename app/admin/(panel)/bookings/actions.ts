@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import type { ActionState } from '@/components/admin/ActionForm';
 import { requireRole } from '@/lib/auth';
-import { toPaise } from '@/lib/format';
+import { parseRupees, toPaise } from '@/lib/format';
 import { confirmationPath } from '@/lib/server/bookings';
 import { emailInvoice, notifyStatusChange } from '@/lib/server/notify';
 import { createUserClient } from '@/lib/supabase/clients';
@@ -15,13 +15,19 @@ const done = (ok: string): ActionState => ({ ok, at: Date.now() });
 /**
  * The database enforces the workflow (pending → contacted → confirmed → completed; any open state → cancelled),
  * requires an agreed price before confirming, and allows "completed" only from the travel date on.
+ * Confirming can carry the agreed price, so both are saved in one step.
  */
 export async function updateBookingStatus(_: ActionState, form: FormData): Promise<ActionState> {
   await requireRole('staff');
   const parsed = z.object({ id, status: z.enum(['contacted', 'confirmed', 'completed', 'cancelled']) }).safeParse({ id: form.get('id'), status: form.get('status') });
   if (!parsed.success) return { error: 'Invalid request.' };
+  const { status } = parsed.data;
+  const quoted = form.has('quoted') ? parseRupees(String(form.get('quoted'))) : null;
+  if (quoted === 'invalid') return { error: 'Check the agreed price: numbers only, for example 11999.' };
+  if (status === 'confirmed' && form.has('quoted') && quoted === null) return { error: 'Enter the agreed price to confirm the booking.' };
   const db = await createUserClient();
-  const { data: b, error } = await db.from('bookings').update({ status: parsed.data.status }).eq('id', parsed.data.id)
+  const { data: b, error } = await db.from('bookings')
+    .update({ status, ...(status === 'confirmed' && quoted !== null && { quoted_price_paise: toPaise(quoted) }) }).eq('id', parsed.data.id)
     .select('id, reference, status, name, email, package_title, travel_date, quoted_price_paise').single();
   // check_violation (23514) messages come from the workflow trigger and are written for staff.
   if (error) return { error: error.code === '23514' ? error.message : 'Could not update the status.' };

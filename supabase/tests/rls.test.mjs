@@ -206,6 +206,16 @@ await as('service_role', null, async () => {
   await db.query("insert into public.whatsapp_messages (booking_id, event, recipient, to_number, template) select id, 'paid', 'customer', '919876500000', 't' from public.bookings where reference='YT-261025-WXYZ'");
   ok(await fails("insert into public.whatsapp_messages (booking_id, event, recipient, to_number, template) select id, 'paid', 'customer', '919876500000', 't' from public.bookings where reference='YT-261025-WXYZ'"), 'the same WhatsApp message is never logged (or sent) twice');
 });
+// --- confirming from the dashboard: the agreed price is saved in the same step
+await as('service_role', null, async () => {
+  await db.query(`insert into public.bookings (reference,idempotency_key,name,phone,package_slug,package_title,travel_date,passengers,pickup,vehicle,consent_at)
+    values ('YT-261025-CONF',gen_random_uuid(),'Pavan','9700000000','live','Live','2026-12-05',8,'Bus stand','sedan',now())`);
+});
+await as('authenticated', STAFF, async () => {
+  ok(await fails("update public.bookings set status='confirmed' where reference='YT-261025-CONF'"), 'a booking cannot be confirmed without an agreed price');
+  ok(await affected("update public.bookings set status='confirmed', quoted_price_paise=1199900 where reference='YT-261025-CONF'") === 1, 'staff confirm a booking and set the agreed price in one step');
+});
+
 // --- invoices (issued by the server when a booking is confirmed)
 await as('service_role', null, async () => {
   const bid = (await rows("select id from public.bookings where reference='YT-261025-WXYZ'"))[0].id;
