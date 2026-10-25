@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { BackgroundMusic } from '@/components/BackgroundMusic';
 import { Header } from '@/components/Header';
 import { Footer, PreviewBanner, WhatsAppFab } from '@/components/Footer';
 import { getSettings } from '@/lib/data';
@@ -36,6 +37,8 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
       <main id="main">{children}</main>
       <Footer settings={settings} links={links} />
       <WhatsAppFab href={links.whatsappHref()} />
+      {/* Looping background music. Put the file at public/audio/background-music.mp3, or set NEXT_PUBLIC_BACKGROUND_MUSIC_URL. */}
+      <BackgroundMusic src={process.env.NEXT_PUBLIC_BACKGROUND_MUSIC_URL || '/audio/background-music.mp3'} />
       {/* Real-user Core Web Vitals. Turn on Speed Insights in the Vercel project first, then set NEXT_PUBLIC_SPEED_INSIGHTS=1. */}
       {process.env.NEXT_PUBLIC_SPEED_INSIGHTS === '1' && <SpeedInsights />}
     </>

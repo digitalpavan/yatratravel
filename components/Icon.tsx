@@ -1,7 +1,8 @@
 import {
   ArrowRight, Bell, Calendar, Car, ChartColumn, Check, ChevronDown, ChevronRight, CircleCheck, CircleX, ClipboardList, Clock, Copy,
   Download, FileText, House, Image, IndianRupee, Inbox, Info, ListFilter, LogOut, Mail, MapPin, Menu, Package, Pencil, Phone, Plane,
-  Plus, RefreshCw, Route, Search, Settings, ShieldCheck, Sparkles, Star, TrainFront, Trash2, TriangleAlert, Users, X, type LucideIcon,
+  Plus, RefreshCw, Route, Search, Settings, ShieldCheck, Sparkles, Star, TrainFront, Trash2, TriangleAlert, Users, Volume2, VolumeX, X,
+  type LucideIcon,
 } from 'lucide-react';
 
 // Lucide line icons, plus two the library doesn't include: a South Indian temple (gopuram) and WhatsApp.
@@ -11,7 +12,7 @@ const lucide = {
   alert: TriangleAlert, info: Info, star: Star, shield: ShieldCheck, search: Search, filter: ListFilter, home: House, package: Package,
   inbox: Inbox, clipboard: ClipboardList, image: Image, settings: Settings, file: FileText, rupee: IndianRupee, plane: Plane,
   train: TrainFront, copy: Copy, download: Download, plus: Plus, edit: Pencil, logout: LogOut, route: Route, chart: ChartColumn,
-  sparkle: Sparkles, bell: Bell, mail: Mail, refresh: RefreshCw, trash: Trash2,
+  sparkle: Sparkles, bell: Bell, mail: Mail, refresh: RefreshCw, trash: Trash2, volume: Volume2, mute: VolumeX,
 } satisfies Record<string, LucideIcon>;
 
 const custom = {

@@ -426,6 +426,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .fab-whatsapp svg { width: 28px; height: 28px; }
 .fab-whatsapp:hover { background: #186239; }
 
+.fab-music {
+  position: fixed; left: var(--space-4); bottom: var(--space-4); z-index: var(--z-sticky);
+  display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--color-navy-900); color: var(--color-gold-500); box-shadow: var(--shadow-lg);
+}
+.fab-music:hover { background: var(--color-navy-700); }
+.fab-music:focus-visible { outline: 3px solid var(--color-gold-500); outline-offset: 3px; }
+.fab-music.is-playing::after { /* soft pulse while music plays */
+  content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--color-gold-500);
+  animation: fab-music-pulse 2s ease-out infinite; pointer-events: none;
+}
+@keyframes fab-music-pulse { from { opacity: 0.7; transform: scale(1); } to { opacity: 0; transform: scale(1.35); } }
+@media (prefers-reduced-motion: reduce) { .fab-music.is-playing::after { animation: none; opacity: 0.5; } }
+
 .sticky-cta {
   position: fixed; inset: auto 0 0 0; z-index: var(--z-sticky);
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
@@ -433,12 +447,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--bg-surface); border-top: 1px solid var(--border-subtle); box-shadow: 0 -8px 24px rgba(16, 28, 44, 0.08);
 }
 .has-sticky-cta .fab-whatsapp { display: none; } /* the sticky bar carries its own WhatsApp button */
+.has-sticky-cta .fab-music { bottom: calc(88px + env(safe-area-inset-bottom)); } /* sits above the sticky bar */
 .has-sticky-cta { padding-bottom: 80px; }
 @media (min-width: 1024px) {
   .sticky-cta { display: none; }
   .has-sticky-cta { padding-bottom: 0; }
   .has-sticky-cta .fab-whatsapp { display: grid; }
   .fab-whatsapp { right: var(--space-5); bottom: var(--space-5); }
+  .fab-music, .has-sticky-cta .fab-music { left: var(--space-5); bottom: var(--space-5); }
 }
 
 /* ============ Admin ============ */
