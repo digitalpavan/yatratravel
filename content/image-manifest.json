@@ -83,7 +83,7 @@
       ],
       "crop": "attention",
       "loading": "lazy",
-      "alt": "Gopuram of Sri Govindaraja Swamy Temple in Tirupati town",
+      "alt": "Raja gopuram of Sri Govindaraja Swamy Temple in Tirupati town",
       "usedOn": [
         "home (destinations)",
         "package: Tirupati Local Temple Tour (gallery)"
@@ -92,12 +92,12 @@
       "prompt": "Reference brief for a photographer/stock search: exterior of a Tirupati town temple (e.g. Sri Govindaraja Swamy or Sri Padmavathi Ammavari Temple), gopuram fully in frame, natural daylight, devotees at a respectful distance, editorial travel style, no text or watermark.",
       "notes": "Confirm the exact temple shown and update the alt text to match it.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Adityamadhav83",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Side_view_Govindaraja_swamy_Gopuram_Tirupati.JPG",
+        "attribution": "Photo: Adityamadhav83, CC BY-SA 3.0, via Wikimedia Commons (resized)"
       }
     },
     {
@@ -167,9 +167,9 @@
         1200,
         1600
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Stone gopuram of Sri Kalahasteeswara Swamy Temple, Srikalahasti",
+      "alt": "Gopuram of Sri Kalahasteeswara Swamy Temple rising above the Swarnamukhi river, Srikalahasti",
       "usedOn": [
         "home (destinations)",
         "package: Kanipakam & Srikalahasti Tour"
@@ -177,12 +177,12 @@
       "sourcing": "licensed-photo REQUIRED (real, identifiable temple)",
       "prompt": "Reference brief: Srikalahasti temple exterior with the main gopuram, detailed carved stone, natural daylight, Swarnamukhi river side if possible, editorial travel style, no text or watermark.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "iMahesh",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Srikalahasti_temple_and_Ghat.jpg",
+        "attribution": "Photo: iMahesh, CC BY-SA 4.0, via Wikimedia Commons (resized)"
       }
     },
     {
@@ -339,19 +339,19 @@
       ],
       "crop": "attention",
       "loading": "lazy",
-      "alt": "Sri Padmavathi Ammavari Temple, Tiruchanur, in morning light",
+      "alt": "Golden mandapam in the temple tank of Sri Padmavathi Ammavari Temple, Tiruchanur",
       "usedOn": [
         "package card + hero: Tirupati Local Temple Tour"
       ],
       "sourcing": "licensed-photo REQUIRED (real, identifiable temple)",
       "prompt": "Reference brief: Sri Padmavathi Ammavari Temple, Tiruchanur, exterior and gopuram in morning light, devotees at a respectful distance, editorial travel style.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Malyadri",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Tiruchanur_19.JPG",
+        "attribution": "Photo: Malyadri, CC BY-SA 3.0, via Wikimedia Commons (resized)"
       }
     },
     {
