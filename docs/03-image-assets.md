@@ -33,7 +33,7 @@ Source originals stay in `assets/source/` and are never served.
 ```
 public/
 ├── images/
-│   ├── branding/      yatra-logo.svg, yatra-logo-white.svg, yatra-mark.svg (favicon/app icon), all done
+│   ├── branding/      logo-badge-128/256.webp (header logo), favicon-64.png, apple-touch-icon.png, yatra-logo.png (search engines), all made from assets/source/branding/ttd-yatra-logo.jpg
 │   ├── hero/          tirumala-hero, travel-hero-mobile, waiting for source
 │   ├── destinations/  tirupati-temple, tirumala-hills, kanipakam-temple, srikalahasti-temple, vellore-golden-temple
 │   ├── vehicles/      sedan, suv, innova, tempo-traveller

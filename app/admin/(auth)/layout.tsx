@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main className="auth-page">
       <div className="auth-card card">
-        <div className="auth-card__brand"><LogoMark size={44} /><div><strong>Yatra Travels</strong><span>Staff dashboard</span></div></div>
+        <div className="auth-card__brand"><LogoMark size={64} /><div><strong>Yatra Travels</strong><span>Staff dashboard</span></div></div>
         {children}
       </div>
     </main>

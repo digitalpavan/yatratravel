@@ -122,8 +122,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .site-header :focus-visible { outline-color: var(--focus-ring-inverse); }
 .site-header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); height: var(--header-height); }
 .logo { display: inline-flex; align-items: center; gap: var(--space-3); text-decoration: none; color: var(--color-white); }
-.logo__mark { width: 44px; height: 44px; flex: none; border-radius: 50%; filter: drop-shadow(0 2px 8px rgba(201, 164, 92, 0.35)); transition: transform var(--duration-base) var(--ease-out), filter var(--duration-base); }
-.logo:hover .logo__mark { transform: rotate(-4deg) scale(1.05); filter: drop-shadow(0 3px 12px rgba(201, 164, 92, 0.55)); }
+.logo__mark { flex: none; border-radius: 50%; filter: drop-shadow(0 2px 8px rgba(201, 164, 92, 0.35)); transition: transform var(--duration-base) var(--ease-out), filter var(--duration-base); }
+.logo:hover .logo__mark { transform: scale(1.06); filter: drop-shadow(0 3px 12px rgba(201, 164, 92, 0.55)); }
 .logo__text { font-family: var(--font-display); font-weight: var(--weight-extrabold); font-size: 1.3125rem; letter-spacing: -0.01em; line-height: 1; }
 .logo__accent { color: var(--color-gold-300); }
 .logo__text small { display: block; margin-top: 4px; font-family: var(--font-body); font-size: 0.625rem; font-weight: var(--weight-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-accent-on-inverse); }
@@ -475,7 +475,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .admin-sidebar { display: none; background: var(--color-navy-900); color: var(--text-muted-on-inverse); padding: var(--space-5) var(--space-4); }
 .admin-sidebar :focus-visible { outline-color: var(--focus-ring-inverse); }
 .admin-sidebar .logo { margin: 0 var(--space-2) var(--space-6); }
-.admin-sidebar .logo__mark { width: 36px; height: 36px; }
+@media (max-width: 479px) { .site-header .logo__mark { width: 52px; height: 52px; } }
 .admin-nav { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
 .admin-nav__group { margin: var(--space-5) var(--space-3) var(--space-2); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: #7F8DA1; }
 .admin-nav a { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-md); text-decoration: none; font-size: var(--text-sm); font-weight: var(--weight-medium); }

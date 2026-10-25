@@ -48,7 +48,7 @@ export function AdminShell({ nav, user, signOut, children }: {
     <div className="admin">
       <a className="skip-link" href="#admin-main">Skip to main content</a>
       <aside className="admin-sidebar" aria-label="Dashboard">
-        <Link className="logo" href="/admin"><LogoMark size={36} /><span className="logo__text">Yatra Travels<small>Dashboard</small></span></Link>
+        <Link className="logo" href="/admin"><LogoMark size={48} /><span className="logo__text">Yatra Travels<small>Dashboard</small></span></Link>
         <nav aria-label="Dashboard sections">{navList(false)}</nav>
       </aside>
 
