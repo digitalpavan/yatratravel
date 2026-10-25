@@ -59,14 +59,6 @@ export function Footer({ settings, links }: { settings: Settings; links: Contact
   );
 }
 
-export function WhatsAppFab({ href }: { href: string }) {
-  return (
-    <a className="fab-whatsapp" href={href} target="_blank" rel="noopener" aria-label="Enquire on WhatsApp">
-      <Icon name="whatsapp" size={28} />
-    </a>
-  );
-}
-
 /** Shown until the owner marks the business details verified in /admin/content. */
 export function PreviewBanner() {
   return (

@@ -15,7 +15,7 @@ export function Logo({ onClick }: { onClick?: () => void }) {
     <Link className="logo" href="/" aria-label="Yatra Travels, home" onClick={onClick}>
       <LogoMark />
       <span className="logo__text">
-        Yatra <span className="logo__accent">Travels</span><small>Tirupati · Tirumala pilgrim tours</small>
+        Yatra <span className="logo__accent">Travels</span><small>Tirupati pilgrim tours</small>
       </span>
     </Link>
   );

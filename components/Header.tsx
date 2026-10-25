@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import { BookNowButton } from '@/components/BookingPopup';
 import { Logo } from '@/components/Logo';
 import { Icon } from '@/components/Icon';
 import { useDialogBehaviour } from '@/components/useDialogBehaviour';
@@ -54,7 +55,7 @@ export function Header({ nav, phoneHref, phoneLabel, whatsappHref }: { nav: read
           </nav>
           <div className="header-actions">
             <a className="btn btn--ghost btn--sm header-phone" href={phoneHref}><Icon name="phone" />{phoneLabel}</a>
-            <Link className="btn btn--primary btn--sm" href="/book">Book Now</Link>
+            <BookNowButton className="btn btn--primary btn--sm">Book Now</BookNowButton>
             <button ref={toggleRef} className="icon-btn nav-toggle" type="button" aria-controls="drawer" aria-expanded={open} aria-label="Open menu" onClick={() => setOpen(true)}>
               <Icon name="menu" size={24} />
             </button>
