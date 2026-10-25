@@ -58,7 +58,7 @@ export default async function PostPage({ params }: Props) {
       mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
       ...(img ? { image: `${siteUrl}${img.src}` } : {}),
       author: { '@type': 'Organization', name: site.name, url: siteUrl },
-      publisher: { '@type': 'Organization', name: site.name, logo: { '@type': 'ImageObject', url: `${siteUrl}/images/branding/yatra-logo.svg` } },
+      publisher: { '@type': 'Organization', name: site.name, logo: { '@type': 'ImageObject', url: `${siteUrl}/images/branding/yatra-logo.png` } },
       keywords: post.tags.join(', '),
     },
     {

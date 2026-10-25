@@ -12,7 +12,7 @@ const manrope = Manrope({ subsets: ['latin'], weight: ['700', '800'], variable: 
 // Text shows at once in the size-matched fallback and swaps when Inter arrives. Manrope (headings, often the LCP) stays preloaded.
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-inter', display: 'swap', preload: false });
 
-export const metadata = { metadataBase: new URL(siteUrl), icons: { icon: '/images/branding/yatra-mark.svg' } };
+export const metadata = { metadataBase: new URL(siteUrl), icons: { icon: '/images/branding/yatra-mark.svg', apple: '/images/branding/apple-touch-icon.png' } };
 export const viewport: Viewport = { themeColor: '#101C2C' };
 
 // Shared shell for the public site (app/(site)) and the dashboard (app/admin).

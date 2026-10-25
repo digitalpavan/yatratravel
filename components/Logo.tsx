@@ -1,19 +1,13 @@
 import Link from 'next/link';
 
-export function LogoMark({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 36 36" aria-hidden="true" className="logo__mark">
-      <rect width="36" height="36" rx="10" fill="#C9A45C" />
-      <path
-        d="M18 7.5 13.5 13h9zM11.5 13h13l1 3.5h-15zM12.5 16.5v11M23.5 16.5v11M16 27.5v-5.5h4v5.5M9.5 27.5h17"
-        fill="none"
-        stroke="#101C2C"
-        strokeWidth="2"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
+// The emblem: a gold-ringed badge with the Tirumala gopuram against the rising sun and the seven hills.
+// Plain shapes with no ids or gradients, so any number of copies render the same (header, footer, drawer, dashboard).
+// The same drawing is in public/images/branding/yatra-mark.svg (favicon) and yatra-logo.png (search engines).
+const MARK = `<circle cx="32" cy="32" r="31.5" fill="#C9A45C"/> <circle cx="32" cy="32" r="29.6" fill="#EBD3A0"/> <circle cx="32" cy="32" r="27.5" fill="#101C2C"/> <circle cx="32" cy="34" r="16" fill="#E39A35"/> <circle cx="32" cy="34" r="12.5" fill="#F4C463"/> <path d="M4.96 37 L9 33 L12.5 35 L16.5 29.5 L20.5 33.5 L24 30.5 L28 34 L32 32.5 L36 34 L40 30.5 L43.5 33.5 L47.5 29.5 L51.5 35 L55 33 L59.04 37 A27.5 27.5 0 0 1 4.96 37 Z" fill="#2E5076"/> <path d="M6.38 42 L10.5 38.5 L15 40.5 L20 37 L25.5 40 L32 38.5 L38.5 40 L44 37 L49 40.5 L53.5 38.5 L57.62 42 A27.5 27.5 0 0 1 6.38 42 Z" fill="#1B3352"/> <path d="M26.78 59 C29.6 55 30.7 51.5 31 48 H33 C33.3 51.5 34.4 55 37.22 59 A27.5 27.5 0 0 1 26.78 59 Z" fill="#EBD3A0"/> <g fill="#E2BC74"><path d="M20.65 48 L20.65 47.1 L21.94 44.36 L42.06 44.36 L43.35 47.1 L43.35 48 Z"/><path d="M21.54 44.36 L21.54 43.46 L22.82 40.71 L41.18 40.71 L42.46 43.46 L42.46 44.36 Z"/><path d="M22.42 40.71 L22.42 39.81 L23.71 37.07 L40.29 37.07 L41.58 39.81 L41.58 40.71 Z"/><path d="M23.31 37.07 L23.31 36.17 L24.59 33.43 L39.41 33.43 L40.69 36.17 L40.69 37.07 Z"/><path d="M24.19 33.43 L24.19 32.53 L25.48 29.79 L38.52 29.79 L39.81 32.53 L39.81 33.43 Z"/><path d="M25.08 29.79 L25.08 28.89 L26.36 26.14 L37.64 26.14 L38.92 28.89 L38.92 29.79 Z"/><path d="M25.96 26.14 L25.96 25.24 L27.25 22.5 L36.75 22.5 L38.04 25.24 L38.04 26.14 Z"/><path d="M25.8 22.5 L25.8 21.3 C25.8 17.9 38.2 17.9 38.2 21.3 L38.2 22.5 Z"/></g> <g fill="#B88B41" opacity="0.55"><path d="M32 48 L43.35 48 L43.35 47.1 L42.06 44.36 L32 44.36 Z"/><path d="M32 44.36 L42.46 44.36 L42.46 43.46 L41.18 40.71 L32 40.71 Z"/><path d="M32 40.71 L41.58 40.71 L41.58 39.81 L40.29 37.07 L32 37.07 Z"/><path d="M32 37.07 L40.69 37.07 L40.69 36.17 L39.41 33.43 L32 33.43 Z"/><path d="M32 33.43 L39.81 33.43 L39.81 32.53 L38.52 29.79 L32 29.79 Z"/><path d="M32 29.79 L38.92 29.79 L38.92 28.89 L37.64 26.14 L32 26.14 Z"/><path d="M32 26.14 L38.04 26.14 L38.04 25.24 L36.75 22.5 L32 22.5 Z"/><path d="M32 22.5 L38.2 22.5 L38.2 21.3 C38.2 19.1 35 18.9 32 18.9 Z"/></g> <g fill="none" stroke="#101C2C" stroke-width="0.6" stroke-linejoin="round"><path d="M20.65 48 L20.65 47.1 L21.94 44.36 L42.06 44.36 L43.35 47.1 L43.35 48 Z"/><path d="M21.54 44.36 L21.54 43.46 L22.82 40.71 L41.18 40.71 L42.46 43.46 L42.46 44.36 Z"/><path d="M22.42 40.71 L22.42 39.81 L23.71 37.07 L40.29 37.07 L41.58 39.81 L41.58 40.71 Z"/><path d="M23.31 37.07 L23.31 36.17 L24.59 33.43 L39.41 33.43 L40.69 36.17 L40.69 37.07 Z"/><path d="M24.19 33.43 L24.19 32.53 L25.48 29.79 L38.52 29.79 L39.81 32.53 L39.81 33.43 Z"/><path d="M25.08 29.79 L25.08 28.89 L26.36 26.14 L37.64 26.14 L38.92 28.89 L38.92 29.79 Z"/><path d="M25.96 26.14 L25.96 25.24 L27.25 22.5 L36.75 22.5 L38.04 25.24 L38.04 26.14 Z"/><path d="M25.8 22.5 L25.8 21.3 C25.8 17.9 38.2 17.9 38.2 21.3 L38.2 22.5 Z"/></g> <g fill="#101C2C"><rect x="31.29" y="41.83" width="1.42" height="1.82" rx="0.45"/><rect x="31.33" y="38.18" width="1.34" height="1.82" rx="0.45"/><rect x="31.37" y="34.54" width="1.26" height="1.82" rx="0.45"/><rect x="31.41" y="30.9" width="1.18" height="1.82" rx="0.45"/><rect x="31.45" y="27.25" width="1.1" height="1.82" rx="0.45"/><rect x="31.49" y="23.61" width="1.02" height="1.82" rx="0.45"/><path d="M30.3 48 V45.6 A1.7 1.7 0 0 1 33.7 45.6 V48 Z"/></g> <g fill="#F4C463"><circle cx="28" cy="18.88" r="0.75"/><path d="M27.68 18.48 L28 16.48 L28.32 18.48 Z"/><circle cx="30" cy="18.64" r="0.75"/><path d="M29.68 18.24 L30 16.24 L30.32 18.24 Z"/><circle cx="32" cy="18.4" r="0.75"/><path d="M31.68 18 L32 16 L32.32 18 Z"/><circle cx="34" cy="18.64" r="0.75"/><path d="M33.68 18.24 L34 16.24 L34.32 18.24 Z"/><circle cx="36" cy="18.88" r="0.75"/><path d="M35.68 18.48 L36 16.48 L36.32 18.48 Z"/></g>`;
+
+export function LogoMark({ size = 44 }: { size?: number }) {
+  // Static, trusted markup defined above: nothing from users or the database goes in here.
+  return <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" className="logo__mark" dangerouslySetInnerHTML={{ __html: MARK }} />;
 }
 
 export function Logo({ onClick }: { onClick?: () => void }) {
@@ -21,7 +15,7 @@ export function Logo({ onClick }: { onClick?: () => void }) {
     <Link className="logo" href="/" aria-label="Yatra Travels, home" onClick={onClick}>
       <LogoMark />
       <span className="logo__text">
-        Yatra Travels<small>Tirupati pilgrim tours</small>
+        Yatra <span className="logo__accent">Travels</span><small>Tirupati · Tirumala pilgrim tours</small>
       </span>
     </Link>
   );

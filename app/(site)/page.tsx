@@ -51,7 +51,7 @@ export default async function Home() {
     '@type': 'TravelAgency',
     name: brand.name,
     url: siteUrl,
-    logo: `${siteUrl}/images/branding/yatra-logo.svg`,
+    logo: `${siteUrl}/images/branding/yatra-logo.png`,
     areaServed: brand.serviceArea,
     ...(brand.verified && contact.phone ? { telephone: `+${contact.phone}` } : {}),
     ...(brand.verified && contact.email ? { email: contact.email } : {}),
