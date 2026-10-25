@@ -197,7 +197,7 @@
       ],
       "crop": "attention",
       "loading": "lazy",
-      "alt": "Sri Lakshmi Narayani Golden Temple at Sripuram, Vellore, surrounded by gardens",
+      "alt": "Gold-covered shrine of Sri Lakshmi Narayani Golden Temple at Sripuram, Vellore, surrounded by water",
       "usedOn": [
         "home (destinations)",
         "package: Vellore Golden Temple Tour"
@@ -206,12 +206,12 @@
       "prompt": "Reference brief: Sripuram Golden Temple, Vellore, star-shaped garden path and golden vimana, evening or daylight, professional tourism photography, no text or watermark.",
       "notes": "Check Sripuram's photography and commercial-use rules before using any image.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Ag1707",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Golden_Temple,_Vellore,_India.jpg",
+        "attribution": "Photo: Ag1707, CC BY-SA 3.0, via Wikimedia Commons (resized)"
       }
     },
     {
