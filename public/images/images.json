@@ -1,4 +1,88 @@
 {
-  "images": {},
-  "videos": {}
+  "images": {
+    "tirumala-hero": {
+      "alt": "Sunrise over the Tirumala hills, with mist in the valleys and the temple among the trees",
+      "aspect": "16:9",
+      "loading": "eager",
+      "width": 1672,
+      "height": 941,
+      "srcset": {
+        "avif": "/images/hero/tirumala-hero-768.avif 768w, /images/hero/tirumala-hero-1280.avif 1280w, /images/hero/tirumala-hero-1672.avif 1672w",
+        "webp": "/images/hero/tirumala-hero-768.webp 768w, /images/hero/tirumala-hero-1280.webp 1280w, /images/hero/tirumala-hero-1672.webp 1672w"
+      },
+      "src": "/images/hero/tirumala-hero.webp",
+      "placeholder": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAACwAQCdASoQAAkAA4BaJbACdAELNzQIAP7f5mc0L+VM4D67CEQvAsD8bfBkv1HOiDx9Zn0Vddsx/EAA"
+    },
+    "travel-hero-mobile": {
+      "alt": "Sunrise over the Tirumala hills, with mist in the valleys and the temple among the trees",
+      "aspect": "9:16",
+      "loading": "eager",
+      "width": 529,
+      "height": 940,
+      "srcset": {
+        "avif": "/images/hero/travel-hero-mobile-480.avif 480w, /images/hero/travel-hero-mobile-529.avif 529w",
+        "webp": "/images/hero/travel-hero-mobile-480.webp 480w, /images/hero/travel-hero-mobile-529.webp 529w"
+      },
+      "src": "/images/hero/travel-hero-mobile.webp",
+      "placeholder": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAADwAwCdASoQABwAPu1orU6ppiSiMAgBMB2JbACdACHV6IQ3Szb1Pe1gAP3es7DZ/2JhXM2ek/SuZmuJUMBf6LAH11esXr07TC+31RJPZb7ktbWiNa8fGwBWeHyT3KBNhsmAAA=="
+    },
+    "sedan": {
+      "alt": "Representative image: silver Maruti Suzuki Dzire sedan",
+      "aspect": "3:2",
+      "loading": "lazy",
+      "width": 1200,
+      "height": 800,
+      "srcset": {
+        "avif": "/images/vehicles/sedan-480.avif 480w, /images/vehicles/sedan-800.avif 800w, /images/vehicles/sedan-1200.avif 1200w",
+        "webp": "/images/vehicles/sedan-480.webp 480w, /images/vehicles/sedan-800.webp 800w, /images/vehicles/sedan-1200.webp 1200w"
+      },
+      "src": "/images/vehicles/sedan.webp",
+      "placeholder": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAAAQAgCdASoQAAsAA4BaJZwAAtvUdP2kVsAAAP6D4T6hAC8baCDQbVXyNqCxiwgU4qXgvmBcwVgFAAAA"
+    },
+    "suv": {
+      "alt": "Representative image: white Maruti Suzuki Ertiga",
+      "aspect": "3:2",
+      "loading": "lazy",
+      "width": 1200,
+      "height": 800,
+      "srcset": {
+        "avif": "/images/vehicles/suv-480.avif 480w, /images/vehicles/suv-800.avif 800w, /images/vehicles/suv-1200.avif 1200w",
+        "webp": "/images/vehicles/suv-480.webp 480w, /images/vehicles/suv-800.webp 800w, /images/vehicles/suv-1200.webp 1200w"
+      },
+      "src": "/images/vehicles/suv.webp",
+      "placeholder": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADQAQCdASoQAAsAA4BaJZACw7DybVvWIAD+qhzSFQyMrLG6ZUDiAVJUjMiHHNn/WdB/4qqFuFIAAA=="
+    },
+    "innova": {
+      "alt": "Representative image: white Toyota Innova Crysta",
+      "aspect": "3:2",
+      "loading": "lazy",
+      "width": 1200,
+      "height": 800,
+      "srcset": {
+        "avif": "/images/vehicles/innova-480.avif 480w, /images/vehicles/innova-800.avif 800w, /images/vehicles/innova-1200.avif 1200w",
+        "webp": "/images/vehicles/innova-480.webp 480w, /images/vehicles/innova-800.webp 800w, /images/vehicles/innova-1200.webp 1200w"
+      },
+      "src": "/images/vehicles/innova.webp",
+      "placeholder": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADQAQCdASoQAAsAA4BaJZQAAn+/tlm+AAD6hW5x06Xasya+oxJki3lnFFHWxh+hriNmKl1w4IF9kvbmSxLHcfxebytAAA=="
+    },
+    "tempo-traveller": {
+      "alt": "Representative image: white Force Traveller van",
+      "aspect": "3:2",
+      "loading": "lazy",
+      "width": 1200,
+      "height": 800,
+      "srcset": {
+        "avif": "/images/vehicles/tempo-traveller-480.avif 480w, /images/vehicles/tempo-traveller-800.avif 800w, /images/vehicles/tempo-traveller-1200.avif 1200w",
+        "webp": "/images/vehicles/tempo-traveller-480.webp 480w, /images/vehicles/tempo-traveller-800.webp 800w, /images/vehicles/tempo-traveller-1200.webp 1200w"
+      },
+      "src": "/images/vehicles/tempo-traveller.webp",
+      "placeholder": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACwAQCdASoQAAsAA4BaJaQAAl2Ua6AAAP7l8FyvJYgCcgJ6a3u+mr55OjKlk/a1YfDnRuAAAAA="
+    }
+  },
+  "videos": {
+    "tirumala-hero": {
+      "poster": "/images/hero/tirumala-hero.webp",
+      "sources": []
+    }
+  }
 }

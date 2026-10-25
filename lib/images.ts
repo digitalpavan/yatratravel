@@ -26,6 +26,13 @@ export function plannedImage(id: string): { alt: string; aspect: string } {
   return { alt: p?.alt ?? '', aspect: p?.aspect ?? '3:2' };
 }
 
+/** Credits required by the licences of photos in use (e.g. CC BY / BY-SA), from the manifest's rights fields. */
+export function photoCredits(): { id: string; text: string; url: string }[] {
+  return manifest.images
+    .filter(i => registry.images[i.id] && i.rights?.status === 'cleared' && i.rights.attribution)
+    .map(i => ({ id: i.id, text: i.rights.attribution, url: i.rights.url }));
+}
+
 export function getVideo(id: string) {
   return registry.videos[id] ?? null;
 }

@@ -55,6 +55,12 @@ No Supabase project yet? Set `YATRA_DEMO_DATA=1` in `.env.local` to run with bui
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public key, safe in the browser |
 | `SUPABASE_SECRET_KEY` | Server-only, full database access |
 | `BOOKING_TOKEN_SECRET` | Signs booking confirmation links (`openssl rand -hex 32`) |
+| `WHATSAPP_BUSINESS_NUMBER` | Business WhatsApp number for click-to-chat links, digits with country code (e.g. `919876543210`) |
+| `GOOGLE_SITE_VERIFICATION` | Optional. Search Console HTML-tag verification code |
+| `NEXT_PUBLIC_SPEED_INSIGHTS` | Optional. `1` turns on real-user Core Web Vitals (enable Speed Insights in Vercel first) |
+| `RESEND_API_KEY` | Optional. Turns on automatic booking emails (owner alert + customer updates) |
+| `NOTIFY_EMAIL_FROM` | Sender for those emails, on a domain verified in Resend |
+| `OWNER_NOTIFY_EMAIL` | Who gets new-booking alerts (comma-separated); defaults to the contact email in /admin/content |
 | `SUPABASE_DB_URL` | Only for the database scripts below, not needed on Vercel |
 
 Never commit `.env.local`. It is git-ignored.
@@ -65,8 +71,10 @@ Never commit `.env.local`. It is git-ignored.
 npm run db:migrate                                    # apply supabase/migrations
 npm run db:seed                                       # load packages, vehicles, settings and blog from content/
 npm run admin:create -- you@example.com "Your Name"   # first admin, prints a one-time password
-npm run test:rls                                      # check row-level security rules
+npm run test:rls                                      # check grants and row-level security for every role
 ```
+
+Tables, the access each role has, and how money is stored (paise) are described in [docs/07-database.md](docs/07-database.md).
 
 ## Deploy
 
@@ -87,3 +95,6 @@ In Supabase → Authentication → URL Configuration, set the Site URL to the li
 - [Website](docs/04-website.md)
 - [Motion](docs/05-motion.md)
 - [Admin dashboard](docs/06-admin.md)
+- [Database](docs/07-database.md)
+- [Booking workflow and payments](docs/08-booking-workflow.md)
+- [SEO and performance](docs/10-seo-performance.md)

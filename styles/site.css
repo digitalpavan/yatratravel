@@ -251,6 +251,13 @@ html { scroll-behavior: smooth; }
 .prose li + li { margin-top: var(--space-2); }
 .prose a { color: var(--text-heading); font-weight: var(--weight-semibold); text-underline-offset: 3px; }
 .prose blockquote { margin-inline: 0; padding-left: var(--space-5); border-left: 3px solid var(--color-gold-500); color: var(--text-muted-on-page); }
+.prose section > * + * { margin-top: var(--space-4); }
+.prose section > h2:first-child { margin-top: 0; }
+
+/* SEO landing pages */
+.landing-photo { border-radius: var(--radius-lg); overflow: hidden; margin-bottom: var(--space-7); }
+.link-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.link-list a { color: var(--text-heading); font-weight: var(--weight-semibold); text-underline-offset: 3px; }
 .contact-list { display: grid; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
 .contact-list li { display: flex; gap: var(--space-4); align-items: start; }
 .contact-list .feature__icon { width: 44px; height: 44px; flex: none; }
@@ -307,9 +314,19 @@ html { scroll-behavior: smooth; }
 .image-settle { position: absolute; inset: 0; }
 .image-settle .photo { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto !important; }
 
+/* Intro (components/motion.tsx): CSS so the page's main heading paints with the first frame, not after JavaScript.
+   Items rise in order of their slot among the Intro's children; lines inside an h1 step through sub-slots.
+   They start at opacity .01, not 0, so the browser counts them as painted for LCP from the first frame. */
+.intro-item { animation: intro-rise 750ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--intro-delay, .1s) + (var(--slot, 0) + var(--sub, 0)) * var(--intro-step, .12s)); }
+.intro > :nth-child(2) { --slot: 1; } .intro > :nth-child(3) { --slot: 2; } .intro > :nth-child(4) { --slot: 3; }
+.intro > :nth-child(5) { --slot: 4; } .intro > :nth-child(6) { --slot: 5; } .intro > :nth-child(7) { --slot: 6; }
+.intro h1 > .intro-item:nth-child(2) { --sub: 1; } .intro h1 > .intro-item:nth-child(3) { --sub: 2; }
+@keyframes intro-rise { from { opacity: .01; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 1ms !important; transition-delay: 0ms !important; animation-duration: 1ms !important; }
+  .intro-item { animation-delay: 0ms !important; }
   .package-card:hover, .package-card:focus-within, .vehicle-card:hover, .blog-grid .card:hover, .dest-card:hover, .dest-card:focus-visible,
   .package-card:hover .photo, .vehicle-card:hover .photo, .dest-card:hover .photo, .blog-grid .card:hover .photo { transform: none !important; }
   .timeline-progress { display: none; }

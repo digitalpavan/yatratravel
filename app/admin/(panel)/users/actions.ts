@@ -40,19 +40,56 @@ export async function createStaff(_: UserActionState, form: FormData): Promise<U
   return { ok: 'Account created. Share this one-time password privately (for example, in person or by phone), not by email:', password, email: parsed.data.email, at: Date.now() };
 }
 
-/** Role and access changes run as the admin, so RLS, the profile guard trigger and the audit trigger all apply. */
+/**
+ * Name, role and access changes run as the admin, so RLS, the profile guard trigger and the audit trigger all apply.
+ * Admins can rename themselves, but not change their own role or access.
+ */
 export async function updateStaff(_: ActionState, form: FormData): Promise<ActionState> {
   const me = await requireRole('admin');
-  const parsed = z.object({ id: z.uuid(), role: z.enum(['admin', 'staff']), active: z.boolean() })
-    .safeParse({ id: form.get('id'), role: form.get('role'), active: form.get('active') === 'on' });
-  if (!parsed.success) return { error: 'Invalid request.' };
-  if (parsed.data.id === me.id) return { error: "You can't change your own role or access. Ask another administrator." };
+  const self = form.get('id') === me.id;
+  const parsed = z.object({
+    id: z.uuid(),
+    full_name: z.string().trim().min(2, 'Enter their name').max(80),
+    role: z.enum(['admin', 'staff']).optional(),
+    active: z.boolean().optional(),
+  }).safeParse({
+    id: form.get('id'), full_name: form.get('full_name'),
+    ...(!self && { role: form.get('role'), active: form.get('active') === 'on' }),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const { id, ...values } = parsed.data;
   const db = await createUserClient();
-  const { error } = await db.from('profiles').update({ role: parsed.data.role, active: parsed.data.active }).eq('id', parsed.data.id);
+  const { error } = await db.from('profiles').update(values).eq('id', id);
   if (error) return { error: error.message.includes('own role') ? error.message : 'Could not update the account.' };
-  if (!parsed.data.active) await createServiceClient().auth.admin.signOut(parsed.data.id).catch(() => {});
-  revalidatePath('/admin/users');
-  return { ok: parsed.data.active ? 'Access updated.' : 'Access removed. They can no longer use the dashboard.', at: Date.now() };
+  revalidatePath('/admin', 'layout');
+  return { ok: values.active === false ? 'Saved. Access removed: they can no longer use the dashboard.' : 'Saved.', at: Date.now() };
+}
+
+/**
+ * Removes a team member. Someone with no activity is deleted outright. Someone who has written notes, been assigned
+ * bookings or uploaded images is referenced by that history, so their account is switched off instead: they can't
+ * sign in (every request checks `active`), and the records they touched stay intact.
+ */
+export async function removeStaff(_: ActionState, form: FormData): Promise<ActionState> {
+  const me = await requireRole('admin');
+  const id = z.uuid().safeParse(form.get('id'));
+  if (!id.success) return { error: 'Invalid request.' };
+  if (id.data === me.id) return { error: "You can't remove your own account. Ask another administrator." };
+  const db = await createUserClient();
+  const { data: person } = await db.from('profiles').select('email').eq('id', id.data).maybeSingle();
+  if (!person) return { error: 'This account no longer exists.' };
+
+  const { error } = await createServiceClient().auth.admin.deleteUser(id.data);
+  if (error) {
+    const off = await db.from('profiles').update({ active: false }).eq('id', id.data);
+    if (off.error) return { error: 'Could not remove the account.' };
+    await db.rpc('log_event', { p_action: 'deactivate_user', p_entity: 'profiles', p_entity_id: id.data, p_details: { email: person.email, reason: 'has history' } });
+    revalidatePath('/admin', 'layout');
+    return { ok: `${person.email} has activity on record (notes, bookings or uploads), so the account was switched off instead of deleted. They can no longer sign in, and their history is kept.`, at: Date.now() };
+  }
+  await db.rpc('log_event', { p_action: 'delete_user', p_entity: 'profiles', p_entity_id: id.data, p_details: { email: person.email } });
+  revalidatePath('/admin', 'layout');
+  return { ok: `${person.email} has been removed.`, at: Date.now() };
 }
 
 export async function resetStaffPassword(_: UserActionState, form: FormData): Promise<UserActionState> {

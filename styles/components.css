@@ -184,6 +184,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (min-width: 768px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .footer-grid { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; } }
 .footer-bottom { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: space-between; padding-block: var(--space-5); border-top: 1px solid var(--border-inverse); font-size: var(--text-xs); }
+.footer-credits { padding-bottom: var(--space-5); font-size: var(--text-xs); opacity: .7; }
+.footer-credits a { text-decoration: underline; }
 
 /* ============ Media (photo placeholders) ============ */
 .media {

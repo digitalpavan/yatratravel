@@ -5,13 +5,23 @@ import { Icon } from '@/components/Icon';
 import { Intro, IntroItem } from '@/components/motion';
 import { SuccessIcon } from '@/components/SuccessIcon';
 import { getSettings, getVehicles } from '@/lib/data';
-import { formatDate } from '@/lib/format';
-import { getBookingForCustomer, verifyAccessToken } from '@/lib/server/bookings';
+import { formatDate, formatPaise } from '@/lib/format';
+import { getBookingForCustomer, verifyAccessToken, type BookingStatus } from '@/lib/server/bookings';
 import { contactLinks } from '@/lib/site';
+import { customerAboutBookingMessage } from '@/lib/whatsapp';
 
 export const metadata: Metadata = {
-  title: 'Booking request received',
+  title: 'Your booking',
   robots: { index: false, follow: false },
+};
+
+// What the customer sees for each status. This private page is where they come back for updates.
+const STATUS: Record<BookingStatus, { badge: [string, string]; heading: string; lead: string }> = {
+  pending: { badge: ['badge--pending', 'Awaiting confirmation'], heading: 'Booking request received', lead: "Your trip is not confirmed yet. We'll check availability and contact you by phone or WhatsApp to confirm the details and price." },
+  contacted: { badge: ['badge--info', 'Checking availability'], heading: "We're on it", lead: "We've been in touch and are checking availability. Your trip is not confirmed until we agree the price with you." },
+  confirmed: { badge: ['badge--success', 'Confirmed'], heading: 'Your trip is confirmed', lead: "We'll send the driver's name, number and vehicle before your travel date." },
+  completed: { badge: ['badge--info', 'Completed'], heading: 'Thank you for travelling with us', lead: 'Your trip is complete. We hope it went well.' },
+  cancelled: { badge: ['badge--error', 'Cancelled'], heading: 'This booking was cancelled', lead: 'Contact us if you have questions or would like to book again.' },
 };
 
 type Props = { params: Promise<{ reference: string }>; searchParams: Promise<{ t?: string | string[] }> };
@@ -30,19 +40,16 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
 
   const vehicle = (await getVehicles()).find(v => v.slug === booking.vehicle);
   const firstName = booking.name.split(/\s+/)[0];
+  const status = STATUS[booking.status];
+  const balance = booking.quoted_price_paise !== null ? Number(booking.quoted_price_paise) - Number(booking.amount_paid_paise) : null;
 
   return (
     <div className="container container--narrow confirm">
       {/* Success-state reveal: the badge pops in, then the heading and next steps follow. */}
       <Intro className="confirm-hero">
         <SuccessIcon />
-        <IntroItem as="h1">Booking request received</IntroItem>
-        <IntroItem as="p" className="lead">
-          Thank you, {firstName}.{' '}
-          {booking.status === 'requested'
-            ? <>Your trip is <strong>not confirmed yet</strong>. We'll check availability and contact you by phone or WhatsApp to confirm the details and price.</>
-            : <>Here is the latest status of your booking.</>}
-        </IntroItem>
+        <IntroItem as="h1">{status.heading}</IntroItem>
+        <IntroItem as="p" className="lead">Thank you, {firstName}. {status.lead}</IntroItem>
       </Intro>
 
       <section className="ref" aria-labelledby="ref-label">
@@ -55,27 +62,31 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
       <section className="card card--pad" aria-labelledby="details-title">
         <div className="flex justify-between items-center gap-3 flex-wrap" style={{ marginBottom: 'var(--space-5)' }}>
           <h2 id="details-title" className="h4">Your request</h2>
-          <StatusBadge status={booking.status} />
+          <span className={`badge ${status.badge[0]}`}>{status.badge[1]}</span>
         </div>
         <dl className="details-list">
           <div><dt>Package</dt><dd>{booking.package_title}</dd></div>
           <div><dt>Travel date</dt><dd>{formatDate(booking.travel_date)}</dd></div>
           <div><dt>Travellers</dt><dd>{booking.passengers}</dd></div>
           <div><dt>Vehicle</dt><dd>{vehicle?.name ?? 'We will suggest one'}</dd></div>
+          {(booking.status === 'confirmed' || booking.status === 'completed') && booking.quoted_price_paise !== null && <>
+            <div><dt>Agreed price</dt><dd>{formatPaise(booking.quoted_price_paise)}</dd></div>
+            <div><dt>Paid</dt><dd>{formatPaise(booking.amount_paid_paise)}{balance !== null && balance > 0 && <> · {formatPaise(balance)} due</>}</dd></div>
+          </>}
         </dl>
       </section>
 
-      <section className="card card--pad" aria-labelledby="next-title">
+      {(booking.status === 'pending' || booking.status === 'contacted') && <section className="card card--pad" aria-labelledby="next-title">
         <h2 id="next-title" className="h4" style={{ marginBottom: 'var(--space-5)' }}>Next steps</h2>
         <ol className="steps-list">
           <li><div><strong>We review your request</strong><span>We check vehicle availability for your date.</span></div></li>
           <li><div><strong>We contact you to confirm</strong><span>By phone or WhatsApp, with the final price and pickup time. Your trip is confirmed only after this.</span></div></li>
           <li><div><strong>Driver details before the trip</strong><span>The driver's name, number and vehicle are sent to you before your travel date.</span></div></li>
         </ol>
-      </section>
+      </section>}
 
       <div className="grid grid--2">
-        <a className="btn btn--whatsapp btn--lg" href={links.whatsappHref(`Hello ${settings.brand.name}, my booking reference is ${booking.reference}.`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Message us on WhatsApp</a>
+        <a className="btn btn--whatsapp btn--lg" href={links.whatsappHref(customerAboutBookingMessage(booking))} target="_blank" rel="noopener"><Icon name="whatsapp" />Message us on WhatsApp</a>
         <a className="btn btn--outline btn--lg" href={links.phoneHref}><Icon name="phone" />Call {links.phoneLabel}</a>
       </div>
       <p className="text-center text-sm text-muted-page">
@@ -84,17 +95,6 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
       </p>
     </div>
   );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, [string, string]> = {
-    requested: ['badge--pending', 'Awaiting confirmation'],
-    confirmed: ['badge--success', 'Confirmed'],
-    completed: ['badge--info', 'Completed'],
-    cancelled: ['badge--error', 'Cancelled'],
-  };
-  const [cls, label] = map[status] ?? ['', status];
-  return <span className={`badge ${cls}`}>{label}</span>;
 }
 
 function InvalidLink({ whatsappHref }: { whatsappHref: string }) {

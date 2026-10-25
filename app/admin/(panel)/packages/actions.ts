@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import type { ActionState } from '@/components/admin/ActionForm';
 import { requireRole } from '@/lib/auth';
+import { parseRupees, toPaise } from '@/lib/format';
 import { refreshPublicSite } from '@/lib/revalidate';
 import { createUserClient } from '@/lib/supabase/clients';
 
@@ -39,7 +40,7 @@ const schema = z.object({
   published: z.boolean(),
   seo_title: z.string().trim().max(70, 'SEO title: 70 characters or fewer'),
   seo_description: z.string().trim().max(170, 'SEO description: 170 characters or fewer'),
-  vehicles: z.array(z.object({ vehicle_id: z.uuid(), price: z.number().min(0).max(1_000_000).nullable() })),
+  vehicles: z.array(z.object({ vehicle_id: z.uuid(), price: z.number({ error: 'Type prices as numbers, for example 2500' }).min(0).max(1_000_000).nullable() })),
 }).refine(v => v.passengers_max >= v.passengers_min, { path: ['passengers_max'], message: 'Maximum travellers must be at least the minimum' })
   .refine(v => !v.published || v.category === 'custom' || v.vehicles.length > 0, { path: ['vehicles'], message: 'Choose at least one vehicle before publishing' });
 
@@ -72,14 +73,14 @@ export async function savePackage(_: ActionState, form: FormData): Promise<Actio
     published: form.get('published') === 'on',
     seo_title: form.get('seo_title') ?? '',
     seo_description: form.get('seo_description') ?? '',
-    vehicles: vehicleIds.map(vid => ({ vehicle_id: vid, price: num(form.get(`price_${vid}`)) })),
+    vehicles: vehicleIds.map(vid => { const p = parseRupees(String(form.get(`price_${vid}`) ?? '')); return { vehicle_id: vid, price: p === 'invalid' ? Number.NaN : p }; }),
   };
   const parsed = schema.safeParse(input);
   if (!parsed.success) {
     const fields = Object.fromEntries(parsed.error.issues.map(i => [String(i.path.join('.')), i.message]));
     return { error: 'Please fix the highlighted details.', fields };
   }
-  const { id, vehicles, ...row } = parsed.data;
+  const { id, vehicles, itinerary, ...row } = parsed.data;
   const db = await createUserClient();
 
   const saved = id
@@ -90,10 +91,17 @@ export async function savePackage(_: ActionState, form: FormData): Promise<Actio
   }
   const packageId = saved.data.id as string;
 
-  // Replace the vehicle/price list for this package.
+  // Replace the vehicle/price list and the itinerary for this package.
   const del = await db.from('package_vehicles').delete().eq('package_id', packageId);
-  const ins = vehicles.length ? await db.from('package_vehicles').insert(vehicles.map(v => ({ package_id: packageId, ...v }))) : { error: null };
+  const ins = vehicles.length
+    ? await db.from('package_vehicles').insert(vehicles.map(v => ({ package_id: packageId, vehicle_id: v.vehicle_id, price_paise: toPaise(v.price) })))
+    : { error: null };
   if (del.error || ins.error) return { error: 'The package was saved, but its vehicles and prices could not be updated. Please save again.' };
+  const delDays = await db.from('itinerary_days').delete().eq('package_id', packageId);
+  const insDays = itinerary.length
+    ? await db.from('itinerary_days').insert(itinerary.map((d, i) => ({ package_id: packageId, day: i + 1, title: d.title, stops: d.stops })))
+    : { error: null };
+  if (delDays.error || insDays.error) return { error: 'The package was saved, but its itinerary could not be updated. Please save again.' };
 
   refreshPublicSite('catalog');
   if (!id) redirect(`/admin/packages/${packageId}?created=1`);

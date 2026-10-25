@@ -6,10 +6,11 @@ import { useRef, useState, type ChangeEvent, type SubmitEvent, type ReactNode } 
 import { AnimatePresence, m } from 'motion/react';
 import { Icon } from '@/components/Icon';
 import { motionTokens, transition } from '@/lib/motion';
-import { bookingSchema, capacityError, fieldErrors } from '@/lib/validation';
-import { formatDate } from '@/lib/format';
+import { bookingSchema, capacityError, fieldErrors, groupSizeError } from '@/lib/validation';
+import { formatDate, formatPaise } from '@/lib/format';
 
-type PackageOption = { slug: string; title: string; vehicles: string[]; maxPassengers: number };
+/** prices: listed price per vehicle slug in paise, null = on request. */
+type PackageOption = { slug: string; title: string; vehicles: string[]; passengers: { min: number; max: number }; prices: Record<string, number | null> };
 type VehicleOption = { slug: string; name: string; passengers: number; examples: string };
 
 type Values = {
@@ -44,6 +45,8 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
   const [status, setStatus] = useState<'idle' | 'submitting' | 'redirecting' | 'error'>('idle');
   const [serverError, setServerError] = useState('');
   const idempotencyKey = useRef<string | null>(null);
+  // Set when the server reports a newer price than this page was built with ("package:vehicle" → paise).
+  const [priceUpdates, setPriceUpdates] = useState<Record<string, number | null>>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   // Set when the step changes; the new step's heading takes focus as soon as it mounts.
@@ -52,7 +55,8 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
   const pkg = packages.find(p => p.slug === values.packageSlug);
   const offered = vehicles.filter(v => !pkg || pkg.vehicles.includes(v.slug));
   const vehicle = vehicles.find(v => v.slug === values.vehicle);
-
+  const priceKey = `${values.packageSlug}:${values.vehicle}`;
+  const listedPricePaise = !pkg || values.vehicle === 'any' ? null : priceKey in priceUpdates ? priceUpdates[priceKey] : (pkg.prices[values.vehicle] ?? null);
 
   const set = (name: keyof Values) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
@@ -71,7 +75,9 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
   const validate = (upTo: number) => {
     const result = bookingSchema.safeParse({ ...values, idempotencyKey: crypto.randomUUID(), consent: values.consent || undefined });
     const all = result.success ? {} : fieldErrors(result.error);
-    const capacity = capacityError(values.vehicle, Number(values.passengers));
+    const group = groupSizeError(pkg, Number(values.passengers));
+    if (group) all.passengers ??= group;
+    const capacity = capacityError(vehicle, Number(values.passengers));
     if (capacity) all.vehicle ??= capacity;
     const fields = STEPS.slice(0, upTo + 1).flatMap(s => s.fields) as string[];
     return Object.fromEntries(Object.entries(all).filter(([k]) => fields.includes(k)));
@@ -106,13 +112,18 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...values, passengers: Number(values.passengers), idempotencyKey: idempotencyKey.current }),
+        body: JSON.stringify({ ...values, passengers: Number(values.passengers), listedPricePaise, idempotencyKey: idempotencyKey.current }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.url) {
         setStatus('redirecting');
         router.push(data.url);
         return;
+      }
+      if (res.status === 409 && 'listedPricePaise' in data) {
+        // The price changed since this page loaded: show the new one on the review step and let them send again.
+        setPriceUpdates(u => ({ ...u, [priceKey]: data.listedPricePaise }));
+        if (step !== STEPS.length - 1) goTo(STEPS.length - 1);
       }
       if (res.status === 422 && data.fields) {
         setErrors(data.fields);
@@ -129,7 +140,8 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
   };
 
   const whatsappFallback = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    `Booking request\nPackage: ${pkg?.title ?? '-'}\nDate: ${values.travelDate || '-'}\nTravellers: ${values.passengers}\nPickup: ${values.pickup || '-'}\nVehicle: ${vehicle?.name ?? 'Suggest for me'}\nName: ${values.name}`,
+    // Trip basics only: the chat itself identifies the sender, and addresses are shared in the conversation, not in a URL.
+    `Booking request\nPackage: ${pkg?.title ?? '-'}\nDate: ${values.travelDate || '-'}\nTravellers: ${values.passengers}\nVehicle: ${vehicle?.name ?? 'Suggest for me'}`,
   )}`;
 
   const errorList = Object.entries(errors);
@@ -187,7 +199,7 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
               <input className="input" id="f-travelDate" type="date" min={today} value={values.travelDate} onChange={set('travelDate')} {...invalid(errors.travelDate, 'travelDate')} />
             </Field>
             <Field id="passengers" label="Number of travellers" required error={errors.passengers} hint="Including children">
-              <input className="input" id="f-passengers" type="number" inputMode="numeric" min={1} max={50} value={values.passengers} onChange={set('passengers')} {...invalid(errors.passengers, 'passengers')} />
+              <input className="input" id="f-passengers" type="number" inputMode="numeric" min={pkg?.passengers.min ?? 1} max={pkg?.passengers.max ?? 50} value={values.passengers} onChange={set('passengers')} {...invalid(errors.passengers, 'passengers')} />
             </Field>
             <Field id="pickup" label="Pickup location" required error={errors.pickup} className="span-2" hint="Hotel, railway station, airport or address in Tirupati">
               <input className="input" id="f-pickup" value={values.pickup} onChange={set('pickup')} autoComplete="street-address" {...invalid(errors.pickup, 'pickup')} />
@@ -234,6 +246,7 @@ export function BookingForm({ packages, vehicles, initial, today, whatsappNumber
               <Row label="Travellers" value={values.passengers} onEdit={() => goTo(0)} />
               <Row label="Pickup" value={values.pickup} onEdit={() => goTo(0)} />
               <Row label="Vehicle" value={vehicle ? vehicle.name : 'Suggest for me'} onEdit={() => goTo(0)} />
+              <Row label="Listed price" value={listedPricePaise !== null ? `${formatPaise(listedPricePaise)} (we confirm the final price with you)` : 'Confirmed with you on request'} onEdit={() => goTo(0)} />
               <Row label="Name" value={values.name} onEdit={() => goTo(1)} />
               <Row label="Mobile" value={values.phone ? `+91 ${values.phone}` : undefined} onEdit={() => goTo(1)} />
               {values.email && <Row label="Email" value={values.email} onEdit={() => goTo(1)} />}

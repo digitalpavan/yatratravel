@@ -92,10 +92,12 @@ and contains no personal data.
 ### Booking status lifecycle
 
 ```
-requested → confirmed → completed
-     │           │
-     └→ cancelled ←┘
+pending → contacted → confirmed → completed
+   │          │           │
+   └──────────┴───────────┴→ cancelled
 ```
+
+Payment status is tracked separately: unpaid, pending, paid, refunded, failed. Details in [08-booking-workflow.md](08-booking-workflow.md).
 
 Every status change is logged with a timestamp, and the customer gets a notification.
 

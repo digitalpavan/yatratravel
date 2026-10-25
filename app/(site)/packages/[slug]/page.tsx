@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Form from 'next/form';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Accordion } from '@/components/Accordion';
@@ -9,7 +10,8 @@ import { Photo } from '@/components/Photo';
 import { Breadcrumbs, JsonLd, PackageCard, Price } from '@/components/ui';
 import { categoryLabels, startingPrice, toSummary } from '@/lib/catalog';
 import { getDestinations, getPackage, getPackages, getSettings, getVehicles, relatedPackages } from '@/lib/data';
-import { formatPrice } from '@/lib/format';
+import { formatPrice, todayInIndia } from '@/lib/format';
+import { getImage } from '@/lib/images';
 import { contactLinks, siteUrl } from '@/lib/site';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -21,7 +23,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pkg = await getPackage((await params).slug);
   if (!pkg) return {};
-  const img = pkg.imageEntry;
+  const img = pkg.imageEntry ?? getImage('tirumala-hero'); // share image until the package has its own photo
   const description = pkg.seoDescription || `${pkg.summary} ${pkg.durationLabel}. Vehicles for 1–${pkg.passengers.max} travellers. Request a booking or enquire on WhatsApp.`.slice(0, 160);
   return {
     title: pkg.seoTitle || pkg.title,
@@ -192,7 +194,15 @@ export default async function PackagePage({ params }: Props) {
               {vehicles.length > 0 && <div><dt>Vehicles</dt><dd>{vehicles.map(v => v.vehicle!.name).join(', ')}</dd></div>}
               <div><dt>Payment</dt><dd>After confirmation</dd></div>
             </dl>
-            <Link className="btn btn--primary btn--lg btn--block" href={bookHref}>Request a booking</Link>
+            {/* Date and group size are chosen here and carried into the booking form, which checks them again. */}
+            <Form action="/book" className="stack">
+              <input type="hidden" name="package" value={pkg.slug} />
+              <div className="form-grid form-grid--2">
+                <div className="field"><label className="label" htmlFor="pkg-date">Travel date</label><input className="input" id="pkg-date" name="date" type="date" min={todayInIndia()} required /></div>
+                <div className="field"><label className="label" htmlFor="pkg-pax">Travellers</label><input className="input" id="pkg-pax" name="passengers" type="number" inputMode="numeric" min={pkg.passengers.min} max={pkg.passengers.max} defaultValue={Math.min(Math.max(2, pkg.passengers.min), pkg.passengers.max)} required /></div>
+              </div>
+              <button type="submit" className="btn btn--primary btn--lg btn--block">Request a booking</button>
+            </Form>
             <a className="btn btn--whatsapp btn--block" href={links.whatsappHref(`Hello, I'd like to check availability for: ${pkg.title}`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Check availability on WhatsApp</a>
             <p className="text-sm text-muted text-center">No payment online. We'll confirm availability and price with you first.</p>
           </div>

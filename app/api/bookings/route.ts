@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
 import { bookingSchema, fieldErrors } from '@/lib/validation';
-import { getPackage, getVehicles } from '@/lib/data';
-import { createBooking, confirmationPath } from '@/lib/server/bookings';
+import { checkOffer, createBooking, confirmationPath } from '@/lib/server/bookings';
+import { notifyNewBooking } from '@/lib/server/notify';
 import { rateLimit, clientIp } from '@/lib/server/rate-limit';
 
 export async function POST(request: Request) {
@@ -20,26 +20,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 });
   }
 
+  // 1. Every field is validated on the server, whatever the browser checked.
   const parsed = bookingSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: 'Please check the highlighted fields.', fields: fieldErrors(parsed.error) }, { status: 422 });
   }
   const input = parsed.data;
 
-  // Checks that need server data: the package and vehicle must exist, and the vehicle must be offered for that package.
-  const pkg = await getPackage(input.packageSlug);
-  if (!pkg) return NextResponse.json({ error: 'Please check the highlighted fields.', fields: { packageSlug: 'Choose a package from the list' } }, { status: 422 });
-  if (input.vehicle !== 'any' && (!(await getVehicles()).some(v => v.slug === input.vehicle) || !pkg.vehicles.some(v => v.slug === input.vehicle))) {
-    return NextResponse.json({ error: 'Please check the highlighted fields.', fields: { vehicle: 'This vehicle is not offered for the selected package' } }, { status: 422 });
-  }
-
   try {
-    const { reference, duplicate } = await createBooking(input, pkg.title);
-    if (!duplicate) {
-      // TODO (admin phase): notify staff by email/WhatsApp. Log the reference only, never personal details.
-      console.info(`[booking] new request ${reference} for ${pkg.slug}`);
+    // 2. The package, vehicle, group size and current price are checked against the live catalogue.
+    const offer = await checkOffer(input);
+    if (!offer.ok) {
+      return NextResponse.json({ error: offer.error, fields: offer.fields, listedPricePaise: offer.listedPricePaise }, { status: offer.status });
     }
-    return NextResponse.json({ reference, url: confirmationPath(reference) }, { status: duplicate ? 200 : 201 });
+
+    // 3. Stored as "pending"; staff confirm it after checking availability and agreeing the price.
+    const { reference, duplicate } = await createBooking(input, offer.packageTitle);
+    const url = confirmationPath(reference);
+    if (!duplicate) {
+      console.info(`[booking] new request ${reference} for ${input.packageSlug}`); // reference only, never personal details
+      // 4. Owner and customer are emailed together, after the response, so the customer isn't kept waiting.
+      after(() => notifyNewBooking({
+        reference, confirmationPath: url, name: input.name, phone: input.phone, email: input.email, packageTitle: offer.packageTitle,
+        travelDate: input.travelDate, passengers: input.passengers, vehicle: offer.vehicleName, pickup: input.pickup, requests: input.requests,
+        listedPricePaise: offer.listedPricePaise,
+      }));
+    }
+    return NextResponse.json({ reference, url }, { status: duplicate ? 200 : 201 });
   } catch (e) {
     console.error('[booking] failed to save', e);
     return NextResponse.json({ error: "We couldn't save your request. Please try again, or send it on WhatsApp." }, { status: 500 });

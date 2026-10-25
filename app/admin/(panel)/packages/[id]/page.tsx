@@ -5,6 +5,7 @@ import { ActionForm, SubmitButton } from '@/components/admin/ActionForm';
 import { Flash, PageTitle } from '@/components/admin/ui';
 import { imageOptions } from '@/lib/admin-images';
 import { requireRole } from '@/lib/auth';
+import { toRupees } from '@/lib/format';
 import { createUserClient } from '@/lib/supabase/clients';
 import { deletePackage } from '../actions';
 import { PackageForm, type PackageRow } from '../PackageForm';
@@ -28,16 +29,18 @@ export default async function PackageEditor({ params, searchParams }: Props) {
 
   const db = await createUserClient();
   const [pkgRes, vehicles, destinations, images] = await Promise.all([
-    isNew ? Promise.resolve({ data: null }) : db.from('packages').select('*, package_vehicles(vehicle_id, price)').eq('id', id).maybeSingle(),
+    isNew ? Promise.resolve({ data: null }) : db.from('packages').select('*, package_vehicles(vehicle_id, price_paise), itinerary_days(day, title, stops)').eq('id', id).maybeSingle(),
     db.from('vehicles').select('id, name, passengers').order('sort'),
     db.from('destinations').select('slug, name').order('sort'),
     imageOptions(db),
   ]);
-  const row = pkgRes.data as (PackageRow & { id: string; package_vehicles: { vehicle_id: string; price: number | null }[] }) | null;
+  const row = pkgRes.data as (Omit<PackageRow, 'itinerary'> & { id: string; package_vehicles: { vehicle_id: string; price_paise: number | null }[]; itinerary_days: PackageRow['itinerary'] }) | null;
   if (!isNew && !row) notFound();
 
-  const prices = Object.fromEntries((row?.package_vehicles ?? []).map(v => [v.vehicle_id, v.price === null ? null : Number(v.price)]));
-  const pkg: PackageRow = row ? { ...row, duration_days: row.duration_days === null ? null : Number(row.duration_days) } : BLANK;
+  const prices = Object.fromEntries((row?.package_vehicles ?? []).map(v => [v.vehicle_id, toRupees(v.price_paise)]));
+  const pkg: PackageRow = row
+    ? { ...row, duration_days: row.duration_days === null ? null : Number(row.duration_days), itinerary: [...row.itinerary_days].sort((a, b) => a.day - b.day) }
+    : BLANK;
 
   return (
     <>

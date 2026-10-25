@@ -1,3 +1,4 @@
+import { preload } from 'react-dom';
 import { getImage, plannedImage, type ImageEntry } from '@/lib/images';
 
 type Props = {
@@ -39,6 +40,15 @@ export function Photo({ id, entry, mobileId, sizes = '100vw', priority = false, 
         {process.env.NODE_ENV !== 'production' && <span className="photo__pending-label">Photo pending: {id}</span>}
       </div>
     );
+  }
+
+  // Above-the-fold photos are usually the LCP element: ask for them in <head>, ahead of fonts and scripts.
+  if (priority) {
+    const desktopSet = img.srcset.avif ?? img.srcset.webp;
+    const mobileSet = mobile?.srcset.avif ?? mobile?.srcset.webp;
+    const type = (set: string | undefined, entry: ImageEntry | null) => (set && set === entry?.srcset.avif ? 'image/avif' : 'image/webp');
+    if (mobileSet) preload(mobile!.src, { as: 'image', imageSrcSet: mobileSet, imageSizes: '100vw', fetchPriority: 'high', media: '(max-width: 767px)', type: type(mobileSet, mobile) });
+    if (desktopSet) preload(img.src, { as: 'image', imageSrcSet: desktopSet, imageSizes: sizes, fetchPriority: 'high', type: type(desktopSet, img), ...(mobileSet && { media: '(min-width: 768px)' }) });
   }
 
   return (

@@ -60,6 +60,21 @@ fieldset[disabled] .input, fieldset[disabled] .select, fieldset[disabled] .texta
 .sticky-save { position: sticky; bottom: var(--space-4); z-index: 5; display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: center; box-shadow: var(--shadow-lg); }
 .sticky-save .btn { margin-left: auto; }
 .danger-zone { border-color: #F2C4C4; }
+/* Row actions in admin tables: Edit / Remove side by side, wrapping on small screens */
+.row-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; justify-content: flex-end; }
+.btn--ghost-danger { --btn-fg: var(--color-red-600); --btn-bg-hover: #FDECEC; padding-inline: var(--space-3); }
+/* Price table: package rows × vehicle columns. Scrolls sideways on small screens (inside .table-wrap). */
+.price-grid { min-width: 1040px; }
+.price-grid th[scope="row"] { min-width: 200px; font-weight: var(--weight-semibold); }
+.price-grid td { vertical-align: top; min-width: 150px; }
+.input-group--sm .input { min-height: 40px; width: 100%; min-width: 0; }
+.input-group--sm .input-group__addon { padding: 0 var(--space-2); }
+.price-grid .row-actions { flex-direction: column; align-items: stretch; }
+/* Save results stay in view below the top bar, whichever row was saved */
+.price-form > .alert { position: sticky; top: calc(64px + var(--space-3)); z-index: 4; box-shadow: var(--shadow-lg); }
+/* Per-vehicle prices in the packages list */
+.price-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: var(--text-sm); }
+.price-list span { color: var(--text-muted); }
 .one-time { margin: var(--space-3) 0; font-size: var(--text-md); }
 .one-time code { display: inline-block; margin-top: 4px; padding: 6px 10px; border-radius: var(--radius-sm); background: #fff; border: 1px solid var(--status-success-border); font-size: 1.1rem; letter-spacing: .04em; user-select: all; }
 

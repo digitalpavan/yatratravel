@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Icon } from '@/components/Icon';
 import { ActionForm, SubmitButton } from '@/components/admin/ActionForm';
 import { ImagePicker } from '@/components/admin/ImagePicker';
 import { PageTitle } from '@/components/admin/ui';
 import { imageOptions } from '@/lib/admin-images';
 import { requireRole } from '@/lib/auth';
-import { formatDate, todayInIndia } from '@/lib/format';
+import { formatDate, todayInIndia, toRupees } from '@/lib/format';
 import { createUserClient } from '@/lib/supabase/clients';
 import { uploadMedia } from '../../media/actions';
-import { addBlock, removeBlock, saveVehicle } from '../actions';
+import { addBlock, deleteVehicle, removeBlock, saveVehicle } from '../actions';
 
 export const metadata: Metadata = { title: 'Vehicle' };
 type Props = { params: Promise<{ id: string }> };
@@ -29,12 +30,13 @@ export default async function VehicleEditor({ params }: Props) {
     isAdmin ? imageOptions(db) : Promise.resolve([]),
   ]);
   const v = vRes.data ?? { slug: '', name: '', examples: '', passengers: 4, luggage: '', ac: true, image: '', best_for: '', features: [], active: true, verified: false, sort: 0 };
-  const i = iRes.data ?? { fleet_count: 0, fleet_details: '', per_km_rate: null, min_km_per_day: null, driver_allowance_per_day: null, night_charge: null, extra_hour_rate: null, pricing_notes: '' };
+  const i = iRes.data ?? { fleet_count: 0, fleet_details: '', per_km_rate_paise: null, min_km_per_day: null, driver_allowance_per_day_paise: null, night_charge_paise: null, extra_hour_rate_paise: null, pricing_notes: '' };
+  const rupees = (paise: number | null) => toRupees(paise) ?? '';
   if (!isNew && !vRes.data) notFound();
 
   return (
     <>
-      <PageTitle back={{ href: '/admin/vehicles', label: 'Vehicles' }} title={isNew ? 'New vehicle category' : v.name}
+      <PageTitle back={{ href: '/admin/vehicles', label: 'Vehicles' }} title={isNew ? 'Add a vehicle' : v.name}
         sub={isAdmin ? undefined : 'You can view this vehicle and manage unavailable dates. Only administrators can change its details.'} />
 
       <ActionForm action={saveVehicle} className="stack-lg">
@@ -61,11 +63,11 @@ export default async function VehicleEditor({ params }: Props) {
           <legend className="h4 span-all">Fleet and pricing rules (internal, never shown publicly)</legend>
           <div className="field"><label className="label" htmlFor="fleet_count">Vehicles in fleet</label><input className="input" id="fleet_count" name="fleet_count" type="number" min={0} defaultValue={i.fleet_count} /></div>
           <div className="field span-2"><label className="label" htmlFor="fleet_details">Actual fleet (model, registration, driver)</label><textarea className="textarea" id="fleet_details" name="fleet_details" defaultValue={i.fleet_details} placeholder={'AP 03 XX 1234: Innova Crysta 2022, driver Ramesh\n…'} /></div>
-          <div className="field"><label className="label" htmlFor="per_km_rate">Rate per km (₹)</label><input className="input" id="per_km_rate" name="per_km_rate" inputMode="decimal" defaultValue={i.per_km_rate ?? ''} /></div>
+          <div className="field"><label className="label" htmlFor="per_km_rate_paise">Rate per km (₹)</label><input className="input" id="per_km_rate_paise" name="per_km_rate_paise" inputMode="decimal" defaultValue={rupees(i.per_km_rate_paise)} /></div>
           <div className="field"><label className="label" htmlFor="min_km_per_day">Minimum km per day</label><input className="input" id="min_km_per_day" name="min_km_per_day" inputMode="numeric" defaultValue={i.min_km_per_day ?? ''} /></div>
-          <div className="field"><label className="label" htmlFor="driver_allowance_per_day">Driver allowance per day (₹)</label><input className="input" id="driver_allowance_per_day" name="driver_allowance_per_day" inputMode="decimal" defaultValue={i.driver_allowance_per_day ?? ''} /></div>
-          <div className="field"><label className="label" htmlFor="night_charge">Night charge (₹)</label><input className="input" id="night_charge" name="night_charge" inputMode="decimal" defaultValue={i.night_charge ?? ''} /></div>
-          <div className="field"><label className="label" htmlFor="extra_hour_rate">Extra hour (₹)</label><input className="input" id="extra_hour_rate" name="extra_hour_rate" inputMode="decimal" defaultValue={i.extra_hour_rate ?? ''} /></div>
+          <div className="field"><label className="label" htmlFor="driver_allowance_per_day_paise">Driver allowance per day (₹)</label><input className="input" id="driver_allowance_per_day_paise" name="driver_allowance_per_day_paise" inputMode="decimal" defaultValue={rupees(i.driver_allowance_per_day_paise)} /></div>
+          <div className="field"><label className="label" htmlFor="night_charge_paise">Night charge (₹)</label><input className="input" id="night_charge_paise" name="night_charge_paise" inputMode="decimal" defaultValue={rupees(i.night_charge_paise)} /></div>
+          <div className="field"><label className="label" htmlFor="extra_hour_rate_paise">Extra hour (₹)</label><input className="input" id="extra_hour_rate_paise" name="extra_hour_rate_paise" inputMode="decimal" defaultValue={rupees(i.extra_hour_rate_paise)} /></div>
           <div className="field span-all"><label className="label" htmlFor="pricing_notes">Pricing notes</label><textarea className="textarea" id="pricing_notes" name="pricing_notes" defaultValue={i.pricing_notes} placeholder="Toll and parking extra; interstate permit for Tamil Nadu…" /></div>
         </fieldset>
         {isAdmin && <div><SubmitButton variant="primary">Save vehicle</SubmitButton></div>}
@@ -92,6 +94,17 @@ export default async function VehicleEditor({ params }: Props) {
             ))}
             {!(blocks.data ?? []).length && <li className="text-muted text-sm">No upcoming unavailable dates.</li>}
           </ul>
+        </section>
+      )}
+
+      {!isNew && isAdmin && (
+        <section className="card card--pad danger-zone" aria-labelledby="danger">
+          <h2 id="danger" className="h4">Remove vehicle</h2>
+          <p className="text-sm text-muted">Deletes this vehicle category, its fleet record and unavailable dates, and takes it off every package that offers it. Past bookings keep the vehicle name. To hide it temporarily, untick "Active" instead.</p>
+          <ActionForm action={deleteVehicle} confirm={`Remove "${v.name}" permanently?`} className="mt-4">
+            <input type="hidden" name="id" value={id} />
+            <SubmitButton variant="danger" size="sm"><Icon name="trash" size={16} />Remove vehicle</SubmitButton>
+          </ActionForm>
         </section>
       )}
     </>

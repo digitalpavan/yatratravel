@@ -48,8 +48,18 @@ export async function saveSetting(_: ActionState, form: FormData): Promise<Actio
   if (!parsed.success) return { error: 'Please fix the highlighted details.', fields: Object.fromEntries(parsed.error.issues.map(i => [String(i.path.join('.') || key), i.message])) };
 
   const db = await createUserClient();
-  const { error } = await db.from('site_settings').upsert({ key, value: parsed.data, is_public: key !== 'accounting' });
-  if (error) return { error: 'Could not save. Please try again.' };
+  if (key === 'testimonials') {
+    // Reviews have their own table; the editor replaces the whole published list, in order.
+    const { items } = parsed.data as { items: { quote: string; name: string; city?: string; package?: string }[] };
+    const del = await db.from('reviews').delete().not('id', 'is', null);
+    const ins = items.length
+      ? await db.from('reviews').insert(items.map((r, i) => ({ quote: r.quote, name: r.name, city: r.city ?? '', package_label: r.package ?? '', published: true, sort: i })))
+      : { error: null };
+    if (del.error || ins.error) return { error: 'Could not save the reviews. Please try again.' };
+  } else {
+    const { error } = await db.from('site_settings').upsert({ key, value: parsed.data, is_public: key !== 'accounting' });
+    if (error) return { error: 'Could not save. Please try again.' };
+  }
   refreshPublicSite('settings');
   revalidatePath('/admin', 'layout');
   return { ok: 'Saved. The website has been updated.', at: Date.now() };

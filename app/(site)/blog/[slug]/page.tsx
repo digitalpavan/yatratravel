@@ -6,6 +6,7 @@ import { Intro, IntroItem, Reveal } from '@/components/motion';
 import { Photo } from '@/components/Photo';
 import { Breadcrumbs, JsonLd } from '@/components/ui';
 import { getPost, getPosts, getSettings } from '@/lib/data';
+import { getImage } from '@/lib/images';
 import { renderMarkdown } from '@/lib/markdown';
 import { formatDate } from '@/lib/format';
 import { contactLinks, siteUrl } from '@/lib/site';
@@ -19,9 +20,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost((await params).slug);
   if (!post) return {};
-  const img = post.imageEntry;
+  const img = post.imageEntry ?? getImage('tirumala-hero');
+  const title = post.seoTitle || post.title;
   return {
-    title: post.seoTitle || post.title,
+    // Long titles drop the " | brand" suffix so search results don't cut them off.
+    title: title.length > 44 ? { absolute: title } : title,
     description: post.seoDescription || post.description,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
@@ -30,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: post.description,
       publishedTime: post.date,
       tags: post.tags,
-      images: img ? [{ url: img.src, width: img.width, height: img.height, alt: post.imageAlt }] : undefined,
+      images: img ? [{ url: img.src, width: img.width, height: img.height, alt: post.imageEntry ? post.imageAlt : img.alt }] : undefined,
     },
   };
 }

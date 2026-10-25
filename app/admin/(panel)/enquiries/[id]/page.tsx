@@ -23,7 +23,8 @@ export default async function EnquiryDetail({ params }: Props) {
     db.from('profiles').select('id, full_name, email').eq('active', true).order('full_name'),
   ]);
   if (!e) notFound();
-  const waText = `Hello ${e.name.split(' ')[0]}, this is Yatra Travels replying to your enquiry.`;
+  // No name in the greeting: click-to-chat text travels in a URL (see lib/whatsapp.ts).
+  const waText = 'Hello, this is Yatra Travels replying to your enquiry.';
 
   return (
     <>

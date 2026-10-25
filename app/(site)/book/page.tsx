@@ -3,12 +3,12 @@ import { BookingForm } from '@/components/BookingForm';
 import { Icon } from '@/components/Icon';
 import { PageHero } from '@/components/ui';
 import { getPackages, getSettings, getVehicles } from '@/lib/data';
-import { todayInIndia } from '@/lib/format';
+import { todayInIndia, toPaise } from '@/lib/format';
 import { contactLinks } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Request a Booking',
-  description: 'Request a Tirupati temple tour, Tirumala transport or cab with Yatra Travels. Get a booking reference instantly; we confirm availability and price with you before the trip.',
+  description: 'Request a Tirupati temple tour, Tirumala transport or cab. Get a booking reference instantly; we confirm availability and the price before your trip.',
   alternates: { canonical: '/book' },
 };
 
@@ -20,7 +20,10 @@ export default async function BookPage({ searchParams }: Props) {
 
   const [allPackages, allVehicles, settings] = await Promise.all([getPackages(), getVehicles(), getSettings()]);
   const links = contactLinks(settings.contact);
-  const packages = allPackages.map(p => ({ slug: p.slug, title: p.title, vehicles: p.vehicles.map(v => v.slug), maxPassengers: p.passengers.max }));
+  const packages = allPackages.map(p => ({
+    slug: p.slug, title: p.title, vehicles: p.vehicles.map(v => v.slug), passengers: p.passengers,
+    prices: Object.fromEntries(p.vehicles.map(v => [v.slug, toPaise(v.price)])),
+  }));
   const vehicles = allVehicles.map(v => ({ slug: v.slug, name: v.name, passengers: v.passengers, examples: v.examples }));
   const today = todayInIndia();
 

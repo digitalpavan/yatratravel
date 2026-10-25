@@ -2,10 +2,13 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { Icon } from '@/components/Icon';
 import type { Settings } from '@/lib/data';
+import { photoCredits } from '@/lib/images';
+import { landingPages } from '@/lib/landing-pages';
 import type { ContactLinks } from '@/lib/site';
 
-export function Footer({ settings, links, packages }: { settings: Settings; links: ContactLinks; packages: { slug: string; title: string }[] }) {
+export function Footer({ settings, links }: { settings: Settings; links: ContactLinks }) {
   const { brand, contact } = settings;
+  const credits = photoCredits();
   return (
     <footer className="site-footer">
       <div className="container">
@@ -15,9 +18,9 @@ export function Footer({ settings, links, packages }: { settings: Settings; link
             <p>Pilgrimage tours, temple visits and cab services from Tirupati, with clear prices agreed before you travel.</p>
           </div>
           <div>
-            <h2 className="footer-title">Packages</h2>
+            <h2 className="footer-title">Services</h2>
             <ul>
-              {packages.map(p => <li key={p.slug}><Link href={`/packages/${p.slug}`}>{p.title}</Link></li>)}
+              {landingPages.map(p => <li key={p.slug}><Link href={`/${p.slug}`}>{p.title}</Link></li>)}
               <li><Link href="/packages">All packages</Link></li>
             </ul>
           </div>
@@ -46,6 +49,11 @@ export function Footer({ settings, links, packages }: { settings: Settings; link
           <span>© {new Date().getFullYear()} {brand.name}. All rights reserved.</span>
           <span>An independent travel operator, not affiliated with TTD. Darshan tickets are booked separately through TTD.</span>
         </div>
+        {credits.length > 0 && (
+          <p className="footer-credits">
+            Vehicle photos are representative. Photo credits: {credits.map((c, i) => <span key={c.id}>{i > 0 && ' · '}<a href={c.url} target="_blank" rel="noopener">{c.text}</a></span>)}
+          </p>
+        )}
       </div>
     </footer>
   );

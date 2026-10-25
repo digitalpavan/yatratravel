@@ -1,8 +1,10 @@
 import 'server-only';
 import crypto from 'node:crypto';
-import { createServiceClient } from '@/lib/supabase/clients';
-import type { Booking, Enquiry } from '@/lib/validation';
+import { getPackage, getVehicles } from '@/lib/data';
 import { DEMO } from '@/lib/demo-data';
+import { formatPaise, toPaise } from '@/lib/format';
+import { createServiceClient } from '@/lib/supabase/clients';
+import { capacityError, groupSizeError, type Booking, type Enquiry } from '@/lib/validation';
 
 // Demo-data mode only: bookings live in memory so the booking flow can be tried without a database.
 // Kept on globalThis: route handlers and pages can load separate copies of this module.
@@ -46,20 +48,78 @@ export function confirmationPath(reference: string): string {
 }
 
 // ---------- Bookings ----------
+export type BookingStatus = 'pending' | 'contacted' | 'confirmed' | 'completed' | 'cancelled';
 export type PublicBooking = {
   reference: string;
-  status: 'requested' | 'confirmed' | 'completed' | 'cancelled';
+  status: BookingStatus;
   name: string;
   package_title: string;
   travel_date: string;
   passengers: number;
   vehicle: string;
+  quoted_price_paise: number | null;
+  amount_paid_paise: number;
 };
+
+type OfferCheck =
+  | { ok: true; packageTitle: string; vehicleName: string; listedPricePaise: number | null }
+  | { ok: false; status: 409 | 422; error: string; fields?: Record<string, string>; listedPricePaise?: number | null };
+
+/**
+ * Checks a validated request against the live catalogue (not the page cache): the package is published, the group
+ * size fits, the vehicle is offered and big enough, and the price the customer saw is still the current price.
+ */
+export async function checkOffer(input: Booking): Promise<OfferCheck> {
+  const invalid = (field: string, message: string): OfferCheck => ({ ok: false, status: 422, error: 'Please check the highlighted fields.', fields: { [field]: message } });
+
+  let pkg: { title: string; passengers: { min: number; max: number }; vehicles: { slug: string; name: string; passengers: number; pricePaise: number | null }[] } | null = null;
+  if (DEMO) {
+    const [p, vehicles] = await Promise.all([getPackage(input.packageSlug), getVehicles()]);
+    if (p) pkg = { title: p.title, passengers: p.passengers, vehicles: p.vehicles.flatMap(o => {
+      const v = vehicles.find(x => x.slug === o.slug);
+      return v ? [{ slug: v.slug, name: v.name, passengers: v.passengers, pricePaise: toPaise(o.price) }] : [];
+    }) };
+  } else {
+    const { data, error } = await createServiceClient().from('packages')
+      .select('title, passengers_min, passengers_max, package_vehicles(price_paise, vehicles(slug, name, passengers, active))')
+      .eq('slug', input.packageSlug).eq('published', true).maybeSingle();
+    if (error) throw new Error(error.message);
+    type Offer = { price_paise: number | null; vehicles: { slug: string; name: string; passengers: number; active: boolean } | null };
+    if (data) pkg = {
+      title: data.title,
+      passengers: { min: data.passengers_min, max: data.passengers_max },
+      vehicles: (data.package_vehicles as unknown as Offer[]).flatMap(o => (o.vehicles?.active ? [{ ...o.vehicles, pricePaise: o.price_paise === null ? null : Number(o.price_paise) }] : [])),
+    };
+  }
+
+  if (!pkg) return invalid('packageSlug', 'Choose a package from the list');
+  const group = groupSizeError(pkg, input.passengers);
+  if (group) return invalid('passengers', group);
+  let listedPricePaise: number | null = null;
+  let vehicleName = 'Suggest for me';
+  if (input.vehicle !== 'any') {
+    const vehicle = pkg.vehicles.find(v => v.slug === input.vehicle);
+    if (!vehicle) return invalid('vehicle', 'This vehicle is not offered for the selected package');
+    const capacity = capacityError(vehicle, input.passengers);
+    if (capacity) return invalid('vehicle', capacity);
+    listedPricePaise = vehicle.pricePaise;
+    vehicleName = vehicle.name;
+  }
+  if (input.listedPricePaise !== undefined && input.listedPricePaise !== listedPricePaise) {
+    return {
+      ok: false, status: 409, listedPricePaise,
+      error: listedPricePaise === null
+        ? 'The price for this trip is now confirmed on request. Please review and send again.'
+        : `The price for this trip has changed to ${formatPaise(listedPricePaise)}. Please review and send again.`,
+    };
+  }
+  return { ok: true, packageTitle: pkg.title, vehicleName, listedPricePaise };
+}
 
 const UNIQUE_VIOLATION = '23505';
 
 /**
- * Stores a booking request with status "requested". It is never auto-confirmed; staff confirm it in the dashboard.
+ * Stores a booking request with status "pending". It is never auto-confirmed; staff confirm it in the dashboard.
  * The same idempotency key always returns the original reference, so double clicks or retries can't create duplicates.
  * Uses the service client: the public role has no access to the bookings table, and input was validated by the caller.
  */
@@ -68,7 +128,7 @@ export async function createBooking(input: Booking, packageTitle: string): Promi
     const existing = [...demoBookings.values()].find(b => b.key === input.idempotencyKey);
     if (existing) return { reference: existing.reference, duplicate: true };
     const reference = newReference();
-    demoBookings.set(reference, { key: input.idempotencyKey, reference, status: 'requested', name: input.name, package_title: packageTitle, travel_date: input.travelDate, passengers: input.passengers, vehicle: input.vehicle });
+    demoBookings.set(reference, { key: input.idempotencyKey, reference, status: 'pending', name: input.name, package_title: packageTitle, travel_date: input.travelDate, passengers: input.passengers, vehicle: input.vehicle, quoted_price_paise: null, amount_paid_paise: 0 });
     return { reference, duplicate: false };
   }
   const db = createServiceClient();
@@ -109,7 +169,7 @@ export async function getBookingForCustomer(reference: string): Promise<PublicBo
   if (DEMO) return demoBookings.get(reference) ?? null;
   const { data } = await createServiceClient()
     .from('bookings')
-    .select('reference, status, name, package_title, travel_date, passengers, vehicle')
+    .select('reference, status, name, package_title, travel_date, passengers, vehicle, quoted_price_paise, amount_paid_paise')
     .eq('reference', reference)
     .maybeSingle();
   return (data as PublicBooking | null) ?? null;

@@ -1,0 +1,124 @@
+import 'server-only';
+import { getSettings } from '@/lib/data';
+import { formatDate, formatPaise } from '@/lib/format';
+import { siteUrl } from '@/lib/site';
+import { statusUpdateMessage, waLink } from '@/lib/whatsapp';
+
+// Automatic email notifications through Resend (https://resend.com). Without RESEND_API_KEY nothing is sent and
+// the booking flow works as before. Logs carry the booking reference only, never personal details.
+//
+//   RESEND_API_KEY       API key from Resend
+//   NOTIFY_EMAIL_FROM    Sender, e.g. "Yatra Travels <bookings@yourdomain.in>" (the domain must be verified in Resend)
+//   OWNER_NOTIFY_EMAIL   Where new-booking alerts go (comma-separated for several); falls back to the contact email in /admin/content
+
+type Email = { to: string[]; subject: string; text: string; html: string; replyTo?: string; idempotencyKey: string };
+
+async function sendEmail(email: Email, ref: string): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) { console.info(`[notify] ${ref}: email skipped, RESEND_API_KEY not set`); return false; }
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'Idempotency-Key': email.idempotencyKey },
+      body: JSON.stringify({
+        from: process.env.NOTIFY_EMAIL_FROM || 'Yatra Travels <onboarding@resend.dev>',
+        to: email.to, subject: email.subject, text: email.text, html: email.html,
+        ...(email.replyTo && { reply_to: email.replyTo }),
+      }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) { console.error(`[notify] ${ref}: email failed (${res.status})`); return false; }
+    return true;
+  } catch {
+    console.error(`[notify] ${ref}: email failed (network)`);
+    return false;
+  }
+}
+
+const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+const day = (iso: string) => formatDate(iso, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
+function layout(paragraphs: string[], rows: [string, string][], link?: { href: string; label: string }) {
+  const text = [...paragraphs, '', ...rows.map(([k, v]) => `${k}: ${v}`), ...(link ? ['', `${link.label}: ${link.href}`] : [])].join('\n');
+  const html = `<div style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.5;color:#1a2433;max-width:560px">
+${paragraphs.map(p => `<p>${esc(p)}</p>`).join('\n')}
+<table style="border-collapse:collapse;margin:16px 0">${rows.map(([k, v]) => `<tr><td style="padding:4px 16px 4px 0;color:#5b6676;vertical-align:top">${esc(k)}</td><td style="padding:4px 0">${esc(v)}</td></tr>`).join('')}</table>
+${link ? `<p><a href="${esc(link.href)}" style="display:inline-block;background:#1f3a5f;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none">${esc(link.label)}</a></p>` : ''}
+</div>`;
+  return { text, html };
+}
+
+async function ownerAddresses(): Promise<string[]> {
+  const configured = (process.env.OWNER_NOTIFY_EMAIL ?? '').split(',').map(s => s.trim()).filter(Boolean);
+  if (configured.length) return configured;
+  const { contact } = await getSettings();
+  return contact.email ? [contact.email] : [];
+}
+
+export type NewBooking = {
+  reference: string; confirmationPath: string; name: string; phone: string; email?: string;
+  packageTitle: string; travelDate: string; passengers: number; vehicle: string; pickup: string; requests?: string; listedPricePaise: number | null;
+};
+
+/** New request: an alert to the owner and an acknowledgement to the customer (if they gave an email), sent together. */
+export async function notifyNewBooking(b: NewBooking): Promise<void> {
+  const { brand, contact } = await getSettings();
+  const owners = await ownerAddresses();
+  const trip: [string, string][] = [
+    ['Reference', b.reference], ['Package', b.packageTitle], ['Travel date', day(b.travelDate)],
+    ['Travellers', String(b.passengers)], ['Vehicle', b.vehicle],
+  ];
+
+  const owner = owners.length && sendEmail({
+    to: owners,
+    subject: `New booking request ${b.reference}: ${b.packageTitle}, ${day(b.travelDate)}`,
+    replyTo: b.email,
+    idempotencyKey: `booking-owner-${b.reference}`,
+    ...layout(
+      [`New booking request from ${b.name}. It is pending until you confirm it in the dashboard.`],
+      [...trip, ['Pickup', b.pickup], ['Customer', b.name], ['Mobile', `+91 ${b.phone}`], ['WhatsApp', waLink(`91${b.phone}`, `Hello, this is ${brand.name} about your booking ${b.reference}.`)],
+        ...(b.email ? [['Email', b.email] as [string, string]] : []), ...(b.requests ? [['Requests', b.requests] as [string, string]] : []),
+        ['Listed price', b.listedPricePaise === null ? 'On request' : formatPaise(b.listedPricePaise)!]],
+      { href: `${siteUrl}/admin/bookings?q=${b.reference}`, label: 'Open in dashboard' },
+    ),
+  }, b.reference);
+
+  const customer = b.email && sendEmail({
+    to: [b.email],
+    subject: `We've received your booking request ${b.reference}`,
+    replyTo: contact.email ?? undefined,
+    idempotencyKey: `booking-customer-${b.reference}`,
+    ...layout(
+      [`Thank you, ${b.name.split(/\s+/)[0]}. We've received your booking request.`,
+        `Your trip is not confirmed yet. We'll check availability and contact you by phone or WhatsApp to confirm the details and price.`],
+      trip,
+      { href: `${siteUrl}${b.confirmationPath}`, label: 'View your booking' },
+    ),
+  }, b.reference);
+
+  await Promise.all([owner, customer]);
+}
+
+/** Status change: tells the customer by email when they gave one. Returns true if the email went out. */
+export async function notifyStatusChange(b: {
+  reference: string; status: string; name: string; email: string | null; package_title: string; travel_date: string; quoted_price_paise: number | null; confirmationPath: string;
+}): Promise<boolean> {
+  if (!b.email) return false;
+  const { brand, contact } = await getSettings();
+  const message = statusUpdateMessage(brand.name, b.status, { ...b, quoted_price: b.quoted_price_paise === null ? null : formatPaise(b.quoted_price_paise) });
+  const subjects: Record<string, string> = {
+    contacted: `Update on your booking request ${b.reference}`,
+    confirmed: `Your booking ${b.reference} is confirmed`,
+    completed: `Thank you for travelling with us (${b.reference})`,
+    cancelled: `Your booking ${b.reference} has been cancelled`,
+  };
+  return sendEmail({
+    to: [b.email],
+    subject: subjects[b.status] ?? `Update on your booking ${b.reference}`,
+    replyTo: contact.email ?? undefined,
+    idempotencyKey: `booking-status-${b.reference}-${b.status}`,
+    ...layout([`Dear ${b.name.split(/\s+/)[0]},`, message.replace(/^Hello from [^.]+\. /, '')],
+      [['Reference', b.reference], ['Package', b.package_title], ['Travel date', day(b.travel_date)]],
+      { href: `${siteUrl}${b.confirmationPath}`, label: 'View your booking' }),
+  }, b.reference);
+}

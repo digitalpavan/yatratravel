@@ -8,7 +8,9 @@ import { MotionProvider } from '@/components/motion/MotionProvider';
 import { siteUrl } from '@/lib/site';
 
 const manrope = Manrope({ subsets: ['latin'], weight: ['700', '800'], variable: '--font-manrope', display: 'swap' });
-const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-inter', display: 'swap' });
+// Body text: not preloaded, so on slow connections the hero photo (the homepage LCP) isn't competing with 48 KB of font.
+// Text shows at once in the size-matched fallback and swaps when Inter arrives. Manrope (headings, often the LCP) stays preloaded.
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-inter', display: 'swap', preload: false });
 
 export const metadata = { metadataBase: new URL(siteUrl), icons: { icon: '/images/branding/yatra-mark.svg' } };
 export const viewport: Viewport = { themeColor: '#101C2C' };

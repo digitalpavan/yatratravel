@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Accordion } from '@/components/Accordion';
 import { HeroVideo } from '@/components/HeroVideo';
@@ -10,6 +11,9 @@ import { toSummary } from '@/lib/catalog';
 import { getDestinations, getPackages, getSettings, getVehicles, resolveImageRef } from '@/lib/data';
 import { getVideo } from '@/lib/images';
 import { contactLinks, siteUrl } from '@/lib/site';
+
+// Title and description come from the SEO defaults in /admin/content (see the site layout).
+export const metadata: Metadata = { alternates: { canonical: '/' } };
 
 const why: { icon: IconName; title: string; text: string }[] = [
   { icon: 'clock', title: 'Planned around your darshan', text: 'Pickup times and routes are planned around your darshan slot and temple timings.' },

@@ -78,7 +78,8 @@ for (const img of manifest.images) {
       if (await isStale(src, file)) {
         await sharp(src).rotate()
           .resize(w, Math.round(w * r), { fit: 'cover', position: img.crop === 'attention' ? sharp.strategy.attention : img.crop })
-          [fmt]({ quality: quality[fmt], effort: fmt === 'avif' ? 6 : 5 })
+          // An image may lower its own quality, e.g. a hero under a dark overlay where the bytes matter for LCP.
+          [fmt]({ quality: img.quality?.[fmt] ?? quality[fmt], effort: fmt === 'avif' ? 6 : 5 })
           .toFile(file);
         built++;
       }

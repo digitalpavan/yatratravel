@@ -37,7 +37,7 @@ The dashboard is at `/admin`. It's built on Supabase (Auth, Postgres with row-le
 3. **Row-level security in Postgres.** Admin queries run *as the signed-in user*, so even a bug in the app can't read or change more than that role allows:
    - The public (`anon`) key can read only published packages, active vehicles, public settings and published posts. It has **no access** to bookings, enquiries, staff or the audit log.
    - Public booking and enquiry forms write through the server with the secret key, after validation.
-   - Triggers enforce the booking status order (requested → confirmed → completed, or cancelled) and keep the reference read-only. They also stop anyone changing their own role or access.
+   - Triggers enforce the booking workflow (pending → contacted → confirmed → completed, or cancelled; confirming needs an agreed price; completing needs the travel date to have arrived) and keep the reference read-only. See [08-booking-workflow.md](08-booking-workflow.md). They also stop anyone changing their own role or access.
 
 Sessions use HttpOnly, SameSite=Lax cookies (Secure in production). Server actions have Next.js's built-in origin check. Sign-in is rate-limited, uses one error message for wrong email and wrong password, and only redirects within `/admin`. Password changes require the current password.
 

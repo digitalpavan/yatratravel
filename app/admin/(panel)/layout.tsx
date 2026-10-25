@@ -14,7 +14,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
 
   const supabase = await createUserClient();
   const [pending, fresh] = await Promise.all([
-    supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'requested'),
+    supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('enquiries').select('id', { count: 'exact', head: true }).eq('status', 'new'),
   ]);
 

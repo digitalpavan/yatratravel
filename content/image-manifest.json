@@ -1,223 +1,465 @@
 {
   "_about": "Source of truth for every photo and video on the site. Put originals in assets/source/<category>/<id>.<jpg|png|webp|avif|tif>, then run `npm run images`. An image is only publishable when rights.status is \"cleared\".",
   "defaults": {
-    "formats": ["avif", "webp"],
-    "quality": { "webp": 78, "avif": 55 }
+    "formats": [
+      "avif",
+      "webp"
+    ],
+    "quality": {
+      "webp": 78,
+      "avif": 55
+    }
   },
   "images": [
     {
       "id": "tirumala-hero",
       "category": "hero",
       "aspect": "16:9",
-      "widths": [768, 1280, 1920, 2560],
+      "widths": [
+        768,
+        1280,
+        1672
+      ],
       "crop": "right",
       "loading": "eager",
-      "alt": "Tirumala hills at sunrise, with morning mist over the forested slopes",
-      "usedOn": ["home (desktop/tablet hero)", "video poster fallback"],
+      "alt": "Sunrise over the Tirumala hills, with mist in the valleys and the temple among the trees",
+      "usedOn": [
+        "home (desktop/tablet hero)",
+        "video poster fallback"
+      ],
       "sourcing": "licensed-photo preferred; AI-generated acceptable only if no specific temple is depicted",
       "prompt": "Cinematic, photorealistic wide landscape photograph of the Tirumala hills (Seshachalam range, Andhra Pradesh) at golden sunrise, layered forested ridges, atmospheric morning mist in the valleys, warm gold light from the right, premium tourism campaign photography, calm and reverent mood, large area of soft sky and mist on the left third for headline text, no buildings in close-up, no people, no text, no logos, no watermark, 16:9.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "cleared",
+        "provider": "Supplied by the owner",
+        "author": "",
+        "license": "Owner-supplied",
+        "url": "",
+        "attribution": ""
+      },
+      "quality": {
+        "avif": 42,
+        "webp": 68
+      }
     },
     {
       "id": "travel-hero-mobile",
       "category": "hero",
       "aspect": "9:16",
-      "widths": [480, 750, 1080],
-      "crop": "attention",
+      "widths": [
+        480,
+        529
+      ],
+      "crop": "right",
       "loading": "eager",
-      "alt": "Tirumala hills at sunrise, with morning mist over the forested slopes",
-      "usedOn": ["home (mobile hero, below 768px)"],
+      "alt": "Sunrise over the Tirumala hills, with mist in the valleys and the temple among the trees",
+      "usedOn": [
+        "home (mobile hero, below 768px)"
+      ],
       "sourcing": "licensed-photo preferred; AI-generated acceptable only if no specific temple is depicted",
       "prompt": "Vertical, photorealistic tourism photograph of the lush Tirumala hills at sunrise, a winding ghat road disappearing into soft mist, warm golden light, premium travel photography, upper third mostly clear sky for a headline, lower third darker for buttons, no people, no text, no watermark, 9:16.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "cleared",
+        "provider": "Supplied by the owner",
+        "author": "",
+        "license": "Owner-supplied",
+        "url": "",
+        "attribution": ""
+      },
+      "quality": {
+        "avif": 38,
+        "webp": 65
+      }
     },
-
     {
       "id": "tirupati-temple",
       "category": "destinations",
       "aspect": "4:3",
-      "widths": [480, 800, 1200, 1600],
+      "widths": [
+        480,
+        800,
+        1200,
+        1600
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Gopuram of Sri Govindaraja Swamy Temple in Tirupati town",
-      "usedOn": ["home (destinations)", "package: Tirupati Local Temple Tour (gallery)"],
+      "usedOn": [
+        "home (destinations)",
+        "package: Tirupati Local Temple Tour (gallery)"
+      ],
       "sourcing": "licensed-photo REQUIRED (real, identifiable temple)",
       "prompt": "Reference brief for a photographer/stock search: exterior of a Tirupati town temple (e.g. Sri Govindaraja Swamy or Sri Padmavathi Ammavari Temple), gopuram fully in frame, natural daylight, devotees at a respectful distance, editorial travel style, no text or watermark.",
       "notes": "Confirm the exact temple shown and update the alt text to match it.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "tirumala-hills",
       "category": "destinations",
       "aspect": "4:3",
-      "widths": [480, 800, 1200, 1600],
+      "widths": [
+        480,
+        800,
+        1200,
+        1600
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Ghat road winding through the green Tirumala hills in soft morning light",
-      "usedOn": ["home (destinations)", "packages page header", "package: Tirupati to Tirumala Transport"],
+      "usedOn": [
+        "home (destinations)",
+        "packages page header",
+        "package: Tirupati to Tirumala Transport"
+      ],
       "sourcing": "licensed-photo preferred; AI-generated acceptable (landscape, no temple)",
       "prompt": "Wide-angle, photorealistic view of the lush Tirumala hills in Andhra Pradesh, a winding two-lane mountain road with hairpin bends, soft morning light, realistic dense greenery, premium travel-magazine photography, no text, no watermark, 4:3.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "kanipakam-temple",
       "category": "destinations",
       "aspect": "4:3",
-      "widths": [480, 800, 1200, 1600],
+      "widths": [
+        480,
+        800,
+        1200,
+        1600
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Entrance gopuram of Sri Varasiddhi Vinayaka Swamy Temple, Kanipakam",
-      "usedOn": ["home (destinations)", "package: Kanipakam & Srikalahasti Tour"],
+      "usedOn": [
+        "home (destinations)",
+        "package: Kanipakam & Srikalahasti Tour"
+      ],
       "sourcing": "licensed-photo REQUIRED (real, identifiable temple)",
       "prompt": "Reference brief: exterior of Sri Varasiddhi Vinayaka Swamy Temple complex, Kanipakam, Chittoor district, natural daylight, accurate architecture, respectful pilgrimage atmosphere, no text or watermark.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "srikalahasti-temple",
       "category": "destinations",
       "aspect": "4:3",
-      "widths": [480, 800, 1200, 1600],
+      "widths": [
+        480,
+        800,
+        1200,
+        1600
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Stone gopuram of Sri Kalahasteeswara Swamy Temple, Srikalahasti",
-      "usedOn": ["home (destinations)", "package: Kanipakam & Srikalahasti Tour"],
+      "usedOn": [
+        "home (destinations)",
+        "package: Kanipakam & Srikalahasti Tour"
+      ],
       "sourcing": "licensed-photo REQUIRED (real, identifiable temple)",
       "prompt": "Reference brief: Srikalahasti temple exterior with the main gopuram, detailed carved stone, natural daylight, Swarnamukhi river side if possible, editorial travel style, no text or watermark.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "vellore-golden-temple",
       "category": "destinations",
       "aspect": "4:3",
-      "widths": [480, 800, 1200, 1600],
+      "widths": [
+        480,
+        800,
+        1200,
+        1600
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Sri Lakshmi Narayani Golden Temple at Sripuram, Vellore, surrounded by gardens",
-      "usedOn": ["home (destinations)", "package: Vellore Golden Temple Tour"],
+      "usedOn": [
+        "home (destinations)",
+        "package: Vellore Golden Temple Tour"
+      ],
       "sourcing": "licensed-photo REQUIRED (real, identifiable temple)",
       "prompt": "Reference brief: Sripuram Golden Temple, Vellore, star-shaped garden path and golden vimana, evening or daylight, professional tourism photography, no text or watermark.",
       "notes": "Check Sripuram's photography and commercial-use rules before using any image.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
-
     {
       "id": "sedan",
       "category": "vehicles",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
-      "crop": "attention",
+      "widths": [
+        480,
+        800,
+        1200
+      ],
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Representative image: white four-seat sedan",
-      "usedOn": ["package details (vehicle options)", "booking form", "vehicles page"],
+      "alt": "Representative image: silver Maruti Suzuki Dzire sedan",
+      "usedOn": [
+        "package details (vehicle options)",
+        "booking form",
+        "vehicles page"
+      ],
       "sourcing": "own fleet photo preferred; AI-generated must be labelled representative",
       "prompt": "Photorealistic professional advertisement photograph of a clean white compact Indian sedan (Dzire/Etios class, unbadged) parked on a quiet tree-lined South Indian road, three-quarter front view, natural soft daylight, realistic proportions, premium commercial automotive photography, no logos, no number plate text, no people, no text, no watermark, 3:2.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Biswarup Ganguly",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Maruti_Suzuki_Dzire_VXi_VVT.JPG",
+        "attribution": "Photo: Biswarup Ganguly, CC BY 3.0, via Wikimedia Commons"
+      }
     },
     {
       "id": "suv",
       "category": "vehicles",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
-      "alt": "Representative image: white seven-seat SUV",
-      "usedOn": ["package details (vehicle options)", "booking form", "vehicles page"],
+      "alt": "Representative image: white Maruti Suzuki Ertiga",
+      "usedOn": [
+        "package details (vehicle options)",
+        "booking form",
+        "vehicles page"
+      ],
       "sourcing": "own fleet photo preferred; AI-generated must be labelled representative",
       "prompt": "Photorealistic professional travel advertisement photograph of a clean white seven-seat Indian tourist SUV (Ertiga class, unbadged) parked on a scenic South Indian hill road, three-quarter front view, natural lighting, realistic proportions, premium commercial automotive photography, no logos, no number plate text, no text, no watermark, 3:2.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Ramakrishna Mission Vidyapith",
+        "license": "Public domain",
+        "url": "https://commons.wikimedia.org/wiki/File:2022_Maruti_Suzuki_Ertiga_LXi.jpg",
+        "attribution": ""
+      }
     },
     {
       "id": "innova",
       "category": "vehicles",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
-      "alt": "Representative image: white seven-seat MPV",
-      "usedOn": ["package details (vehicle options)", "booking form", "vehicles page"],
+      "alt": "Representative image: white Toyota Innova Crysta",
+      "usedOn": [
+        "package details (vehicle options)",
+        "booking form",
+        "vehicles page"
+      ],
       "sourcing": "own fleet photo preferred; AI-generated must be labelled representative",
       "prompt": "Photorealistic professional travel advertisement photograph of a clean white full-size Indian MPV (Innova Crysta class, unbadged) parked in front of a hotel porch in South India, three-quarter front view, soft morning light, realistic proportions, premium commercial automotive photography, no logos, no number plate text, no text, no watermark, 3:2.",
       "notes": "Innova is a Toyota trademark. Show the model name in page text only if the fleet actually has one.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Premnath Kudva",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_front_right.jpg",
+        "attribution": "Photo: Premnath Kudva, CC BY-SA 4.0, via Wikimedia Commons (resized)"
+      }
     },
     {
       "id": "tempo-traveller",
       "category": "vehicles",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
-      "alt": "Representative image: white 12-seat tempo traveller van",
-      "usedOn": ["package details (vehicle options)", "booking form", "vehicles page", "group tours"],
+      "alt": "Representative image: white Force Traveller van",
+      "usedOn": [
+        "package details (vehicle options)",
+        "booking form",
+        "vehicles page",
+        "group tours"
+      ],
       "sourcing": "own fleet photo preferred; AI-generated must be labelled representative",
       "prompt": "Photorealistic professional travel advertisement photograph of a clean white 12-seater Indian tempo traveller van (unbadged) parked on a wide South Indian road with green hills behind, side three-quarter view, natural daylight, realistic proportions, premium commercial photography, no logos, no number plate text, no text, no watermark, 3:2.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Yann Forget",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Force_Traveller,_Leh-Manali_Highway.jpg",
+        "attribution": "Photo: Yann Forget, CC BY-SA 3.0, via Wikimedia Commons (resized)"
+      }
     },
-
     {
       "id": "local-darshan",
       "category": "packages",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Sri Padmavathi Ammavari Temple, Tiruchanur, in morning light",
-      "usedOn": ["package card + hero: Tirupati Local Temple Tour"],
+      "usedOn": [
+        "package card + hero: Tirupati Local Temple Tour"
+      ],
       "sourcing": "licensed-photo REQUIRED (real, identifiable temple)",
       "prompt": "Reference brief: Sri Padmavathi Ammavari Temple, Tiruchanur, exterior and gopuram in morning light, devotees at a respectful distance, editorial travel style.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "tirumala-trip",
       "category": "packages",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "White MPV on the Tirumala ghat road among green hills",
-      "usedOn": ["package card + hero: Tirupati to Tirumala Transport", "package card: Tirupati Pilgrimage Package"],
+      "usedOn": [
+        "package card + hero: Tirupati to Tirumala Transport",
+        "package card: Tirupati Pilgrimage Package"
+      ],
       "sourcing": "AI-generated acceptable (generic road scene), or own photo",
       "prompt": "Photorealistic travel photograph of a white unbadged MPV driving up a winding green ghat road in the Tirumala hills, morning light, slight motion feel, premium travel advertising style, no logos, no text, no watermark, 3:2.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "multi-temple-tour",
       "category": "packages",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Carved temple gopurams against a clear sky in Andhra Pradesh",
-      "usedOn": ["package card: Customised Pilgrimage Itineraries", "custom-trip CTA"],
+      "usedOn": [
+        "package card: Customised Pilgrimage Itineraries",
+        "custom-trip CTA"
+      ],
       "sourcing": "licensed-photo REQUIRED if a specific temple is recognisable",
       "prompt": "Reference brief: a South Indian temple gopuram detail with a second gopuram in the background, warm late-afternoon light, editorial travel style, no text or watermark.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "airport-railway-transfer",
       "category": "packages",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Driver loading luggage into a white car at a station pickup",
-      "usedOn": ["package card + hero: Airport and Railway Station Transfers"],
+      "usedOn": [
+        "package card + hero: Airport and Railway Station Transfers"
+      ],
       "sourcing": "AI-generated acceptable (generic scene), or own photo",
       "prompt": "Photorealistic travel advertisement photograph of a friendly uniformed Indian driver placing a suitcase into the boot of a clean white unbadged sedan at a station drop-off area, a family in the soft-focus background, natural daylight, no logos, no signage text, no watermark, 3:2.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     },
     {
       "id": "outstation-journey",
       "category": "packages",
       "aspect": "3:2",
-      "widths": [480, 800, 1200],
+      "widths": [
+        480,
+        800,
+        1200
+      ],
       "crop": "attention",
       "loading": "lazy",
       "alt": "Open highway through South Indian countryside with palm trees",
-      "usedOn": ["package card + hero: Outstation Travel", "package card: Local Cab Booking"],
+      "usedOn": [
+        "package card + hero: Outstation Travel",
+        "package card: Local Cab Booking"
+      ],
       "sourcing": "AI-generated acceptable (generic landscape), or licensed photo",
       "prompt": "Photorealistic wide photograph of a smooth open highway through South Indian countryside with palm trees and distant rocky hills, golden afternoon light, a single white unbadged car in the mid-distance, premium travel photography, no text, no watermark, 3:2.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     }
   ],
   "videos": [
@@ -226,10 +468,19 @@
       "aspect": "16:9",
       "maxDurationSeconds": 15,
       "poster": "tirumala-hero",
-      "usedOn": ["home hero (desktop only, muted, autoplay, loop; disabled for prefers-reduced-motion and Save-Data)"],
+      "usedOn": [
+        "home hero (desktop only, muted, autoplay, loop; disabled for prefers-reduced-motion and Save-Data)"
+      ],
       "sourcing": "licensed stock footage or own footage. Drone filming over Tirumala is restricted, so verify before commissioning.",
       "brief": "8–15 s slow aerial or gimbal shot of mist moving over the Tirumala hills at sunrise; no people close-up; no text; seamless loop preferred.",
-      "rights": { "status": "pending", "provider": "", "author": "", "license": "", "url": "", "attribution": "" }
+      "rights": {
+        "status": "pending",
+        "provider": "",
+        "author": "",
+        "license": "",
+        "url": "",
+        "attribution": ""
+      }
     }
   ]
 }

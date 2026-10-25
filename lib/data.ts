@@ -4,6 +4,7 @@ import { createPublicClient } from '@/lib/supabase/clients';
 import { getImage, type ImageEntry } from '@/lib/images';
 import type { Destination, Faq, ItineraryDay, Package, PackageCategory, Vehicle } from '@/lib/catalog';
 import { DEMO, demoCatalog, demoPosts, demoSettings } from '@/lib/demo-data';
+import { toRupees } from '@/lib/format';
 
 // Public website data. Read with the anonymous key (so RLS returns only published rows), cached, and refreshed
 // instantly when the admin saves (see lib/revalidate.ts). Tags: catalog, settings, blog, media.
@@ -40,12 +41,12 @@ const loadCatalog = unstable_cache(async (): Promise<Catalog> => {
   if (DEMO) return demoCatalog();
   const db = createPublicClient();
   const [pk, vh, ds, media] = await Promise.all([
-    db.from('packages').select('*, package_vehicles(price, vehicles(slug, sort))').eq('published', true).order('popularity', { ascending: false }),
+    db.from('packages').select('*, package_vehicles(price_paise, vehicles(slug, sort)), itinerary_days(day, title, stops)').eq('published', true).order('popularity', { ascending: false }),
     db.from('vehicles').select('*').eq('active', true).order('sort'),
     db.from('destinations').select('*').order('sort'),
     loadMedia(),
   ]);
-  type PkgRow = Record<string, unknown> & { package_vehicles: { price: number | null; vehicles: { slug: string; sort: number } | null }[] };
+  type PkgRow = Record<string, unknown> & { package_vehicles: { price_paise: number | null; vehicles: { slug: string; sort: number } | null }[]; itinerary_days: ItineraryDay[] };
   const packages = (check(pk, 'packages') as PkgRow[]).map((r): Package => ({
     id: r.id as string,
     slug: r.slug as string,
@@ -63,9 +64,9 @@ const loadCatalog = unstable_cache(async (): Promise<Catalog> => {
     vehicles: r.package_vehicles
       .filter(v => v.vehicles)
       .sort((a, b) => a.vehicles!.sort - b.vehicles!.sort)
-      .map(v => ({ slug: v.vehicles!.slug, price: v.price === null ? null : Number(v.price) })),
+      .map(v => ({ slug: v.vehicles!.slug, price: toRupees(v.price_paise) })),
     priceUnit: r.price_unit as string,
-    itinerary: r.itinerary as ItineraryDay[],
+    itinerary: [...r.itinerary_days].sort((a, b) => a.day - b.day).map(({ day, title, stops }) => ({ day, title, stops })),
     inclusions: r.inclusions as string[],
     exclusions: r.exclusions as string[],
     faqs: r.faqs as Faq[],
@@ -118,9 +119,16 @@ const DEFAULTS: Settings = {
 
 export const getSettings = unstable_cache(async (): Promise<Settings> => {
   if (DEMO) return demoSettings();
-  const rows = check(await createPublicClient().from('site_settings').select('key, value'), 'settings') as { key: keyof Settings; value: unknown }[];
+  const db = createPublicClient();
+  const [settingsRes, reviewsRes] = await Promise.all([
+    db.from('site_settings').select('key, value'),
+    db.from('reviews').select('quote, name, city, package_label').eq('published', true).order('sort'),
+  ]);
+  const rows = check(settingsRes, 'settings') as { key: keyof Settings; value: unknown }[];
+  const reviews = check(reviewsRes, 'reviews') as { quote: string; name: string; city: string; package_label: string }[];
   const out = structuredClone(DEFAULTS) as Record<string, unknown>;
   for (const r of rows) if (r.key in DEFAULTS) out[r.key] = { ...(DEFAULTS[r.key] as object), ...(r.value as object) };
+  out.testimonials = { items: reviews.map(r => ({ quote: r.quote, name: r.name, city: r.city || undefined, package: r.package_label || undefined })) };
   return out as Settings;
 }, ['settings'], { tags: [TAGS.settings], revalidate: REVALIDATE });
 

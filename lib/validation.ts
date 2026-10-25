@@ -2,13 +2,7 @@ import { z } from 'zod';
 import { todayInIndia } from '@/lib/format';
 
 // Shared by the browser (instant feedback) and the API routes (the real check).
-
-const vehicleCapacity: Record<string, { name: string; passengers: number }> = {
-  sedan: { name: 'sedan', passengers: 4 },
-  suv: { name: 'SUV', passengers: 6 },
-  'innova-crysta': { name: 'premium MPV', passengers: 7 },
-  'tempo-traveller': { name: 'tempo traveller', passengers: 12 },
-};
+// Checks that need the database (package, vehicle capacity, current price) run on the server in lib/server/bookings.ts.
 
 /** Accepts 98765 43210, +91 98765 43210, 098765-43210 → 9876543210 */
 export function normalisePhone(raw: string): string {
@@ -54,22 +48,22 @@ export const bookingSchema = z
     pickup: z.string().trim().min(3, 'Enter a pickup point').max(200),
     vehicle: z.string().min(1, 'Choose a vehicle, or "Suggest for me"'),
     requests: z.string().trim().max(1000, 'Please keep this under 1000 characters').optional(),
+    // The price the form showed for this package and vehicle (null = on request). The server compares it with the live price.
+    listedPricePaise: z.number().int().min(0).nullable().optional(),
     consent,
     idempotencyKey,
     website,
-  })
-  .superRefine((v, ctx) => {
-    const message = capacityError(v.vehicle, v.passengers);
-    if (message) ctx.addIssue({ code: 'custom', path: ['vehicle'], message });
   });
 
-/**
- * Exported separately because zod skips object-level refinements while other fields are invalid,
- * and the booking form needs this check on step 1, before later fields like consent are filled in.
- */
-export function capacityError(vehicle: string, passengers: number): string | null {
-  const cap = vehicleCapacity[vehicle];
-  return cap && passengers > cap.passengers ? `A ${cap.name} seats up to ${cap.passengers}. Choose a larger vehicle or "Suggest for me".` : null;
+export function capacityError(vehicle: { name: string; passengers: number } | undefined, passengers: number): string | null {
+  return vehicle && passengers > vehicle.passengers ? `The ${vehicle.name} seats up to ${vehicle.passengers}. Choose a larger vehicle or "Suggest for me".` : null;
+}
+
+export function groupSizeError(pkg: { passengers: { min: number; max: number } } | undefined, passengers: number): string | null {
+  if (!pkg) return null;
+  if (passengers < pkg.passengers.min) return `This package is for at least ${pkg.passengers.min} travellers`;
+  if (passengers > pkg.passengers.max) return `This package takes up to ${pkg.passengers.max} travellers. For a larger group, contact us`;
+  return null;
 }
 
 export type BookingInput = z.input<typeof bookingSchema>;

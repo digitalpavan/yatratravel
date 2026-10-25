@@ -56,17 +56,22 @@ export function RevealGroup({ children, as = 'div', itemAs = 'div', itemClassNam
   );
 }
 
-/** Hero/page intro: children marked with <IntroItem> enter in sequence on load (eyebrow → headline → text → buttons). */
-export function Intro({ children, className, delay = 0.1, step = 0.12 }: { children: ReactNode; className?: string; delay?: number; step?: number }) {
+/**
+ * Hero/page intro: children marked with <IntroItem> enter in sequence on load (eyebrow → headline → text → buttons).
+ * Pure CSS (see .intro in styles/site.css), so it starts with the first paint instead of waiting for JavaScript:
+ * these are usually the page's largest element, and a script-driven fade-in delayed LCP by 2 seconds on mobile.
+ * The order comes from each item's position among the Intro's children.
+ */
+export function Intro({ children, className = '', delay = 0.1, step = 0.12 }: { children: ReactNode; className?: string; delay?: number; step?: number }) {
   return (
-    <m.div data-reveal="" className={className} initial="hidden" animate="visible" variants={stagger(step, delay)}>
+    <div className={`intro ${className}`} style={{ '--intro-delay': `${delay}s`, '--intro-step': `${step}s` } as CSSProperties}>
       {children}
-    </m.div>
+    </div>
   );
 }
-export function IntroItem({ children, as = 'div', className, id }: { children: ReactNode; as?: Tag; className?: string; id?: string }) {
-  const Comp = m[as] as typeof m.div;
-  return <Comp data-reveal="" className={className} id={id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: transition(motionTokens.hero) } }}>{children}</Comp>;
+export function IntroItem({ children, as = 'div', className = '', id }: { children: ReactNode; as?: Tag; className?: string; id?: string }) {
+  const Comp = as;
+  return <Comp className={`intro-item ${className}`} id={id}>{children}</Comp>;
 }
 
 /**

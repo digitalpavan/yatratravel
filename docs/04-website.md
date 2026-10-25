@@ -43,17 +43,13 @@ The admin phase will move packages, vehicles, bookings and enquiries into the da
 
 ## Bookings: how it works
 
-1. The form checks each step in the browser, and the API checks everything again on the server with the same rules (`lib/validation.ts`), plus that the package exists and offers the chosen vehicle.
+The full workflow, statuses and WhatsApp rules are in [08-booking-workflow.md](08-booking-workflow.md). On the website side:
+
+1. The form checks each step in the browser, and the API checks everything again on the server (`lib/validation.ts`), then checks the package, group size, vehicle and current price against the live database (`checkOffer()`).
 2. Each form session sends a random **idempotency key**. Double clicks and retries return the original booking instead of creating a duplicate, and the button also locks while sending.
-3. The server creates the reference `YT-YYMMDD-XXXX` (IST date and 4 unambiguous characters) and stores the booking with status **`requested`**. Nothing is auto-confirmed.
-4. The visitor is sent to `/booking-confirmation/<ref>?t=<token>`, where the token is an HMAC of the reference. Without a valid token the page shows the same generic message whether or not the reference exists, so references can't be guessed or enumerated. These pages are `no-store` and `noindex`, and they show no phone number or email.
+3. The server creates the reference `YT-YYMMDD-XXXX` (IST date and 4 unambiguous characters) and stores the booking with status **`pending`**. Nothing is auto-confirmed.
+4. The visitor is sent to `/booking-confirmation/<ref>?t=<token>`, where the token is an HMAC of the reference. Without a valid token the page shows the same generic message whether or not the reference exists, so references can't be guessed or enumerated. These pages are `no-store` and `noindex`. The page always shows the booking's current status.
 5. The forms include a honeypot field and a per-IP rate limit (5 bookings or 8 enquiries per 10 minutes).
-
-Storage is SQLite through Node's built-in `node:sqlite` (`data/yatra.db`, git-ignored). It's fine on one server or a VPS.
-**On serverless hosting (e.g. Vercel) the file isn't persistent.** Before deploying there, swap `lib/server/db.ts` and `lib/server/bookings.ts` for a hosted database.
-
-Not built yet (admin/notifications phase): staff alerts for new bookings, confirmation messages to customers,
-and changing booking status.
 
 ## Animations
 

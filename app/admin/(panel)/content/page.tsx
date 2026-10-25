@@ -8,6 +8,7 @@ import { imageOptions } from '@/lib/admin-images';
 import { requireRole } from '@/lib/auth';
 import type { Settings } from '@/lib/data';
 import { createUserClient } from '@/lib/supabase/clients';
+import { businessWhatsappNumber } from '@/lib/whatsapp';
 import { uploadMedia } from '../media/actions';
 import { deleteDestination, saveDestination, saveSetting } from './actions';
 
@@ -24,8 +25,9 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
   const sp = await searchParams;
   const tab: Tab = (TABS.find(t => t[0] === sp.tab)?.[0]) ?? 'brand';
   const db = await createUserClient();
-  const [{ data: rows }, { data: packages }, { data: destinations }, images] = await Promise.all([
+  const [{ data: rows }, { data: reviews }, { data: packages }, { data: destinations }, images] = await Promise.all([
     db.from('site_settings').select('key, value'),
+    db.from('reviews').select('quote, name, city, package_label').order('sort'),
     db.from('packages').select('slug, title, published').order('popularity', { ascending: false }),
     db.from('destinations').select('*').order('sort'),
     imageOptions(db),
@@ -36,6 +38,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
   const hero = s.hero ?? { eyebrow: '', lines: [], text: '', image: '', mobileImage: '' };
   const home = s.home ?? { packageSlugs: [], faqs: [] };
   const key = (k: string) => <input type="hidden" name="_key" value={k} />;
+  const whatsappFromEnv = businessWhatsappNumber(null);
 
   return (
     <>
@@ -68,7 +71,8 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
           {key('contact')}
           <div className="field"><label className="label" htmlFor="phone">Phone (digits with country code)</label><input className="input" id="phone" name="phone" defaultValue={contact.phone ?? ''} placeholder="919876543210" inputMode="numeric" /></div>
           <div className="field"><label className="label" htmlFor="phoneDisplay">Phone as shown</label><input className="input" id="phoneDisplay" name="phoneDisplay" defaultValue={contact.phoneDisplay ?? ''} placeholder="+91 98765 43210" /></div>
-          <div className="field"><label className="label" htmlFor="whatsapp">WhatsApp number (digits with country code)</label><input className="input" id="whatsapp" name="whatsapp" defaultValue={contact.whatsapp ?? ''} placeholder="919876543210" inputMode="numeric" /></div>
+          <div className="field"><label className="label" htmlFor="whatsapp">WhatsApp number (digits with country code)</label><input className="input" id="whatsapp" name="whatsapp" defaultValue={contact.whatsapp ?? ''} placeholder="919876543210" inputMode="numeric" />
+            {whatsappFromEnv && <p className="hint">The website uses {whatsappFromEnv}, set by WHATSAPP_BUSINESS_NUMBER on the server. This field is only a fallback.</p>}</div>
           <div className="field"><label className="label" htmlFor="email">Email</label><input className="input" id="email" name="email" type="email" defaultValue={contact.email ?? ''} /></div>
           <div className="field span-all"><label className="label" htmlFor="address">Office address (Tirupati)</label><textarea className="textarea" id="address" name="address" defaultValue={contact.address ?? ''} style={{ minHeight: 80 }} /><p className="hint">Publish only the confirmed office address.</p></div>
           <div className="field"><label className="label" htmlFor="hours">Office hours</label><input className="input" id="hours" name="hours" defaultValue={contact.hours ?? ''} placeholder="Every day, 6 AM – 10 PM" /></div>
@@ -141,7 +145,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
         <ActionForm action={saveSetting} className="card card--pad stack">
           {key('testimonials')}
           <p className="hint">Add only genuine reviews from real customers, with their permission. Never write or edit reviews yourself.</p>
-          <RecordListEditor name="items" initial={(s.testimonials?.items ?? []) as Record<string, string>[]} addLabel="Add review"
+          <RecordListEditor name="items" initial={(reviews ?? []).map(r => ({ quote: r.quote, name: r.name, city: r.city, package: r.package_label }))} addLabel="Add review"
             fields={[{ key: 'quote', label: 'Review', multiline: true, required: true }, { key: 'name', label: 'Customer name (as they agreed to be shown)', required: true }, { key: 'city', label: 'City' }, { key: 'package', label: 'Package' }]} />
           <label className="check"><input type="checkbox" name="consent" /> These are real reviews, shared with the customers' permission.</label>
           <div><SubmitButton variant="primary">Save reviews</SubmitButton></div>

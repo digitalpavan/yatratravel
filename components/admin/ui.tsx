@@ -2,17 +2,18 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 export const bookingStatusLabel: Record<string, [string, string]> = {
-  requested: ['badge--pending', 'Requested'],
+  pending: ['badge--pending', 'Pending'],
+  contacted: ['badge--info', 'Contacted'],
   confirmed: ['badge--success', 'Confirmed'],
   completed: ['badge--info', 'Completed'],
   cancelled: ['badge--error', 'Cancelled'],
 };
 export const paymentStatusLabel: Record<string, [string, string]> = {
   unpaid: ['badge--pending', 'Unpaid'],
-  advance_paid: ['badge--info', 'Advance paid'],
+  pending: ['badge--info', 'Payment pending'],
   paid: ['badge--success', 'Paid'],
   refunded: ['', 'Refunded'],
-  not_applicable: ['', 'N/A'],
+  failed: ['badge--error', 'Payment failed'],
 };
 export const enquiryStatusLabel: Record<string, [string, string]> = {
   new: ['badge--pending', 'New'],

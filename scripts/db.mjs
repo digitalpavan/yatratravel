@@ -89,16 +89,21 @@ async function seed() {
       }
       for (const p of services.packages) {
         const r = await db.query(`insert into public.packages (slug, title, category, destinations, duration_days, duration_label, summary, overview, image, gallery,
-            passengers_min, passengers_max, price_unit, itinerary, inclusions, exclusions, faqs, popularity, featured, published)
-          values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
+            passengers_min, passengers_max, price_unit, inclusions, exclusions, faqs, popularity, featured, published)
+          values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
           on conflict (slug) do nothing returning id`,
           [p.slug, p.title, p.category, p.destinations, p.durationDays, p.durationLabel, p.summary, p.overview, p.image, p.gallery,
-            p.passengers.min, p.passengers.max, p.priceUnit, JSON.stringify(p.itinerary), p.inclusions, p.exclusions, JSON.stringify(p.faqs),
+            p.passengers.min, p.passengers.max, p.priceUnit, p.inclusions, p.exclusions, JSON.stringify(p.faqs),
             p.popularity, ['temple-tour', 'transfer', 'package'].includes(p.category), p.published]);
         if (!r.rows[0]) continue; // already seeded: leave the admin's edits alone
         for (const vs of p.vehicles) {
-          await db.query('insert into public.package_vehicles (package_id, vehicle_id, price) values ($1,$2,$3) on conflict do nothing',
-            [r.rows[0].id, vehicleIds[vs], p.prices?.[vs] ?? null]);
+          const rupees = p.prices?.[vs];
+          await db.query('insert into public.package_vehicles (package_id, vehicle_id, price_paise) values ($1,$2,$3) on conflict do nothing',
+            [r.rows[0].id, vehicleIds[vs], typeof rupees === 'number' ? Math.round(rupees * 100) : null]);
+        }
+        for (const [i, d] of p.itinerary.entries()) {
+          await db.query('insert into public.itinerary_days (package_id, day, title, stops) values ($1,$2,$3,$4) on conflict do nothing',
+            [r.rows[0].id, i + 1, d.title, JSON.stringify(d.stops)]);
         }
       }
       const settings = [
@@ -107,11 +112,16 @@ async function seed() {
         ["hero", defaults.hero, true],
         ["home", defaults.home, true],
         ["seo", defaults.seo, true],
-        ['testimonials', { items: testimonials }, true],
         ['accounting', { revenueReliable: false }, false],
       ];
       for (const [key, value, isPublic] of settings) {
         await db.query('insert into public.site_settings (key, value, is_public) values ($1,$2,$3) on conflict do nothing', [key, JSON.stringify(value), isPublic]);
+      }
+      if ((await db.query('select 1 from public.reviews limit 1')).rows.length === 0) {
+        for (const [i, t] of testimonials.entries()) {
+          await db.query('insert into public.reviews (quote, name, city, package_label, published, sort) values ($1,$2,$3,$4,true,$5)',
+            [t.quote, t.name, t.city ?? '', t.package ?? '', i]);
+        }
       }
       for (const b of readBlog()) {
         await db.query(`insert into public.blog_posts (slug, title, description, body, image, image_alt, category, tags, published, published_at)

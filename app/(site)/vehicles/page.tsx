@@ -10,8 +10,8 @@ import { getSettings, getVehicles } from '@/lib/data';
 import { contactLinks } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Our Vehicles: Sedan, SUV, MPV & Tempo Traveller in Tirupati',
-  description: 'Air-conditioned sedans, SUVs, premium MPVs and tempo travellers for Tirupati temple tours, Tirumala transport and outstation trips. Compare seats and luggage space, and request a quote.',
+  title: 'Vehicles: Sedan, SUV, Innova & Tempo Traveller',
+  description: 'Air-conditioned sedans, SUVs, Innova Crysta and Tempo Travellers for Tirupati temple tours, Tirumala trips and outstation travel. Compare seats and luggage.',
   alternates: { canonical: '/vehicles' },
 };
 

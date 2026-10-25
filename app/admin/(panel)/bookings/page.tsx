@@ -9,7 +9,7 @@ import { createUserClient } from '@/lib/supabase/clients';
 export const metadata: Metadata = { title: 'Bookings' };
 
 const PAGE_SIZE = 25;
-const STATUSES = ['requested', 'confirmed', 'completed', 'cancelled'] as const;
+const STATUSES = ['pending', 'contacted', 'confirmed', 'completed', 'cancelled'] as const;
 type Props = { searchParams: Promise<Record<string, string | undefined>> };
 
 export default async function BookingsPage({ searchParams }: Props) {

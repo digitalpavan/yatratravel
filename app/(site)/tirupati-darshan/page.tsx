@@ -10,8 +10,8 @@ import { getDestinations, getPackages, getSettings } from '@/lib/data';
 import { contactLinks } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Tirupati Darshan Travel: Tirumala Transport & Temple Tours',
-  description: 'Plan your Tirupati and Tirumala darshan trip: ghat road transport, station and airport pickups, local temple tours and suggested itineraries. Darshan tickets are booked separately with TTD.',
+  title: 'Tirupati Darshan Travel & Tirumala Transport',
+  description: 'Plan your Tirumala darshan trip: ghat road transport, station and airport pickups, local temple tours and itineraries. Darshan tickets are booked with TTD.',
   alternates: { canonical: '/tirupati-darshan' },
 };
 
