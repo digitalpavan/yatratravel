@@ -27,6 +27,7 @@ The dashboard is at `/admin`. It's built on Supabase (Auth, Postgres with row-le
 | Packages, prices, itineraries, images, SEO | | ✓ |
 | Vehicle categories, capacity, pricing rules, fleet records | | ✓ |
 | Website content, blog, destinations, reviews, launch switch | | ✓ |
+| Own settings: profile photo, name, phone, job title, password | ✓ | ✓ |
 | Staff accounts and roles, password resets | | ✓ |
 | CSV export, audit log, revenue figures | | ✓ |
 

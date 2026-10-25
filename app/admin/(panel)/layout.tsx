@@ -30,10 +30,11 @@ export default async function PanelLayout({ children }: { children: ReactNode })
       { href: '/admin/users', label: 'Staff & roles', icon: 'users', group: 'Administration' },
       { href: '/admin/audit', label: 'Audit log', icon: 'shield', group: 'Administration' },
     ] as AdminNavItem[]) : []),
+    { href: '/admin/account', label: 'Settings', icon: 'settings', group: 'Account' },
   ];
 
   return (
-    <AdminShell nav={nav} user={{ name: user.fullName, email: user.email, role: user.role }} signOut={signOut}>
+    <AdminShell nav={nav} user={{ name: user.fullName, email: user.email, role: user.role, avatarUrl: user.avatarUrl }} signOut={signOut}>
       {children}
     </AdminShell>
   );

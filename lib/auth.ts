@@ -4,7 +4,10 @@ import { cache } from 'react';
 import { createUserClient } from '@/lib/supabase/clients';
 
 export type Role = 'admin' | 'staff';
-export type StaffUser = { id: string; email: string; fullName: string; role: Role; mustChangePassword: boolean };
+export type StaffUser = {
+  id: string; email: string; fullName: string; role: Role; mustChangePassword: boolean;
+  phone: string; jobTitle: string; avatarUrl: string; createdAt: string;
+};
 
 /**
  * The signed-in staff member, verified on the server: the JWT is validated with Supabase and the role is read
@@ -16,9 +19,11 @@ export const getStaffUser = cache(async (): Promise<StaffUser | null> => {
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
   if (!userId) return null;
-  const { data: profile } = await supabase.from('profiles').select('id, email, full_name, role, active, must_change_password').eq('id', userId).maybeSingle();
+  const { data: profile } = await supabase.from('profiles').select('id, email, full_name, role, active, must_change_password, phone, job_title, avatar_url, created_at').eq('id', userId).maybeSingle();
   if (!profile || !profile.active) return null;
-  return { id: profile.id, email: profile.email, fullName: profile.full_name, role: profile.role, mustChangePassword: profile.must_change_password };
+  return { id: profile.id, email: profile.email, fullName: profile.full_name, role: profile.role, mustChangePassword: profile.must_change_password,
+    phone: profile.phone, jobTitle: profile.job_title, avatarUrl: profile.avatar_url, createdAt: profile.created_at,
+  };
 });
 
 /**

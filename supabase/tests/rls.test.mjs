@@ -110,6 +110,12 @@ await as('authenticated', STAFF, async () => {
   ok(await affected("update public.site_settings set value='{}'") === 0, 'staff cannot edit website content');
   ok(await affected(`update public.profiles set role='admin' where id='${STAFF}'`) <= 0 && (await rows(`select role from public.profiles where id='${STAFF}'`))[0].role === 'staff', 'staff cannot promote themselves');
   ok(await affected(`update public.profiles set role='staff' where id='${ADMIN}'`) <= 0, 'staff cannot demote an admin');
+  ok(await affected(`update public.profiles set full_name='Staff Two', phone='9000000002', job_title='Driver desk', avatar_url='https://x/a.webp' where id='${STAFF}'`) === 1, 'staff edits their own profile details');
+  ok(await affected(`update public.profiles set full_name='Hacked' where id='${ADMIN}'`) <= 0, 'staff cannot edit someone else\'s profile');
+  ok(await fails(`update public.profiles set email='new@x.in' where id='${STAFF}'`), 'staff cannot change their own sign-in email');
+  ok(await fails(`update public.profiles set must_change_password=false where id='${STAFF}'`), 'staff cannot clear the one-time password flag');
+  ok(!(await fails(`insert into storage.objects (bucket_id, name) values ('avatars', '${STAFF}/me.webp')`)), 'staff uploads a photo to their own folder');
+  ok(await fails(`insert into storage.objects (bucket_id, name) values ('avatars', '${ADMIN}/me.webp')`), 'staff cannot upload into someone else\'s photo folder');
   ok((await rows('select * from public.audit_log')).length === 0, 'staff cannot read the audit log');
   const vid = (await rows("select id from public.vehicles where slug='sedan'"))[0].id;
   ok(!(await fails(`insert into public.vehicle_blocks (vehicle_id,start_date,end_date) values ('${vid}','2026-11-01','2026-11-02')`)), 'staff blocks vehicle dates');

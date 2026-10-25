@@ -6,6 +6,7 @@ import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Icon, type IconName } from '@/components/Icon';
 import { LogoMark } from '@/components/Logo';
+import { Avatar } from '@/components/admin/AvatarPicker';
 import { useDialogBehaviour } from '@/components/useDialogBehaviour';
 import { motionTokens, transition } from '@/lib/motion';
 
@@ -13,7 +14,7 @@ export type AdminNavItem = { href: string; label: string; icon: IconName; count?
 
 /** Layout chrome only. Which items appear is decided on the server by role, and every page re-checks access itself. */
 export function AdminShell({ nav, user, signOut, children }: {
-  nav: AdminNavItem[]; user: { name: string; email: string; role: string }; signOut: () => Promise<void>; children: ReactNode;
+  nav: AdminNavItem[]; user: { name: string; email: string; role: string; avatarUrl: string }; signOut: () => Promise<void>; children: ReactNode;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -23,7 +24,6 @@ export function AdminShell({ nav, user, signOut, children }: {
   useDialogBehaviour(open, drawerRef, toggleRef, () => setOpen(false));
 
   const isCurrent = (href: string) => (href === '/admin' ? pathname === '/admin' : pathname.startsWith(href));
-  const initials = (user.name || user.email).split(/[\s@.]+/).filter(Boolean).slice(0, 2).map(s => s[0]!.toUpperCase()).join('');
 
   const navList = (animated: boolean) => (
     <ul className="admin-nav">
@@ -77,7 +77,7 @@ export function AdminShell({ nav, user, signOut, children }: {
           </form>
           <div className="topbar-actions">
             <Link className="btn btn--ghost btn--sm" href="/" target="_blank">View site</Link>
-            <Link className="avatar" href="/admin/account" title={`${user.email} (${user.role})`} aria-label={`My account: ${user.email}, ${user.role}`}>{initials}</Link>
+            <Link className="avatar-link" href="/admin/account" title={`${user.email} (${user.role})`} aria-label={`Settings: ${user.email}, ${user.role}`}><Avatar src={user.avatarUrl} name={user.name} email={user.email} /></Link>
             <form action={signOut}><button className="btn btn--ghost btn--sm" type="submit"><Icon name="logout" />Sign out</button></form>
           </div>
         </header>
