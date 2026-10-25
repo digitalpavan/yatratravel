@@ -55,21 +55,24 @@ async function sendEmail(email: Email, ref: string): Promise<boolean> {
 async function sendWithGmail(email: Email, ref: string): Promise<boolean> {
   gmail ??= nodemailer.createTransport({
     service: 'gmail',
-    auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD!.replace(/\s/g, '') },
+    // App Passwords are shown in groups of four with spaces; pasted quotes are dropped too.
+    auth: { user: process.env.GMAIL_USER!.trim(), pass: process.env.GMAIL_APP_PASSWORD!.replace(/[\s"']/g, '') },
     connectionTimeout: 10_000, socketTimeout: 20_000,
   });
   const { brand } = await getSettings();
   try {
     await gmail.sendMail({
-      from: { name: brand.name, address: process.env.GMAIL_USER! },
+      from: { name: brand.name, address: process.env.GMAIL_USER!.trim() },
       to: email.to, replyTo: email.replyTo, subject: email.subject, text: email.text, html: email.html,
       attachments: email.attachments?.map(a => ({ filename: a.filename, content: Buffer.from(a.content), contentType: 'application/pdf' })),
       headers: { 'X-Entity-Ref-ID': email.idempotencyKey },
     });
     return true;
   } catch (e) {
-    // EAUTH means the App Password is wrong or was revoked.
-    console.error(`[notify] ${ref}: Gmail send failed (${(e as { code?: string }).code ?? 'error'})`);
+    // EAUTH: Google's reply says why, e.g. 534 5.7.9 "Application-specific password required" (the normal password was
+    // used) or 535 5.7.8 "Username and Password not accepted" (wrong or revoked App Password). It never contains the password.
+    const err = e as { code?: string; responseCode?: number; response?: string };
+    console.error(`[notify] ${ref}: Gmail send failed (${err.code ?? 'error'}${err.responseCode ? ` ${err.responseCode}` : ''}${err.response ? `: ${err.response.replace(/\s+/g, ' ').slice(0, 160)}` : ''})`);
     return false;
   }
 }
