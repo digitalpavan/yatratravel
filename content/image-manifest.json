@@ -110,9 +110,9 @@
         1200,
         1600
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Ghat road winding through the green Tirumala hills in soft morning light",
+      "alt": "The Tirumala hills on a clear morning, seen from SV Zoo Park Road, Tirupati",
       "usedOn": [
         "home (destinations)",
         "packages page header",
@@ -121,12 +121,12 @@
       "sourcing": "licensed-photo preferred; AI-generated acceptable (landscape, no temple)",
       "prompt": "Wide-angle, photorealistic view of the lush Tirumala hills in Andhra Pradesh, a winding two-lane mountain road with hairpin bends, soft morning light, realistic dense greenery, premium travel-magazine photography, no text, no watermark, 4:3.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Adityamadhav83",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Morning_view_of_Tirumala_hills_from_SV_Zoo_Park_Road.jpg",
+        "attribution": "Photo: Adityamadhav83, CC BY-SA 4.0, via Wikimedia Commons (resized)"
       }
     },
     {
@@ -363,9 +363,9 @@
         800,
         1200
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "White MPV on the Tirumala ghat road among green hills",
+      "alt": "Galigopuram on the Tirumala ghat road, with pilgrims walking the Alipiri footpath",
       "usedOn": [
         "package card + hero: Tirupati to Tirumala Transport",
         "package card: Tirupati Pilgrimage Package"
@@ -373,12 +373,12 @@
       "sourcing": "AI-generated acceptable (generic road scene), or own photo",
       "prompt": "Photorealistic travel photograph of a white unbadged MPV driving up a winding green ghat road in the Tirumala hills, morning light, slight motion feel, premium travel advertising style, no logos, no text, no watermark, 3:2.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "IM3847",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Galigopuram_along_the_Alipiri_steps_route_on_Tirumala_Hills_(May_2019).jpg",
+        "attribution": "Photo: IM3847, CC BY-SA 4.0, via Wikimedia Commons (resized)"
       }
     },
     {
@@ -390,9 +390,9 @@
         800,
         1200
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Carved temple gopurams against a clear sky in Andhra Pradesh",
+      "alt": "Kapila Theertham waterfall beside the Kapileswara Swamy Temple, Tirupati",
       "usedOn": [
         "package card: Customised Pilgrimage Itineraries",
         "custom-trip CTA"
@@ -400,12 +400,12 @@
       "sourcing": "licensed-photo REQUIRED if a specific temple is recognisable",
       "prompt": "Reference brief: a South Indian temple gopuram detail with a second gopuram in the background, warm late-afternoon light, editorial travel style, no text or watermark.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Agasthyathepirate",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Kapila_Theertham_waterfalls_Tirupati_2015_1.jpg",
+        "attribution": "Photo: Agasthyathepirate, CC BY-SA 4.0, via Wikimedia Commons (resized)"
       }
     },
     {
@@ -417,21 +417,21 @@
         800,
         1200
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Driver loading luggage into a white car at a station pickup",
+      "alt": "Terminal building of Tirupati Airport",
       "usedOn": [
         "package card + hero: Airport and Railway Station Transfers"
       ],
       "sourcing": "AI-generated acceptable (generic scene), or own photo",
       "prompt": "Photorealistic travel advertisement photograph of a friendly uniformed Indian driver placing a suitcase into the boot of a clean white unbadged sedan at a station drop-off area, a family in the soft-focus background, natural daylight, no logos, no signage text, no watermark, 3:2.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Munna Aawara",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Tirupati_Airport_View.jpg",
+        "attribution": "Photo: Munna Aawara, CC BY-SA 4.0, via Wikimedia Commons (resized)"
       }
     },
     {
@@ -443,9 +443,9 @@
         800,
         1200
       ],
-      "crop": "attention",
+      "crop": "center",
       "loading": "lazy",
-      "alt": "Open highway through South Indian countryside with palm trees",
+      "alt": "Open road through green hills in rural Andhra Pradesh",
       "usedOn": [
         "package card + hero: Outstation Travel",
         "package card: Local Cab Booking"
@@ -453,12 +453,12 @@
       "sourcing": "AI-generated acceptable (generic landscape), or licensed photo",
       "prompt": "Photorealistic wide photograph of a smooth open highway through South Indian countryside with palm trees and distant rocky hills, golden afternoon light, a single white unbadged car in the mid-distance, premium travel photography, no text, no watermark, 3:2.",
       "rights": {
-        "status": "pending",
-        "provider": "",
-        "author": "",
-        "license": "",
-        "url": "",
-        "attribution": ""
+        "status": "cleared",
+        "provider": "Wikimedia Commons",
+        "author": "Ms Sarah Welch",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:0_Roads_and_highways_in_Andhra_Pradesh_-_12.jpg",
+        "attribution": "Photo: Ms Sarah Welch, CC BY-SA 4.0, via Wikimedia Commons (resized)"
       }
     }
   ],
